@@ -62,7 +62,7 @@ export type PaneGroupProps = {
 	 * An imperative API for the pane group. `bind` to this prop to get access
 	 * to methods for controlling the pane group.
 	 */
-	api?: PaneGroupAPI;
+	paneGroup?: PaneGroupAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 ```
 
