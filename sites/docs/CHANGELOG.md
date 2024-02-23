@@ -1,5 +1,12 @@
 # docs
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [[`e30a0c1df0add8f0f3eb8e25944e9482b274a4fa`](https://github.com/svecosystem/paneforge/commit/e30a0c1df0add8f0f3eb8e25944e9482b274a4fa)]:
+  - paneforge@0.0.2
+
 ## 0.0.2
 
 ### Patch Changes
