@@ -1,5 +1,0 @@
----
-"paneforge": patch
----
-
-Initial release 🎉
