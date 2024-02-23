@@ -101,7 +101,7 @@ The following data attributes are available for the `PaneGroup` component:
 ```ts
 export type PaneGroupAttributes = {
 	/** Applied to every pane group element. */
-	"data-pane-group": string;
+	"data-pane-group": "";
 	/** The direction of the pane group. */
 	"data-direction": "horizontal" | "vertical";
 	/** The ID of the pane group. */

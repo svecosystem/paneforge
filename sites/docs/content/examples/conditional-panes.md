@@ -7,13 +7,15 @@ description: An example of how to handle conditional panes.
 	import { ConditionalDemo } from '$lib/components/demos'
 </script>
 
+When conditionally rendering panes, you need to use the `order` prop to ensure the panes are rendered in the correct order when they are displayed.
+
 <div class="flex flex-col gap-4">
 	<ConditionalDemo />
 </div>
 
 ## Anatomy
 
-Here's a high-level structure of the example above:
+Here's the high-level structure of the example above:
 
 ```svelte
 <script lang="ts">

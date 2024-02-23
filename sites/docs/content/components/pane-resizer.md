@@ -67,5 +67,7 @@ export type PaneResizerAttributes = {
 	"data-enabled"?: boolean;
 	/** The ID of the resize handle. */
 	"data-pane-resizer-id": string;
+	/** Present on all resizer elements */
+	"data-pane-resizer": "";
 };
 ```

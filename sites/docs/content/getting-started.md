@@ -1,14 +1,17 @@
-# PaneForge
-
-Resizable pane components for Svelte.
+---
+title: Getting Started
+description: Learn how to install and use Paneforge in your projects.
+---
 
 ## Installation
+
+Install Paneforge using your favorite package manager:
 
 ```bash
 npm install paneforge
 ```
 
-## Usage
+## Basic Usage
 
 ```svelte
 <script lang="ts">

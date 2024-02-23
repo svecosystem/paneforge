@@ -11,7 +11,7 @@ description: An example of a vertical group of panes.
 
 ## Anatomy
 
-Here's a high-level structure of the example above:
+Here's the high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
