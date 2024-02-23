@@ -5,6 +5,7 @@ description: An example of how to create collapsible panes.
 
 <script>
 	import { CollapsibleDemo } from '$lib/components/demos'
+	import { ViewExampleCode } from '$lib/components'
 </script>
 
 You can use the `collapsedSize` and `collapsible` props to create collapsible panes. The `collapsedSize` prop sets the size of the pane when it is in a collapsed state, and the `collapsible` prop determines whether the pane can be collapsed.
@@ -14,6 +15,8 @@ You can also use the `onCollapse` and `onExpand` callbacks to perform actions wh
 <div class="flex flex-col gap-4">
 	<CollapsibleDemo />
 </div>
+
+<ViewExampleCode href="https://github.com/svecosystem/paneforge/blob/main/sites/docs/src/lib/components/demos/collapsible-demo.svelte" />
 
 ## Anatomy
 

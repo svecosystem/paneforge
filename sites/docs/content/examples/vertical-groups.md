@@ -5,9 +5,12 @@ description: An example of a vertical group of panes.
 
 <script>
 	import { VerticalDemo } from '$lib/components/demos'
+	import { ViewExampleCode } from '$lib/components'
 </script>
 
 <VerticalDemo />
+
+<ViewExampleCode href="https://github.com/svecosystem/paneforge/blob/main/sites/docs/src/lib/components/demos/vertical-demo.svelte" />
 
 ## Anatomy
 

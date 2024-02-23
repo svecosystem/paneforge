@@ -5,9 +5,12 @@ description: An example of how panes with overflowing content are handled.
 
 <script>
 	import { OverflowDemo } from '$lib/components/demos'
+	import { ViewExampleCode } from '$lib/components'
 </script>
 
 <OverflowDemo />
+
+<ViewExampleCode href="https://github.com/svecosystem/paneforge/blob/main/sites/docs/src/lib/components/demos/overflow-demo.svelte" />
 
 ## Anatomy
 
