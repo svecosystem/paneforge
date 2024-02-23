@@ -5,6 +5,7 @@ export const siteConfig = {
 	links: {
 		x: "https://x.com/huntabyte",
 		github: "https://github.com/svecosystem/paneforge",
+		releases: "https://github.com/svecosystem/paneforge/releases",
 	},
 	author: "Huntabyte",
 	keywords:
