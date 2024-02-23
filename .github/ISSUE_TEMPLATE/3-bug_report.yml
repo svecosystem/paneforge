@@ -9,8 +9,8 @@ body:
       attributes:
           value: |
               #### If you aren't sure if something is a bug or not, please do not create an issue, instead ask in one of the following channels:
-              - [Discussions](https://github.com/huntabyte/formsnap/discussions/new?category=help)
-              - [Discord](https://hbyt.us/discord)
+              - [Discussions](https://github.com/huntabyte/paneforge/discussions/new?category=help)
+              - [Discord](https://discord.gg/FKR4YhFbvB)
     - type: textarea
       id: bug-description
       attributes:
@@ -38,7 +38,7 @@ body:
       id: system-info
       attributes:
           label: System Info
-          description: Output of `npx envinfo --system --npmPackages svelte,formsnap,@sveltejs/kit,sveltekit-superforms,zod --binaries --browsers`
+          description: Output of `npx envinfo --system --npmPackages svelte,paneforge,@sveltejs/kit --binaries --browsers`
           render: bash
           placeholder: System, Binaries, Browsers
       validations:
@@ -51,6 +51,6 @@ body:
           options:
               - annoyance
               - blocking an upgrade
-              - blocking all usage of Formsnap
+              - blocking all usage of PaneForge
       validations:
           required: true
