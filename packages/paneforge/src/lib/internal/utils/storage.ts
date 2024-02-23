@@ -100,7 +100,6 @@ export function loadPaneGroupState(
 
 /**
  * Saves the pane group state to local storage.
- * If the state is not found, returns null.
  */
 export function savePaneGroupState(
 	autoSaveId: string,
@@ -133,7 +132,7 @@ const debounceMap: {
  * Returns a debounced version of the given function.
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export default function debounce<T extends Function>(callback: T, durationMs: number = 10) {
+function debounce<T extends Function>(callback: T, durationMs: number = 10) {
 	let timeoutId: NodeJS.Timeout | null = null;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

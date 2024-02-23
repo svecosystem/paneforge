@@ -22,6 +22,7 @@
 	const {
 		states: { paneGroupStyle, paneGroupSelectors, groupId },
 		methods: { setLayout, getLayout },
+		updateOption,
 	} = setCtx({
 		autoSaveId,
 		direction,
@@ -30,6 +31,13 @@
 		onLayout: onLayoutChange,
 		storage,
 	});
+
+	$: updateOption("autoSaveId", autoSaveId);
+	$: updateOption("direction", direction);
+	$: updateOption("id", id);
+	$: updateOption("keyboardResizeBy", keyboardResizeBy);
+	$: updateOption("onLayout", onLayoutChange);
+	$: updateOption("storage", storage);
 
 	api = {
 		getLayout,

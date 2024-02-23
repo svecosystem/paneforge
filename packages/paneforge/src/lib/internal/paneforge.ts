@@ -508,7 +508,7 @@ export function createPaneForge(props: CreatePaneForgeProps) {
 		const handles = getResizeHandleElementsForGroup($groupId);
 
 		const unsubHandlers = handles.map((handle) => {
-			const handleId = handle.getAttribute("data-pane-resize-handle-id");
+			const handleId = handle.getAttribute("data-pane-resizer-id");
 			if (!handleId) return noop;
 
 			const [idBefore, idAfter] = getResizeHandlePaneIds($groupId, handleId, get(paneDataArray));
@@ -643,7 +643,7 @@ function updateResizeHandleAriaValues({
 export function getResizeHandleElementsForGroup(groupId: string): HTMLElement[] {
 	if (!isBrowser) return [];
 	return Array.from(
-		document.querySelectorAll(`[data-pane-resize-handle-id][data-pane-group-id="${groupId}"]`)
+		document.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
 	);
 }
 
@@ -677,7 +677,7 @@ export function getResizeHandlePaneIds(
 
 export function getResizeHandleElement(id: string): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = document.querySelector(`[data-pane-resize-handle-id="${id}"]`);
+	const element = document.querySelector(`[data-pane-resizer-id="${id}"]`);
 	if (element) {
 		return element as HTMLElement;
 	}
@@ -687,9 +687,7 @@ export function getResizeHandleElement(id: string): HTMLElement | null {
 export function getResizeHandleElementIndex(groupId: string, id: string): number | null {
 	if (!isBrowser) return null;
 	const handles = getResizeHandleElementsForGroup(groupId);
-	const index = handles.findIndex(
-		(handle) => handle.getAttribute("data-pane-resize-handle-id") === id
-	);
+	const index = handles.findIndex((handle) => handle.getAttribute("data-pane-resizer-id") === id);
 	return index ?? null;
 }
 

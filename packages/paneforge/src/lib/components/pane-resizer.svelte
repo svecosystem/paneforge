@@ -7,7 +7,7 @@
 	import { getCursorStyle, generateId, styleToString } from "$lib/internal/utils/index.js";
 	import { onMount } from "svelte";
 	import { getCtx } from "./ctx.js";
-	import { resizeHandleAction } from "./pane-resize-handle.js";
+	import { resizeHandleAction } from "./pane-resizer.js";
 	import type { PaneResizeHandleProps, PaneResizeHandleAttributes } from "./types.js";
 
 	type $$Props = PaneResizeHandleProps;
@@ -25,7 +25,7 @@
 	const {
 		methods: { registerResizeHandle, startDragging, stopDragging },
 		states: { direction, dragState, groupId },
-	} = getCtx("PaneResizeHandle");
+	} = getCtx("PaneResizer");
 
 	const resizeHandleId = generateId(idFromProps);
 	$: isDragging = $dragState?.dragHandleId === resizeHandleId;
@@ -102,7 +102,7 @@
 		"data-pane-group-id": $groupId,
 		"data-active": isDragging ? "pointer" : isFocused ? "keyboard" : undefined,
 		"data-enabled": !disabled,
-		"data-pane-resize-handle-id": resizeHandleId,
+		"data-pane-resizer-id": resizeHandleId,
 	} satisfies PaneResizeHandleAttributes;
 </script>
 

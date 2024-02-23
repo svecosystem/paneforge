@@ -216,5 +216,5 @@ export type PaneResizeHandleAttributes = {
 	/** Whether the resize handle is enabled or not. */
 	"data-enabled"?: boolean;
 	/** The ID of the resize handle. */
-	"data-pane-resize-handle-id": string;
+	"data-pane-resizer-id": string;
 };
