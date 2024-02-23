@@ -8,9 +8,9 @@
 	import { onMount } from "svelte";
 	import { getCtx } from "./ctx.js";
 	import { resizeHandleAction } from "./pane-resizer.js";
-	import type { PaneResizeHandleProps, PaneResizeHandleAttributes } from "./types.js";
+	import type { PaneResizerProps, PaneResizerAttributes } from "./types.js";
 
-	type $$Props = PaneResizeHandleProps;
+	type $$Props = PaneResizerProps;
 
 	export let disabled: $$Props["disabled"] = false;
 	export let onDraggingChange: $$Props["onDraggingChange"] = undefined;
@@ -103,7 +103,7 @@
 		"data-active": isDragging ? "pointer" : isFocused ? "keyboard" : undefined,
 		"data-enabled": !disabled,
 		"data-pane-resizer-id": resizeHandleId,
-	} satisfies PaneResizeHandleAttributes;
+	} satisfies PaneResizerAttributes;
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
