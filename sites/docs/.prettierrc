@@ -7,7 +7,7 @@
 	"overrides": [
 		{
 			"files": "*.svelte",
-			"options": { "parser": "svelte", "svelteBracketNewLine": true, "bracketSameLine": false }
+			"options": { "parser": "svelte" }
 		},
 		{ "files": "*.md", "options": { "parser": "markdown", "printWidth": 85 } }
 	]
