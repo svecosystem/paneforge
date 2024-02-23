@@ -125,6 +125,7 @@
 	on:blur={() => (isFocused = false)}
 	on:focus={() => (isFocused = true)}
 	on:mousedown={(e) => {
+		console.log("mousedown");
 		startDragging(resizeHandleId, e);
 		onDraggingChange?.(true);
 	}}
@@ -132,6 +133,7 @@
 	on:touchcancel={stopDraggingAndBlur}
 	on:touchend={stopDraggingAndBlur}
 	on:touchstart={(e) => {
+		console.log("touchstart");
 		startDragging(resizeHandleId, e);
 		onDraggingChange?.(true);
 	}}

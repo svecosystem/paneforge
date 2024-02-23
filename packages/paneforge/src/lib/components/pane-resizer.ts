@@ -46,7 +46,7 @@ export function resizeHandleAction(node: HTMLElement, params: ResizerActionParam
 		unsub = chain(
 			addEventListener(document.body, "contextmenu", stopDraggingAndBlur),
 			addEventListener(document.body, "mousemove", onMove),
-			addEventListener(document.body, "touchmove", onMove),
+			addEventListener(document.body, "touchmove", onMove, { passive: false }),
 			addEventListener(document.body, "mouseleave", onMouseLeave),
 			addEventListener(window, "mouseup", stopDraggingAndBlur),
 			addEventListener(window, "touchend", stopDraggingAndBlur)
