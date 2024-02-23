@@ -1,7 +1,7 @@
 {
 	"name": "docs",
 	"description": "Docs for Paneforge",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"pnpm:dev:content\" \"pnpm:dev:svelte\"",
