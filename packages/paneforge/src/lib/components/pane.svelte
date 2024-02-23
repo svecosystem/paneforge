@@ -17,7 +17,7 @@
 	export let onResize: $$Props["onResize"] = undefined;
 	export let order: $$Props["order"] = undefined;
 	export let el: $$Props["el"] = undefined;
-	export let api: $$Props["api"] = undefined;
+	export let pane: $$Props["pane"] = undefined;
 
 	let idFromProps: $$Props["id"] = undefined;
 	export { idFromProps as id };
@@ -42,7 +42,9 @@
 
 	const paneId = generateId(idFromProps);
 
-	const paneData: PaneData = {
+	let paneData: PaneData;
+
+	$: paneData = {
 		callbacks: {
 			onCollapse,
 			onExpand,
@@ -60,7 +62,7 @@
 		order,
 	};
 
-	api = {
+	pane = {
 		collapse: () => {
 			collapsePane(paneData);
 		},
@@ -72,18 +74,8 @@
 		getId: () => paneId,
 	};
 
-	let paneHasBeenRegistered = false;
-
-	function handlePaneRegistration(_: number | undefined, __: string) {
-		if (paneHasBeenRegistered) {
-			unregisterPane(paneData);
-		}
-
-		registerPane(paneData);
-	}
-
 	onMount(() => {
-		handlePaneRegistration(order, paneId);
+		registerPane(paneData);
 
 		return () => {
 			unregisterPane(paneData);

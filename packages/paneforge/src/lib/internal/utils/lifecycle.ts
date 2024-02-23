@@ -1,15 +1,4 @@
-import { onDestroy, onMount } from "svelte";
-
-/**
- * Safely calls `onMount` and catches any errors that occur.
- */
-export function safeOnMount(fn: (...args: unknown[]) => unknown) {
-	try {
-		onMount(fn);
-	} catch {
-		return fn();
-	}
-}
+import { onDestroy } from "svelte";
 
 /**
  * Safely calls `onDestroy` and catches any errors that occur.

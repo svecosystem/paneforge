@@ -77,10 +77,10 @@ export type PaneProps = {
 	 * An imperative API for the pane. `bind` to this prop to get access
 	 * to methods for controlling the pane.
 	 */
-	api?: PaneAPI;
+	pane?: PaneAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 
-export type PaneResizeHandleProps = {
+export type PaneResizerProps = {
 	/**
 	 * Whether the resize handle is disabled.
 	 *
@@ -155,7 +155,7 @@ export type PaneGroupProps = {
 	 * An imperative API for the pane group. `bind` to this prop to get access
 	 * to methods for controlling the pane group.
 	 */
-	api?: PaneGroupAPI;
+	paneGroup?: PaneGroupAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 
 export type PaneAPI = {
@@ -201,20 +201,22 @@ export type PaneGroupAttributes = {
 	/** Applied to every pane group element. */
 	"data-pane-group": string;
 	/** The direction of the pane group. */
-	"data-pane-group-direction": Direction;
+	"data-direction": Direction;
 	/** The ID of the pane group. */
 	"data-pane-group-id": string;
 };
 
-export type PaneResizeHandleAttributes = {
-	/** The direction of the pane group the handle belongs to. */
-	"data-pane-group-direction": Direction;
-	/** The ID of the pane group the handle belongs to. */
+export type PaneResizerAttributes = {
+	/** Applied to all resizer elements */
+	"data-pane-resizer": string;
+	/** The direction of the pane group the resize handle belongs to. */
+	"data-direction": Direction;
+	/** The ID of the pane group the resize handle belongs to. */
 	"data-pane-group-id": string;
 	/** Whether the resize handle is active or not. */
 	"data-active"?: "pointer" | "keyboard";
 	/** Whether the resize handle is enabled or not. */
 	"data-enabled"?: boolean;
 	/** The ID of the resize handle. */
-	"data-pane-resize-handle-id": string;
+	"data-pane-resizer-id": string;
 };

@@ -14,7 +14,7 @@
 	export let onLayoutChange: PaneGroupOnLayout | null = null;
 	export let storage: PaneGroupStorage = defaultStorage as PaneGroupStorage;
 	export let el: $$Props["el"] = undefined;
-	export let api: $$Props["api"] = undefined;
+	export let paneGroup: $$Props["paneGroup"] = undefined;
 
 	let styleFromProps: $$Props["style"] = undefined;
 	export { styleFromProps as style };
@@ -22,6 +22,7 @@
 	const {
 		states: { paneGroupStyle, paneGroupSelectors, groupId },
 		methods: { setLayout, getLayout },
+		updateOption,
 	} = setCtx({
 		autoSaveId,
 		direction,
@@ -31,7 +32,14 @@
 		storage,
 	});
 
-	api = {
+	$: updateOption("autoSaveId", autoSaveId);
+	$: updateOption("direction", direction);
+	$: updateOption("id", id);
+	$: updateOption("keyboardResizeBy", keyboardResizeBy);
+	$: updateOption("onLayout", onLayoutChange);
+	$: updateOption("storage", storage);
+
+	paneGroup = {
 		getLayout,
 		setLayout,
 		getId: () => $groupId,

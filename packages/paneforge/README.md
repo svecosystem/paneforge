@@ -1,58 +1,41 @@
-# create-svelte
+# Paneforge
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+PaneForge provides components that make it easy to create resizable panes in your Svelte apps. It's designed to be simple to use, and to work well with other Svelte components and libraries. This project has taken a lot of inspiration and code from the work done by [Bryan Vaughn](https://github.com/bvaughn) and [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) and seeks to provide a similar experience for Svelte developers.
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+## Features
 
-## Creating a project
+- **Simple API**: PaneForge is designed to be easy to use. It provides a small set of components that can be combined to create complex layouts.
+- **Resizable Panes**: Panes can be resized by dragging the resizer between them.
+- **Nested Groups**: Groups of panes can be nested inside other groups to create complex layouts.
+- **Customizable**: The appearance and behavior of the panes can be customized using CSS and Svelte props.
+- **Persistent Layouts**: PaneForge can be used with LocalStorage or cookies to persist the layout of the panes between page loads.
+- **Accessible**: PaneForge is designed to be accessible to all users, including those who use assistive technologies.
+- **Community-driven**: PaneForge is an open-source project that welcomes contributions from the community. If you have an idea for a new feature or an improvement, we'd love to hear from you!
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Installation
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+npm install paneforge
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Basic Usage
 
-## Building
+Here's a simple example of how to use Paneforge to create a horizontal pane group with two panes:
 
-To build your library:
+```svelte
+<script lang="ts">
+	import { PaneGroup, Pane, PaneResizer } from "paneforge";
+</script>
 
-```bash
-npm run package
+<PaneGroup direction="horizontal">
+	<Pane defaultSize={50}>Pane 1</Pane>
+	<PaneResizer />
+	<Pane defaultSize={50}>Pane 2</Pane>
+</PaneGroup>
 ```
 
-To create a production version of your showcase app:
+The `PaneGroup` component is used to initialize a pane group, and the `Pane` component is used to create a pane. The `PaneResizer` component is used to create a resizer that can be dragged to resize the panes.
 
-```bash
-npm run build
-```
+The components ship only with the styles necessary to position the panes in the appropriate layout. The rest of the styling is up to you.
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
-```
+For more information, see the [Documentation](https://paneforge.com).

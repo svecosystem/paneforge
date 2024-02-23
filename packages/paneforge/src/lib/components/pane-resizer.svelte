@@ -7,10 +7,10 @@
 	import { getCursorStyle, generateId, styleToString } from "$lib/internal/utils/index.js";
 	import { onMount } from "svelte";
 	import { getCtx } from "./ctx.js";
-	import { resizeHandleAction } from "./pane-resize-handle.js";
-	import type { PaneResizeHandleProps, PaneResizeHandleAttributes } from "./types.js";
+	import { resizeHandleAction } from "./pane-resizer.js";
+	import type { PaneResizerProps, PaneResizerAttributes } from "./types.js";
 
-	type $$Props = PaneResizeHandleProps;
+	type $$Props = PaneResizerProps;
 
 	export let disabled: $$Props["disabled"] = false;
 	export let onDraggingChange: $$Props["onDraggingChange"] = undefined;
@@ -25,7 +25,7 @@
 	const {
 		methods: { registerResizeHandle, startDragging, stopDragging },
 		states: { direction, dragState, groupId },
-	} = getCtx("PaneResizeHandle");
+	} = getCtx("PaneResizer");
 
 	const resizeHandleId = generateId(idFromProps);
 	$: isDragging = $dragState?.dragHandleId === resizeHandleId;
@@ -98,12 +98,13 @@
 		}) + styleFromProps ?? "";
 
 	$: attrs = {
-		"data-pane-group-direction": $direction,
+		"data-direction": $direction,
 		"data-pane-group-id": $groupId,
 		"data-active": isDragging ? "pointer" : isFocused ? "keyboard" : undefined,
 		"data-enabled": !disabled,
-		"data-pane-resize-handle-id": resizeHandleId,
-	} satisfies PaneResizeHandleAttributes;
+		"data-pane-resizer-id": resizeHandleId,
+		"data-pane-resizer": "",
+	} satisfies PaneResizerAttributes;
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->

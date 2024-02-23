@@ -5,17 +5,20 @@ description: An example of how panes with overflowing content are handled.
 
 <script>
 	import { OverflowDemo } from '$lib/components/demos'
+	import { ViewExampleCode } from '$lib/components'
 </script>
 
 <OverflowDemo />
 
+<ViewExampleCode href="https://github.com/svecosystem/paneforge/blob/main/sites/docs/src/lib/components/demos/overflow-demo.svelte" />
+
 ## Anatomy
 
-Here's a high-level structure of the example above:
+Here's the high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizeHandle } from "paneforge";
+	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 </script>
 
 <PaneGroup direction="horizontal">
@@ -24,7 +27,7 @@ Here's a high-level structure of the example above:
 			<!-- ... content here-->
 		</div>
 	</Pane>
-	<PaneResizeHandle />
+	<PaneResizer />
 	<Pane defaultSize={50}>
 		<PaneGroup direction="vertical">
 			<Pane defaultSize={25}>
@@ -32,7 +35,7 @@ Here's a high-level structure of the example above:
 					<!-- ... content here-->
 				</div>
 			</Pane>
-			<PaneResizeHandle />
+			<PaneResizer />
 			<Pane defaultSize={75}>
 				<div class="overflow-auto">
 					<!-- ... content here-->

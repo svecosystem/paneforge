@@ -34,7 +34,7 @@ export const navigation: Navigation = {
 		},
 		{
 			title: "Releases",
-			href: "https://github.com/huntabyte/paneforge/releases",
+			href: "https://github.com/svecosystem/paneforge/releases",
 			external: true,
 		},
 	],
@@ -50,8 +50,8 @@ export const navigation: Navigation = {
 					items: [],
 				},
 				{
-					title: "Quick Start",
-					href: "/docs/quick-start",
+					title: "Getting Started",
+					href: "/docs/getting-started",
 					items: [],
 				},
 			],
@@ -71,8 +71,8 @@ export const navigation: Navigation = {
 					items: [],
 				},
 				{
-					title: "PaneResizeHandle",
-					href: "/docs/components/pane-resize-handle",
+					title: "PaneResizer",
+					href: "/docs/components/pane-resizer",
 					items: [],
 				},
 			],
@@ -109,6 +109,11 @@ export const navigation: Navigation = {
 				{
 					title: "Conditional Panes",
 					href: "/docs/examples/conditional-panes",
+					items: [],
+				},
+				{
+					title: "Persistent Layouts",
+					href: "/docs/examples/persistent-layouts",
 					items: [],
 				},
 			],

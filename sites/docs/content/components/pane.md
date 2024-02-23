@@ -113,7 +113,7 @@ The following data attributes are available for the `Pane` component:
 ```ts
 export type PaneAttributes = {
 	/** Applied to every pane element. */
-	"data-pane": string;
+	"data-pane": "";
 	/** The ID of the pane. */
 	"data-pane-id": string;
 	/** The ID of the pane's group. */

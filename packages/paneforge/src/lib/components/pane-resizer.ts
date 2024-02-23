@@ -6,7 +6,7 @@ import type {
 import { chain } from "$lib/internal/utils/chain.js";
 import { addEventListener } from "$lib/internal/utils/event.js";
 
-type ResizeHandleActionParams = {
+type ResizerActionParams = {
 	disabled?: boolean;
 	resizeHandler: ResizeHandler | null;
 	isDragging?: boolean;
@@ -18,9 +18,9 @@ type ResizeHandleActionParams = {
  * A Svelte action that adds resize handle functionality to an element.
  * This action is used to handle the dragging of a resize handle.
  */
-export function resizeHandleAction(node: HTMLElement, params: ResizeHandleActionParams) {
+export function resizeHandleAction(node: HTMLElement, params: ResizerActionParams) {
 	let unsub = () => {};
-	function update(params: ResizeHandleActionParams) {
+	function update(params: ResizerActionParams) {
 		unsub();
 		const { disabled, resizeHandler, isDragging, stopDragging, onDragging = undefined } = params;
 		if (disabled || resizeHandler === null || !isDragging) return;

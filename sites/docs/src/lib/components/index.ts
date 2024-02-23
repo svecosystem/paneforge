@@ -6,3 +6,4 @@ export { default as Step } from "./step.svelte";
 export { default as Steps } from "./steps.svelte";
 export { default as IconGrid } from "./icon-grid.svelte";
 export { default as LoadingCard } from "./loading-card.svelte";
+export { default as ViewExampleCode } from "./view-example-code.svelte";

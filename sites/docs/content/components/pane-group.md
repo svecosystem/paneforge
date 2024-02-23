@@ -62,7 +62,7 @@ export type PaneGroupProps = {
 	 * An imperative API for the pane group. `bind` to this prop to get access
 	 * to methods for controlling the pane group.
 	 */
-	api?: PaneGroupAPI;
+	paneGroup?: PaneGroupAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 ```
 
@@ -101,9 +101,9 @@ The following data attributes are available for the `PaneGroup` component:
 ```ts
 export type PaneGroupAttributes = {
 	/** Applied to every pane group element. */
-	"data-pane-group": string;
+	"data-pane-group": "";
 	/** The direction of the pane group. */
-	"data-pane-group-direction": "horizontal" | "vertical";
+	"data-direction": "horizontal" | "vertical";
 	/** The ID of the pane group. */
 	"data-pane-group-id": string;
 };
