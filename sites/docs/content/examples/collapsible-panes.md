@@ -17,7 +17,7 @@ Here's a high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizeHandle, type PaneAPI } from "paneforge";
+	import { PaneGroup, Pane, PaneResizer, type PaneAPI } from "paneforge";
 
 	let paneOneApi: PaneAPI;
 	let collapsed = false;
@@ -50,11 +50,11 @@ Here's a high-level structure of the example above:
 		onCollapse={() => (collapsed = true)}
 		onExpand={() => (collapsed = false)}
 	/>
-	<PaneResizeHandle />
+	<PaneResizer />
 	<Pane defaultSize={50}>
 		<PaneGroup direction="vertical">
 			<Pane defaultSize={50} />
-			<PaneResizeHandle />
+			<PaneResizer />
 			<Pane defaultSize={50} />
 		</PaneGroup>
 	</Pane>

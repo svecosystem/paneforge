@@ -14,7 +14,7 @@
 	export let onLayoutChange: PaneGroupOnLayout | null = null;
 	export let storage: PaneGroupStorage = defaultStorage as PaneGroupStorage;
 	export let el: $$Props["el"] = undefined;
-	export let api: $$Props["api"] = undefined;
+	export let paneGroup: $$Props["paneGroup"] = undefined;
 
 	let styleFromProps: $$Props["style"] = undefined;
 	export { styleFromProps as style };
@@ -39,7 +39,7 @@
 	$: updateOption("onLayout", onLayoutChange);
 	$: updateOption("storage", storage);
 
-	api = {
+	paneGroup = {
 		getLayout,
 		setLayout,
 		getId: () => $groupId,

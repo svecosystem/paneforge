@@ -491,7 +491,7 @@ export function createPaneForge(props: CreatePaneForgeProps) {
 	const paneGroupSelectors = derived([direction, groupId], ([$direction, $groupId]) => {
 		return {
 			"data-pane-group": "",
-			"data-pane-group-direction": $direction,
+			"data-direction": $direction,
 			"data-pane-group-id": $groupId,
 		} satisfies PaneGroupAttributes;
 	});

@@ -98,11 +98,12 @@
 		}) + styleFromProps ?? "";
 
 	$: attrs = {
-		"data-pane-group-direction": $direction,
+		"data-direction": $direction,
 		"data-pane-group-id": $groupId,
 		"data-active": isDragging ? "pointer" : isFocused ? "keyboard" : undefined,
 		"data-enabled": !disabled,
 		"data-pane-resizer-id": resizeHandleId,
+		"data-pane-resizer": "",
 	} satisfies PaneResizerAttributes;
 </script>
 

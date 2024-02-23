@@ -1,31 +1,31 @@
 ---
-title: PaneResizeHandle
+title: PaneResizer
 description: A draggable handle between two panes that allows the user to resize them.
 tagline: Components
 ---
 
-The `PaneResizeHandle` component is used to create a draggable handle between two panes that allows the user to resize them.
+The `PaneResizer` component is used to create a draggable handle between two panes that allows the user to resize them.
 
 ## Usage
 
 ```svelte {7}
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizeHandle } from "svelte-pane";
+	import { PaneGroup, Pane, PaneResizer } from "svelte-pane";
 </script>
 
 <PaneGroup direction="horizontal">
 	<Pane defaultSize={50}>Pane 1</Pane>
-	<PaneResizeHandle />
+	<PaneResizer />
 	<Pane defaultSize={50}>Pane 2</Pane>
 </PaneGroup>
 ```
 
 ## Props
 
-Here are the props available for the `PaneResizeHandle` component:
+Here are the props available for the `PaneResizer` component:
 
 ```ts
-export type PaneResizeHandleProps = {
+export type PaneResizerProps = {
 	/**
 	 * Whether the resize handle is disabled.
 	 *
@@ -53,12 +53,12 @@ export type PaneResizeHandleProps = {
 
 ## Data Attributes
 
-The following data attributes are available for the `PaneResizeHandle` component:
+The following data attributes are available for the `PaneResizer` component:
 
 ```ts
-export type PaneResizeHandleAttributes = {
+export type PaneResizerAttributes = {
 	/** The direction of the pane group the handle belongs to. */
-	"data-pane-group-direction": "horizontal" | "vertical";
+	"data-direction": "horizontal" | "vertical";
 	/** The ID of the pane group the handle belongs to. */
 	"data-pane-group-id": string;
 	/** Whether the resize handle is active or not. */

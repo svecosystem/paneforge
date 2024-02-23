@@ -103,7 +103,7 @@ export type PaneGroupAttributes = {
 	/** Applied to every pane group element. */
 	"data-pane-group": string;
 	/** The direction of the pane group. */
-	"data-pane-group-direction": "horizontal" | "vertical";
+	"data-direction": "horizontal" | "vertical";
 	/** The ID of the pane group. */
 	"data-pane-group-id": string;
 };

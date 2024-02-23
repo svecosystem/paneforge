@@ -15,16 +15,16 @@ Here's a high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizeHandle } from "paneforge";
+	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 </script>
 
 <PaneGroup direction="horizontal">
 	<Pane defaultSize={50} />
-	<PaneResizeHandle />
+	<PaneResizer />
 	<Pane defaultSize={50}>
 		<PaneGroup direction="vertical">
 			<Pane defaultSize={50} />
-			<PaneResizeHandle />
+			<PaneResizer />
 			<Pane defaultSize={50} />
 		</PaneGroup>
 	</Pane>

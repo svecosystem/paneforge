@@ -4,11 +4,11 @@ export const siteConfig = {
 	description: "Resizable pane components for Svelte and SvelteKit.",
 	links: {
 		x: "https://x.com/huntabyte",
-		github: "https://github.com/huntabyte/paneforge",
+		github: "https://github.com/svecosystem/paneforge",
 	},
 	author: "Huntabyte",
 	keywords:
-		"Svelte resizable panels,svelte panels,svelte panes,paneforge,svelte pane,svelte pane forge",
+		"Svelte resizable panels,svelte panels,svelte panes,paneforge,svelte pane,svelte pane forge,svelte resizable",
 	ogImage: {
 		url: "https://paneforge.com/og.png",
 		width: "1200",
@@ -16,7 +16,7 @@ export const siteConfig = {
 	},
 	license: {
 		name: "MIT",
-		url: "https://github.com/huntabyte/paneforge/blob/main/LICENSE",
+		url: "https://github.com/svecosystem/paneforge/blob/main/LICENSE",
 	},
 };
 

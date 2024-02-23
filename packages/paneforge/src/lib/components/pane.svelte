@@ -74,18 +74,8 @@
 		getId: () => paneId,
 	};
 
-	let paneHasBeenRegistered = false;
-
-	function handlePaneRegistration() {
-		if (paneHasBeenRegistered) {
-			unregisterPane(paneData);
-		}
-
-		registerPane(paneData);
-	}
-
 	onMount(() => {
-		handlePaneRegistration();
+		registerPane(paneData);
 
 		return () => {
 			unregisterPane(paneData);

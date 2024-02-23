@@ -15,7 +15,7 @@ Here's a high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizeHandle } from "paneforge";
+	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 </script>
 
 <PaneGroup direction="horizontal">
@@ -24,7 +24,7 @@ Here's a high-level structure of the example above:
 			<!-- ... content here-->
 		</div>
 	</Pane>
-	<PaneResizeHandle />
+	<PaneResizer />
 	<Pane defaultSize={50}>
 		<PaneGroup direction="vertical">
 			<Pane defaultSize={25}>
@@ -32,7 +32,7 @@ Here's a high-level structure of the example above:
 					<!-- ... content here-->
 				</div>
 			</Pane>
-			<PaneResizeHandle />
+			<PaneResizer />
 			<Pane defaultSize={75}>
 				<div class="overflow-auto">
 					<!-- ... content here-->

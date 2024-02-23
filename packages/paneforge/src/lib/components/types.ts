@@ -155,7 +155,7 @@ export type PaneGroupProps = {
 	 * An imperative API for the pane group. `bind` to this prop to get access
 	 * to methods for controlling the pane group.
 	 */
-	api?: PaneGroupAPI;
+	paneGroup?: PaneGroupAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 
 export type PaneAPI = {
@@ -201,14 +201,16 @@ export type PaneGroupAttributes = {
 	/** Applied to every pane group element. */
 	"data-pane-group": string;
 	/** The direction of the pane group. */
-	"data-pane-group-direction": Direction;
+	"data-direction": Direction;
 	/** The ID of the pane group. */
 	"data-pane-group-id": string;
 };
 
 export type PaneResizerAttributes = {
+	/** Applied to all resizer elements */
+	"data-pane-resizer": string;
 	/** The direction of the pane group the resize handle belongs to. */
-	"data-pane-group-direction": Direction;
+	"data-direction": Direction;
 	/** The ID of the pane group the resize handle belongs to. */
 	"data-pane-group-id": string;
 	/** Whether the resize handle is active or not. */
