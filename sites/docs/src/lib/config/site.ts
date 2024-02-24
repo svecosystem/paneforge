@@ -1,5 +1,5 @@
 export const siteConfig = {
-	name: "Pane Forge",
+	name: "PaneForge",
 	url: "https://paneforge.com",
 	description: "Resizable pane components for Svelte and SvelteKit.",
 	links: {
