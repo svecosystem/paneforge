@@ -1,5 +1,13 @@
 # PaneForge
 
+<!-- automd:badges license name="paneforge" color="green" github="svecosystem/paneforge" -->
+
+[![npm version](https://flat.badgen.net/npm/v/paneforge?color=green)](https://npmjs.com/package/paneforge)
+[![npm downloads](https://flat.badgen.net/npm/dm/paneforge?color=green)](https://npmjs.com/package/paneforge)
+[![license](https://flat.badgen.net/github/license/svecosystem/paneforge?color=green)](https://github.com/svecosystem/paneforge/blob/main/LICENSE)
+
+<!-- /automd -->
+
 PaneForge provides components that make it easy to create resizable panes in your Svelte apps. It's designed to be simple to use, and to work well with other Svelte components and libraries. This project has taken a lot of inspiration and code from the work done by [Bryan Vaughn](https://github.com/bvaughn) and [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) and seeks to provide a similar experience for Svelte developers.
 
 ## Features
@@ -39,3 +47,16 @@ The `PaneGroup` component is used to initialize a pane group, and the `Pane` com
 The components ship only with the styles necessary to position the panes in the appropriate layout. The rest of the styling is up to you.
 
 For more information, see the [Documentation](https://paneforge.com).
+
+## License
+
+<!-- automd:contributors license=MIT author="huntabyte" -->
+
+Published under the [MIT](https://github.com/svecosystem/paneforge/blob/main/LICENSE) license.
+Made by [@huntabyte](https://github.com/huntabyte) and [community](https://github.com/svecosystem/paneforge/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/svecosystem/paneforge/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=svecosystem/paneforge" />
+</a>
+
+<!-- /automd -->

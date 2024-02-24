@@ -5,6 +5,10 @@
 	"description": "Monorepo for Paneforge.",
 	"author": "Hunter Johnston <https://github.com/huntabyte>",
 	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/svecosystem/paneforge"
+	},
 	"scripts": {
 		"test": "pnpm -r test",
 		"dev": "pnpm sync && pnpm --parallel dev",
