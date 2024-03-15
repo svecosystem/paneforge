@@ -79,7 +79,7 @@ export type PaneProps = {
 	 * An imperative API for the pane. `bind` to this prop to get access
 	 * to methods for controlling the pane.
 	 */
-	api?: PaneAPI;
+	pane?: PaneAPI;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 ```
 
