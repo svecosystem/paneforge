@@ -4,11 +4,11 @@
 		getResizeHandleElementsForGroup,
 	} from "$lib/internal/paneforge.js";
 	import type { ResizeHandler } from "$lib/internal/types.js";
-	import { getCursorStyle, generateId, styleToString } from "$lib/internal/utils/index.js";
+	import { generateId, getCursorStyle, styleToString } from "$lib/internal/utils/index.js";
 	import { onMount } from "svelte";
 	import { getCtx } from "./ctx.js";
 	import { resizeHandleAction } from "./pane-resizer.js";
-	import type { PaneResizerProps, PaneResizerAttributes } from "./types.js";
+	import type { PaneResizerAttributes, PaneResizerProps } from "./types.js";
 
 	type $$Props = PaneResizerProps;
 
@@ -93,8 +93,10 @@
 	$: style =
 		styleToString({
 			cursor: getCursorStyle($direction),
-			touchAction: "none",
-			userSelect: "none",
+			"touch-action": "none",
+			"user-select": "none",
+			"-webkit-user-select": "none",
+			"-webkit-touch-callout": "none",
 		}) + styleFromProps ?? "";
 
 	$: attrs = {
@@ -105,6 +107,8 @@
 		"data-pane-resizer-id": resizeHandleId,
 		"data-pane-resizer": "",
 	} satisfies PaneResizerAttributes;
+
+	$: console.log(style);
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -125,6 +129,7 @@
 	on:blur={() => (isFocused = false)}
 	on:focus={() => (isFocused = true)}
 	on:mousedown={(e) => {
+		e.preventDefault();
 		startDragging(resizeHandleId, e);
 		onDraggingChange?.(true);
 	}}
@@ -132,6 +137,7 @@
 	on:touchcancel={stopDraggingAndBlur}
 	on:touchend={stopDraggingAndBlur}
 	on:touchstart={(e) => {
+		e.preventDefault();
 		startDragging(resizeHandleId, e);
 		onDraggingChange?.(true);
 	}}
