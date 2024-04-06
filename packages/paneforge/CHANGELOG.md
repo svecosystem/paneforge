@@ -1,5 +1,11 @@
 # paneforge
 
+## 0.0.3
+
+### Patch Changes
+
+- fixed a bug where safari would select the panel when dragging a handle up ([#17](https://github.com/svecosystem/paneforge/pull/17))
+
 ## 0.0.2
 
 ### Patch Changes
