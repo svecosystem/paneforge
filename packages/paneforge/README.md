@@ -48,6 +48,16 @@ The components ship only with the styles necessary to position the panes in the 
 
 For more information, see the [Documentation](https://paneforge.com).
 
+## Sponsors
+
+This project is supported by the following beautiful people/organizations:
+
+<p align="center">
+  <a href="https://github.com/sponsors/huntabyte">
+    <img src='https://github.com/huntabyte/static/blob/main/sponsors.svg?raw=true' alt="Logos from Sponsors" />
+  </a>
+</p>
+
 ## License
 
 <!-- automd:contributors license=MIT author="huntabyte" -->
