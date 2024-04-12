@@ -1,5 +1,11 @@
 # paneforge
 
+## 0.0.4
+
+### Patch Changes
+
+- chore: remove forgotten console.log ([#21](https://github.com/svecosystem/paneforge/pull/21))
+
 ## 0.0.3
 
 ### Patch Changes
