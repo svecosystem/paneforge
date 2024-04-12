@@ -107,8 +107,6 @@
 		"data-pane-resizer-id": resizeHandleId,
 		"data-pane-resizer": "",
 	} satisfies PaneResizerAttributes;
-
-	$: console.log(style);
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
