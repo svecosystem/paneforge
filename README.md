@@ -8,6 +8,8 @@
 
 <!-- /automd -->
 
+[![](https://dcbadge.vercel.app/api/server/fdXy3Sk8Gq?style=flat)](https://discord.gg/fdXy3Sk8Gq)
+
 PaneForge provides components that make it easy to create resizable panes in your Svelte apps. It's designed to be simple to use, and to work well with other Svelte components and libraries. This project has taken a lot of inspiration and code from the work done by [Bryan Vaughn](https://github.com/bvaughn) and [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) and seeks to provide a similar experience for Svelte developers.
 
 ## Features
@@ -70,3 +72,14 @@ Made by [@huntabyte](https://github.com/huntabyte) and [community](https://githu
 </a>
 
 <!-- /automd -->
+
+## Community
+
+Join the Discord server to ask questions, find collaborators, or just say hi!
+
+<a href="https://discord.gg/fdXy3Sk8Gq" alt="Svecosystem Discord community">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://invidget.switchblade.xyz/fdXy3Sk8Gq">
+  <img alt="Svecosystem Discord community" src="https://invidget.switchblade.xyz/fdXy3Sk8Gq?theme=light">
+</picture>
+</a>
