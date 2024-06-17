@@ -1,5 +1,11 @@
 # paneforge
 
+## 0.0.5
+
+### Patch Changes
+
+- chore: add svelte 5 to peer deps ([#29](https://github.com/svecosystem/paneforge/pull/29))
+
 ## 0.0.4
 
 ### Patch Changes
