@@ -1,3 +1,5 @@
+import type { Snippet } from "svelte";
+import type { HTMLAttributes } from "svelte/elements";
 import type {
 	Direction,
 	PaneOnCollapse,
@@ -6,8 +8,6 @@ import type {
 	PaneResizeHandleOnDragging,
 } from "$lib/internal/types.js";
 import type { PaneGroupStorage } from "$lib/internal/utils/storage.js";
-import type { Snippet } from "svelte";
-import type { HTMLAttributes } from "svelte/elements";
 
 type Primitive<T> = Omit<T, "id" | "children"> & { id?: string | undefined };
 

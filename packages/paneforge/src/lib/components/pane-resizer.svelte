@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { box, mergeProps } from "svelte-toolbelt";
+	import type { PaneResizerProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
 	import { usePaneResizer } from "$lib/paneforge.svelte.js";
-	import { box, mergeProps } from "svelte-toolbelt";
-	import type { PaneResizerProps } from "./types.js";
 
 	let {
 		id = useId(),

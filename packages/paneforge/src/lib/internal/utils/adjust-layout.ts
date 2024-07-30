@@ -1,6 +1,6 @@
 import type { PaneConstraints } from "../types.js";
 import { assert } from "./assert.js";
-import { compareNumbersWithTolerance, areNumbersAlmostEqual } from "./compare.js";
+import { areNumbersAlmostEqual, compareNumbersWithTolerance } from "./compare.js";
 import { resizePane } from "./resize.js";
 
 /**
@@ -107,7 +107,7 @@ export function adjustLayoutByDelta({
 		let index = delta < 0 ? secondPivotIndex : firstPivotIndex;
 		let maxAvailableDelta = 0;
 
-		// eslint-disable-next-line no-constant-condition
+		 
 		while (true) {
 			const prevSize = prevLayout[index];
 			console.log("prevSize", prevSize);

@@ -31,11 +31,11 @@ export function updateResizeHandleAriaValues({
 			const paneData = paneDataArray[index];
 
 			resizeHandleEl.setAttribute("aria-controls", paneData.id);
-			resizeHandleEl.setAttribute("aria-valuemax", "" + Math.round(valueMax));
-			resizeHandleEl.setAttribute("aria-valuemin", "" + Math.round(valueMin));
+			resizeHandleEl.setAttribute("aria-valuemax", `${  Math.round(valueMax)}`);
+			resizeHandleEl.setAttribute("aria-valuemin", `${  Math.round(valueMin)}`);
 			resizeHandleEl.setAttribute(
 				"aria-valuenow",
-				valueNow != null ? "" + Math.round(valueNow) : ""
+				valueNow != null ? `${  Math.round(valueNow)}` : ""
 			);
 		}
 	}
@@ -197,7 +197,7 @@ export function validatePaneGroupLayout({
 
 	// Validate layout expectations
 	if (nextLayout.length !== paneConstraints.length) {
-		throw Error(
+		throw new Error(
 			`Invalid ${paneConstraints.length} pane layout: ${nextLayout
 				.map((size) => `${size}%`)
 				.join(", ")}`
@@ -367,7 +367,7 @@ export function getResizeEventCursorPosition(dir: Direction, e: ResizeEvent): nu
 		assert(firstTouch);
 		return isHorizontal ? firstTouch.screenX : firstTouch.screenY;
 	} else {
-		throw Error(`Unsupported event type "${e.type}"`);
+		throw new Error(`Unsupported event type "${e.type}"`);
 	}
 }
 

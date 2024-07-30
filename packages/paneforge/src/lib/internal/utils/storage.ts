@@ -1,7 +1,7 @@
-import { get, type Writable } from "svelte/store";
+import { type Writable, get } from "svelte/store";
+import type { SvelteMap } from "svelte/reactivity";
 import type { PaneData } from "../types.js";
 import { LOCAL_STORAGE_DEBOUNCE_INTERVAL } from "../constants.js";
-import type { SvelteMap } from "svelte/reactivity";
 
 export type PaneConfigState = {
 	expandToSizes: { [paneId: string]: number };
@@ -13,8 +13,8 @@ export type SerializedPaneGroupState = {
 };
 
 export type PaneGroupStorage = {
-	getItem(name: string): string | null;
-	setItem(name: string, value: string): void;
+	getItem: (name: string) => string | null;
+	setItem: (name: string, value: string) => void;
 };
 
 /**
@@ -24,13 +24,13 @@ export type PaneGroupStorage = {
 export function initializeStorage(storageObject: PaneGroupStorage): void {
 	try {
 		if (typeof localStorage === "undefined") {
-			throw new Error("localStorage is not supported in this environment");
+			throw new TypeError("localStorage is not supported in this environment");
 		}
 
 		storageObject.getItem = (name: string) => localStorage.getItem(name);
 		storageObject.setItem = (name: string, value: string) => localStorage.setItem(name, value);
 	} catch (err) {
-		// eslint-disable-next-line no-console
+		 
 		console.error(err);
 		storageObject.getItem = () => null;
 		storageObject.setItem = () => {};
@@ -120,7 +120,7 @@ export function savePaneGroupState(
 	try {
 		storage.setItem(paneGroupKey, JSON.stringify(state));
 	} catch (error) {
-		// eslint-disable-next-line no-console
+		 
 		console.error(error);
 	}
 }

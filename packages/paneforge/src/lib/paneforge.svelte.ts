@@ -1,27 +1,10 @@
 import {
-	type DragState,
-	type Direction,
-	type PaneData,
-	type ResizeEvent,
-	type PaneResizeHandleOnDragging,
-	type ResizeHandler,
-	type PaneOnCollapse,
-	type PaneOnExpand,
-	type PaneOnResize,
-} from "$lib/internal/types.js";
-import {
 	type ReadableBoxedValues,
 	type WithRefProps,
 	addEventListener,
 	executeCallbacks,
 	useRefById,
 } from "svelte-toolbelt";
-import {
-	initializeStorage,
-	loadPaneGroupState,
-	updateStorageValues,
-	type PaneGroupStorage,
-} from "$lib/internal/utils/storage.js";
 
 import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
 import { onMount, untrack } from "svelte";
@@ -51,6 +34,23 @@ import {
 	validatePaneGroupLayout,
 } from "./internal/helpers.js";
 import { createContext } from "./internal/utils/createContext.js";
+import type {
+	Direction,
+	DragState,
+	PaneData,
+	PaneOnCollapse,
+	PaneOnExpand,
+	PaneOnResize,
+	PaneResizeHandleOnDragging,
+	ResizeEvent,
+	ResizeHandler,
+} from "$lib/internal/types.js";
+import {
+	type PaneGroupStorage,
+	initializeStorage,
+	loadPaneGroupState,
+	updateStorageValues,
+} from "$lib/internal/utils/storage.js";
 
 type PaneGroupStateProps = WithRefProps<
 	ReadableBoxedValues<{
@@ -221,7 +221,7 @@ class PaneGroupState {
 			const nextLayout = adjustLayoutByDelta({
 				delta,
 				layout: initialLayout ?? prevLayout,
-				paneConstraints: paneConstraints,
+				paneConstraints,
 				pivotIndices,
 				trigger: isKeyDown(e) ? "keyboard" : "mouse-or-touch",
 			});

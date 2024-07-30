@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { box, mergeProps } from "svelte-toolbelt";
+	import { untrack } from "svelte";
+	import type { PaneProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
 	import { usePane } from "$lib/paneforge.svelte.js";
-	import { box, mergeProps } from "svelte-toolbelt";
-	import type { PaneProps } from "./types.js";
-	import { untrack } from "svelte";
 
 	let {
 		id = useId(),

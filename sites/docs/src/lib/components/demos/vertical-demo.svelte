@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizer } from "paneforge";
+	import { Pane, PaneGroup, PaneResizer } from "paneforge";
 	import { DotsSixVertical } from "$icons/index.js";
 </script>
 

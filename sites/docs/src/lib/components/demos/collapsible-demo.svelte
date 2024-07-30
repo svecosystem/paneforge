@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizer } from "paneforge";
+	import { Pane, PaneGroup, PaneResizer } from "paneforge";
+	import type { PaneAPI } from "paneforge";
 	import { DotsSixVertical } from "$icons/index.js";
 	import { Button } from "$lib/components/ui/button";
-	import type { PaneAPI } from "paneforge";
 
 	let paneOne = $state<PaneAPI>();
 	let collapsed = $state(false);
