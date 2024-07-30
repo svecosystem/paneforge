@@ -24,7 +24,7 @@ import {
 } from "$lib/internal/utils/storage.js";
 
 import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
-import { untrack } from "svelte";
+import { onMount, untrack } from "svelte";
 import { adjustLayoutByDelta } from "$lib/internal/utils/adjust-layout.js";
 import { areArraysEqual, areNumbersAlmostEqual } from "$lib/internal/utils/compare.js";
 import {
@@ -577,6 +577,11 @@ class PaneResizerState {
 		this.disabled = props.disabled;
 		this.tabIndex = props.tabIndex;
 
+		useRefById({
+			id: this.id,
+			ref: this.ref,
+		});
+
 		$effect(() => {
 			if (this.disabled.current) {
 				this.resizeHandler = null;
@@ -591,7 +596,6 @@ class PaneResizerState {
 			const disabled = this.disabled.current;
 			const resizeHandler = this.resizeHandler;
 			const isDragging = this.isDragging;
-			const onDragging = this.onDraggingChange;
 			if (disabled || resizeHandler === null || !isDragging) return;
 
 			const onMove = (e: ResizeEvent) => {
@@ -618,11 +622,6 @@ class PaneResizerState {
 			);
 
 			return unsub;
-		});
-
-		useRefById({
-			id: this.id,
-			ref: this.ref,
 		});
 	}
 
@@ -818,7 +817,7 @@ class PaneState {
 			ref: this.ref,
 		});
 
-		$effect(() => {
+		onMount(() => {
 			this.group.registerPane(this.paneData);
 
 			return () => {
@@ -829,7 +828,7 @@ class PaneState {
 
 	props = $derived.by(() => ({
 		id: this.id.current,
-		style: this.group.getPaneSize(this.paneData),
+		style: this.group.getPaneStyle(this.paneData, this.defaultSize.current),
 		"data-pane": "",
 		"data-pane-id": this.id.current,
 		"data-pane-group-id": this.group.id.current,

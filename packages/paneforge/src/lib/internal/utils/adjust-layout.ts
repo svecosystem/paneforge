@@ -110,6 +110,7 @@ export function adjustLayoutByDelta({
 		// eslint-disable-next-line no-constant-condition
 		while (true) {
 			const prevSize = prevLayout[index];
+			console.log("prevSize", prevSize);
 			assert(prevSize != null);
 
 			const maxSafeSize = resizePane({

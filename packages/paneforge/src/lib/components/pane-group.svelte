@@ -32,11 +32,13 @@
 		storage: box.with(() => storage),
 	});
 
-	setPaneGroupApi({
-		getLayout: () => paneGroupState.layout,
-		setLayout: paneGroupState.setLayout,
-		getId: () => paneGroupState.id.current,
-	});
+	$effect(() => {
+		setPaneGroupApi({
+			getLayout: () => paneGroupState.layout,
+			setLayout: paneGroupState.setLayout,
+			getId: () => paneGroupState.id.current,
+		});
+	})
 
 	const mergedProps = $derived(mergeProps(restProps, paneGroupState.props));
 </script>
