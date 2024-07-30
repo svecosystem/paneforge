@@ -4,6 +4,7 @@
 	import { usePane } from "$lib/paneforge.svelte.js";
 	import { box, mergeProps } from "svelte-toolbelt";
 	import type { PaneProps } from "./types.js";
+	import { untrack } from "svelte";
 
 	let {
 		id = useId(),
@@ -41,7 +42,9 @@
 	});
 
 	$effect(() => {
-		setPaneApi(paneState.pane);
+		untrack(() => {
+			setPaneApi(paneState.pane);
+		});
 	});
 
 	const mergedProps = $derived(mergeProps(restProps, paneState.props));

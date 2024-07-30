@@ -90,11 +90,6 @@ export type PaneGroupPropsWithoutHTML = WithChild<{
 	direction: Direction;
 
 	/**
-	 * The id of the pane group DOM element.
-	 */
-	id?: string | null | undefined;
-
-	/**
 	 * The amount of space to add to the pane group when the keyboard
 	 * resize event is triggered.
 	 */

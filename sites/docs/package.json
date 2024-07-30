@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "concurrently \"pnpm:dev:content\" \"pnpm:dev:svelte\"",
 		"dev:content": "contentlayer dev",
-		"dev:svelte": "vite dev --host",
+		"dev:svelte": "vite dev",
 		"build": "contentlayer build && vite build",
 		"build:all": "pnpm -w build",
 		"build:content": "contentlayer build",
@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^4.1.0",
 		"@sveltejs/kit": "^2.5.0",
-		"@sveltejs/vite-plugin-svelte": "^3.0.2",
+		"@sveltejs/vite-plugin-svelte": "^3.1.0",
 		"@tailwindcss/typography": "^0.5.10",
 		"@types/hast": "^3.0.4",
 		"@types/mdast": "^4.0.3",
