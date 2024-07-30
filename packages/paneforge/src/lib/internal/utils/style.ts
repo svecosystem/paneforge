@@ -1,22 +1,5 @@
 import type { DragState, PaneData } from "../types.js";
 
-/**
- * A utility function that converts a style object to a string,
- * which can be used as the value of the `style` attribute for
- * an element.
- *
- * @param style - The style object to convert
- * @returns The style object as a string
- */
-export function styleToString(style: StyleObject): string {
-	return Object.keys(style).reduce((str, key) => {
-		if (style[key] === undefined) return str;
-		return `${str}${key}:${style[key]};`;
-	}, "");
-}
-
-export type StyleObject = Record<string, number | string | undefined>;
-
 type CursorState =
 	| "horizontal"
 	| "horizontal-max"

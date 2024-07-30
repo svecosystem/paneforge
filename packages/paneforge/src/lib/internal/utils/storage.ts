@@ -1,5 +1,3 @@
-import { type Writable, get } from "svelte/store";
-import type { SvelteMap } from "svelte/reactivity";
 import type { PaneData } from "../types.js";
 import { LOCAL_STORAGE_DEBOUNCE_INTERVAL } from "../constants.js";
 
@@ -130,11 +128,11 @@ const debounceMap: {
 /**
  * Returns a debounced version of the given function.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line ts/no-unsafe-function-type
 function debounce<T extends Function>(callback: T, durationMs: number = 10) {
 	let timeoutId: NodeJS.Timeout | null = null;
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// eslint-disable-next-line ts/no-explicit-any
 	const callable = (...args: any) => {
 		if (timeoutId !== null) {
 			clearTimeout(timeoutId);

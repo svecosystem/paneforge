@@ -224,7 +224,7 @@ export function validatePaneGroupLayout({
 			initialSize: unsafeSize,
 		});
 
-		if (unsafeSize != safeSize) {
+		if (unsafeSize !== safeSize) {
 			remainingSize += unsafeSize - safeSize;
 
 			nextLayout[index] = safeSize;

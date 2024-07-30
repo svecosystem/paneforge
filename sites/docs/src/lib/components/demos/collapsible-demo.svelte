@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { Pane, PaneGroup, PaneResizer } from "paneforge";
-	import type { PaneAPI } from "paneforge";
 	import { DotsSixVertical } from "$icons/index.js";
 	import { Button } from "$lib/components/ui/button";
 
-	let paneOne = $state<PaneAPI>();
+	let paneOne = $state<Pane>();
 	let collapsed = $state(false);
 </script>
 
@@ -35,7 +34,6 @@
 		collapsedSize={5}
 		collapsible={true}
 		minSize={15}
-		setPaneApi={(api) => (paneOne = api)}
 		onCollapse={() => (collapsed = true)}
 		onExpand={() => (collapsed = false)}
 	>

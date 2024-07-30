@@ -91,12 +91,6 @@ export type PanePropsWithoutHTML = WithChild<{
 	 * A callback that is called when the pane is resized.
 	 */
 	onResize?: PaneOnResize | undefined;
-
-	/**
-	 * A callback that receives an imperative API for the pane. You can assign
-	 * this to a variable to programmatically control the pane.
-	 */
-	setPaneApi?: (api: PaneAPI) => void;
 }>;
 
 export type PaneProps = PanePropsWithoutHTML &
@@ -130,12 +124,6 @@ export type PaneGroupPropsWithoutHTML = WithChild<{
 	 * The storage object to use for saving the layout of the panes in the group.
 	 */
 	storage?: PaneGroupStorage | undefined;
-
-	/**
-	 * A callback that receives an imperative API for the pane group. You can assign
-	 * this to a variable to programmatically control the pane group.
-	 */
-	setPaneGroupApi?: (api: PaneGroupAPI) => void;
 }>;
 
 export type PaneGroupProps = PaneGroupPropsWithoutHTML &

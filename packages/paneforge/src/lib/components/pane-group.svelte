@@ -13,7 +13,6 @@
 		onLayoutChange = noop,
 		storage = defaultStorage,
 		ref = $bindable(null),
-		setPaneGroupApi = noop,
 		child,
 		children,
 		...restProps
@@ -32,13 +31,9 @@
 		storage: box.with(() => storage),
 	});
 
-	$effect(() => {
-		setPaneGroupApi({
-			getLayout: () => paneGroupState.layout,
-			setLayout: paneGroupState.setLayout,
-			getId: () => paneGroupState.id.current,
-		});
-	});
+	export const getLayout = () => paneGroupState.layout;
+	export const setLayout = paneGroupState.setLayout;
+	export const getId = () => paneGroupState.id.current;
 
 	const mergedProps = $derived(mergeProps(restProps, paneGroupState.props));
 </script>

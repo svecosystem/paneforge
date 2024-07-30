@@ -5,17 +5,8 @@ import {
 	executeCallbacks,
 	useRefById,
 } from "svelte-toolbelt";
-import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
 import { onMount, untrack } from "svelte";
-import { adjustLayoutByDelta } from "$lib/internal/utils/adjust-layout.js";
-import { areArraysEqual, areNumbersAlmostEqual } from "$lib/internal/utils/compare.js";
-import {
-	computePaneFlexBoxStyle,
-	getCursorStyle,
-	resetGlobalCursorStyle,
-	setGlobalCursorStyle,
-} from "$lib/internal/utils/style.js";
-import { assert } from "$lib/internal/utils/assert.js";
+import { createContext } from "$lib/internal/utils/createContext.js";
 import {
 	callPaneCallbacks,
 	findPaneDataIndex,
@@ -31,8 +22,17 @@ import {
 	paneDataHelper,
 	updateResizeHandleAriaValues,
 	validatePaneGroupLayout,
-} from "./internal/helpers.js";
-import { createContext } from "./internal/utils/createContext.js";
+} from "$lib/internal/helpers.js";
+import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
+import { adjustLayoutByDelta } from "$lib/internal/utils/adjust-layout.js";
+import { areArraysEqual, areNumbersAlmostEqual } from "$lib/internal/utils/compare.js";
+import {
+	computePaneFlexBoxStyle,
+	getCursorStyle,
+	resetGlobalCursorStyle,
+	setGlobalCursorStyle,
+} from "$lib/internal/utils/style.js";
+import { assert } from "$lib/internal/utils/assert.js";
 import type {
 	Direction,
 	DragState,
@@ -233,7 +233,7 @@ class PaneGroupState {
 				// In this case, Pane sizes might not change–
 				// but updating cursor in this scenario would cause a flicker.
 				const prevDelta = this.prevDelta;
-				if (prevDelta != delta) {
+				if (prevDelta !== delta) {
 					this.prevDelta = delta;
 
 					if (!layoutChanged) {
@@ -822,10 +822,6 @@ class PaneState {
 			return () => {
 				this.group.unregisterPane(this.paneData);
 			};
-		});
-
-		$effect(() => {
-			console.log("style", this.group.getPaneStyle(this.paneData, this.defaultSize.current));
 		});
 	}
 

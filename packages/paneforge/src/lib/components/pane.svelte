@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { box, mergeProps } from "svelte-toolbelt";
-	import { untrack } from "svelte";
 	import type { PaneProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
@@ -9,7 +8,6 @@
 	let {
 		id = useId(),
 		ref = $bindable(null),
-		setPaneApi = noop,
 		collapsedSize,
 		collapsible,
 		defaultSize,
@@ -41,11 +39,13 @@
 		order: box.with(() => order),
 	});
 
-	$effect(() => {
-		untrack(() => {
-			setPaneApi(paneState.pane);
-		});
-	});
+	export const collapse = paneState.pane.collapse;
+	export const expand = paneState.pane.expand;
+	export const getSize = paneState.pane.getSize;
+	export const isCollapsed = paneState.pane.isCollapsed;
+	export const isExpanded = paneState.pane.isExpanded;
+	export const resize = paneState.pane.resize;
+	export const getId = paneState.pane.getId;
 
 	const mergedProps = $derived(mergeProps(restProps, paneState.props));
 </script>
