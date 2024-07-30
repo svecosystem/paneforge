@@ -6,10 +6,36 @@ import type {
 	PaneResizeHandleOnDragging,
 } from "$lib/internal/types.js";
 import type { PaneGroupStorage } from "$lib/internal/utils/storage.js";
-import type { WithChild, Without } from "svelte-toolbelt";
+import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 
 type Primitive<T> = Omit<T, "id" | "children"> & { id?: string | undefined };
+
+export type Without<T extends object, U extends object> = Omit<T, keyof U>;
+
+export type WithChild<
+	/**
+	 * The props that the component accepts.
+	 */
+	Props extends Record<PropertyKey, unknown> = {},
+	/**
+	 * The props that are passed to the `child` and `children` snippets. The `ElementProps` are
+	 * merged with these props for the `child` snippet.
+	 */
+	SnippetProps extends Record<PropertyKey, unknown> = { _default: never },
+	/**
+	 * The underlying DOM element being rendered. You can bind to this prop to
+	 * programatically interact with the element.
+	 */
+	Ref = HTMLElement,
+> = Omit<Props, "child" | "children"> & {
+	child?: SnippetProps extends { _default: never }
+		? Snippet<[{ props: Record<string, unknown> }]>
+		: Snippet<[SnippetProps & { props: Record<string, unknown> }]>;
+	children?: SnippetProps extends { _default: never } ? Snippet : Snippet<[SnippetProps]>;
+	style?: string | null | undefined;
+	ref?: Ref | null | undefined;
+};
 
 export type PrimitiveDivAttributes = Primitive<HTMLAttributes<HTMLDivElement>>;
 

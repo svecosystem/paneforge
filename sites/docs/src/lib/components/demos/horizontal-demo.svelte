@@ -2,8 +2,8 @@
 	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 	import { DotsSixVertical } from "$icons/index.js";
 
-	let leftSize = $state(50)
-	let rightSize = $state(50)
+	let leftSize = $state(50);
+	let rightSize = $state(50);
 </script>
 
 <PaneGroup direction="horizontal" class="w-full rounded-lg">

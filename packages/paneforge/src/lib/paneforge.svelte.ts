@@ -22,7 +22,6 @@ import {
 	updateStorageValues,
 	type PaneGroupStorage,
 } from "$lib/internal/utils/storage.js";
-import { SvelteMap } from "svelte/reactivity";
 
 import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
 import { untrack } from "svelte";
@@ -160,7 +159,7 @@ class PaneGroupState {
 				if (autoSaveId) {
 					const state = loadPaneGroupState(autoSaveId, paneDataArray, storage);
 					if (state) {
-						this.paneSizeBeforeCollapseMap = new SvelteMap(
+						this.paneSizeBeforeCollapseMap = new Map(
 							Object.entries(state.expandToSizes)
 						);
 						unsafeLayout = state.layout;
