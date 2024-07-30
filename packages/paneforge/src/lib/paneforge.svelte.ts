@@ -824,6 +824,10 @@ class PaneState {
 				this.group.unregisterPane(this.paneData);
 			};
 		});
+
+		$effect(() => {
+			console.log("style", this.group.getPaneStyle(this.paneData, this.defaultSize.current));
+		});
 	}
 
 	props = $derived.by(() => ({

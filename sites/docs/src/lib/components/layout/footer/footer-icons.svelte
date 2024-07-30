@@ -25,5 +25,5 @@
 	>
 		<XComIcon class="size-4" />
 	</Button>
-	<MobileNav />
+	<!-- <MobileNav /> -->
 </div>

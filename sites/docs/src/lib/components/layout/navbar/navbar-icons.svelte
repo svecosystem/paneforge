@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MobileNav from "../mobile-nav/mobile-nav.svelte";
 	import ThemeDropdown from "./theme-dropdown.svelte";
 	import { GitHubIcon, XComIcon } from "$lib/icons/index.js";
 	import { Button } from "$lib/components/ui/button";
@@ -27,5 +26,5 @@
 	>
 		<XComIcon class="size-4" />
 	</Button>
-	<MobileNav />
+	<!-- <MobileNav /> -->
 </div>

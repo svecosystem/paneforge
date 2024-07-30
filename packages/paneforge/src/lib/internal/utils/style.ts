@@ -11,7 +11,7 @@ import type { DragState, PaneData } from "../types.js";
 export function styleToString(style: StyleObject): string {
 	return Object.keys(style).reduce((str, key) => {
 		if (style[key] === undefined) return str;
-		return `${str  }${key}:${style[key]};`;
+		return `${str}${key}:${style[key]};`;
 	}, "");
 }
 
@@ -98,7 +98,7 @@ export function computePaneFlexBoxStyle({
 	paneData: PaneData[];
 	paneIndex: number;
 	precision?: number;
-}): string {
+}): Record<string, unknown> {
 	const size = layout[paneIndex];
 
 	let flexGrow;
@@ -113,14 +113,14 @@ export function computePaneFlexBoxStyle({
 		flexGrow = size.toPrecision(precision);
 	}
 
-	return styleToString({
-		"flex-basis": 0,
-		"flex-grow": flexGrow,
-		"flex-shrink": 1,
+	return {
+		flexBasis: 0,
+		flexGrow,
+		flexShrink: 1,
 		// Without this, pane sizes may be unintentionally overridden by their content
 		overflow: "hidden",
 		// Disable pointer events inside of a pane during resize
 		// This avoid edge cases like nested iframes
-		"pointer-events": dragState !== null ? "none" : undefined,
-	});
+		pointerEvents: dragState !== null ? "none" : undefined,
+	};
 }
