@@ -21,10 +21,10 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       eslint:
-        specifier: ^9.0.0
+        specifier: ^9.8.0
         version: 9.8.0
       eslint-plugin-svelte:
-        specifier: ^2.37.0
+        specifier: ^2.43.0
         version: 2.43.0(eslint@9.8.0)(svelte@5.0.0-next.200)
       prettier:
         specifier: ^3.3.3
@@ -175,6 +175,9 @@ importers:
       svelte-check:
         specifier: ^3.6.9
         version: 3.8.4(postcss-load-config@5.0.3(jiti@1.21.0)(postcss@8.4.40))(postcss@8.4.40)(svelte@5.0.0-next.200)
+      svelte-toolbelt:
+        specifier: ^0.3.0
+        version: 0.3.0(svelte@5.0.0-next.200)
       tailwind-merge:
         specifier: ^2.2.1
         version: 2.2.1

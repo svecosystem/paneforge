@@ -1,10 +1,9 @@
 // https://github.com/Hugos68/svelte-contextify
 import { getContext, hasContext, setContext } from "svelte";
-
 export function createContext<T>(): [() => T, (value: T) => T, symbol];
 
 export function createContext<T>() {
-	const key = Symbol();
+	const key = Symbol(Math.random().toString(36).substring(7));
 
 	const getCtx = () => {
 		if (!hasContext(key)) {

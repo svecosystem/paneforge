@@ -5,7 +5,6 @@ import {
 	executeCallbacks,
 	useRefById,
 } from "svelte-toolbelt";
-
 import { isKeyDown, isMouseEvent, isTouchEvent } from "$lib/internal/utils/is.js";
 import { onMount, untrack } from "svelte";
 import { adjustLayoutByDelta } from "$lib/internal/utils/adjust-layout.js";

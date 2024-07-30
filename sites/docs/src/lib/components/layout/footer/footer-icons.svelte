@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MobileNav from "../mobile-nav/mobile-nav.svelte";
 	import { GitHubIcon, XComIcon } from "$lib/icons/index.js";
 	import { Button } from "$lib/components/ui/button";
 	import { siteConfig } from "$lib/config";

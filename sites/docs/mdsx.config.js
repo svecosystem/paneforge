@@ -86,7 +86,7 @@ export const mdsxConfig = defineConfig({
  * itself and checking for it in the code block, but that's not something we need
  * at the moment.
  *
- * @returns {MdastTransformer}
+ * @returns {MdastTransformer} - a mdast transformer that removes the prettier-ignore comment
  *
  */
 function remarkRemovePrettierIgnore() {
@@ -105,7 +105,7 @@ function remarkRemovePrettierIgnore() {
  * We use this to style elements within the `<figure>` differently if a `<figcaption>`
  * is present.
  *
- * @returns {HastTransformer}
+ * @returns {HastTransformer} - a hast transformer that adds the `data-metadata` attribute to `<figure>` elements
  */
 function rehypeHandleMetadata() {
 	return async (tree) => {
