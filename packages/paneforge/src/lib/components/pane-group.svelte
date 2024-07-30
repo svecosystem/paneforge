@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { box, mergeProps } from "svelte-toolbelt";
+	import type { PaneGroupProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
 	import { defaultStorage, usePaneGroup } from "$lib/paneforge.svelte.js";
-	import { box, mergeProps } from "svelte-toolbelt";
-	import type { PaneGroupProps } from "./types.js";
 
 	let {
 		autoSaveId = null,
