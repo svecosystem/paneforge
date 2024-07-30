@@ -61,6 +61,7 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"nanoid": "^5.0.4"
+		"nanoid": "^5.0.4",
+		"svelte-toolbelt": "^0.3.0"
 	}
 }

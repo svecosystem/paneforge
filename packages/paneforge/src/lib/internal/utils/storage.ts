@@ -1,6 +1,7 @@
 import { get, type Writable } from "svelte/store";
 import type { PaneData } from "../types.js";
 import { LOCAL_STORAGE_DEBOUNCE_INTERVAL } from "../constants.js";
+import type { SvelteMap } from "svelte/reactivity";
 
 export type PaneConfigState = {
 	expandToSizes: { [paneId: string]: number };
@@ -158,21 +159,19 @@ export function updateStorageValues({
 	autoSaveId,
 	layout,
 	storage,
-	paneDataArrayStore,
-	paneSizeBeforeCollapseStore,
+	paneDataArray,
+	paneSizeBeforeCollapse,
 }: {
 	autoSaveId: string;
 	layout: number[];
 	storage: PaneGroupStorage;
-	paneDataArrayStore: Writable<PaneData[]>;
-	paneSizeBeforeCollapseStore: Writable<Map<string, number>>;
+	paneDataArray: PaneData[];
+	paneSizeBeforeCollapse: Map<string, number>;
 }) {
-	const $paneDataArray = get(paneDataArrayStore);
-
 	// If this pane has been configured to persist sizing
 	// information, save sizes to local storage.
 
-	if (layout.length === 0 || layout.length !== $paneDataArray.length) return;
+	if (layout.length === 0 || layout.length !== paneDataArray.length) return;
 
 	let debouncedSave = debounceMap[autoSaveId];
 
@@ -184,9 +183,8 @@ export function updateStorageValues({
 
 	// Clone mutable data before passing to the debounced function,
 	// else we run the risk of saving an incorrect combination of mutable and immutable values to state.
-	const clonedPaneDataArray = [...$paneDataArray];
+	const clonedPaneDataArray = [...paneDataArray];
 
-	const $paneSizeBeforeCollapse = get(paneSizeBeforeCollapseStore);
-	const clonedPaneSizesBeforeCollapse = new Map($paneSizeBeforeCollapse);
+	const clonedPaneSizesBeforeCollapse = new Map(paneSizeBeforeCollapse);
 	debouncedSave(autoSaveId, clonedPaneDataArray, clonedPaneSizesBeforeCollapse, layout, storage);
 }

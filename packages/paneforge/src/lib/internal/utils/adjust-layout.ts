@@ -1,10 +1,7 @@
 import type { PaneConstraints } from "../types.js";
 import { assert } from "./assert.js";
-import {
-	compareNumbersWithTolerance,
-	areNumbersAlmostEqual,
-	resizePane,
-} from "$lib/internal/utils/index.js";
+import { compareNumbersWithTolerance, areNumbersAlmostEqual } from "./compare.js";
+import { resizePane } from "./resize.js";
 
 /**
  * Adjusts the layout of panes based on the delta of the resize handle.
@@ -158,9 +155,11 @@ export function adjustLayoutByDelta({
 				nextLayout[index] = safeSize;
 
 				if (
-					deltaApplied.toPrecision(3).localeCompare(Math.abs(delta).toPrecision(3), undefined, {
-						numeric: true,
-					}) >= 0
+					deltaApplied
+						.toPrecision(3)
+						.localeCompare(Math.abs(delta).toPrecision(3), undefined, {
+							numeric: true,
+						}) >= 0
 				) {
 					break;
 				}
