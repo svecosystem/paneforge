@@ -4,7 +4,6 @@ export function assert(
 	message: string = "Assertion failed!"
 ): asserts expectedCondition {
 	if (!expectedCondition) {
-		 
 		console.error(message);
 		throw new Error(message);
 	}

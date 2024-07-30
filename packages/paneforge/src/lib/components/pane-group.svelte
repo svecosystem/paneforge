@@ -38,7 +38,7 @@
 			setLayout: paneGroupState.setLayout,
 			getId: () => paneGroupState.id.current,
 		});
-	})
+	});
 
 	const mergedProps = $derived(mergeProps(restProps, paneGroupState.props));
 </script>

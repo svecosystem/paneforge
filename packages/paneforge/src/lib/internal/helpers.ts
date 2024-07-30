@@ -31,11 +31,11 @@ export function updateResizeHandleAriaValues({
 			const paneData = paneDataArray[index];
 
 			resizeHandleEl.setAttribute("aria-controls", paneData.id);
-			resizeHandleEl.setAttribute("aria-valuemax", `${  Math.round(valueMax)}`);
-			resizeHandleEl.setAttribute("aria-valuemin", `${  Math.round(valueMin)}`);
+			resizeHandleEl.setAttribute("aria-valuemax", `${Math.round(valueMax)}`);
+			resizeHandleEl.setAttribute("aria-valuemin", `${Math.round(valueMin)}`);
 			resizeHandleEl.setAttribute(
 				"aria-valuenow",
-				valueNow != null ? `${  Math.round(valueNow)}` : ""
+				valueNow != null ? `${Math.round(valueNow)}` : ""
 			);
 		}
 	}

@@ -107,7 +107,6 @@ export function adjustLayoutByDelta({
 		let index = delta < 0 ? secondPivotIndex : firstPivotIndex;
 		let maxAvailableDelta = 0;
 
-		 
 		while (true) {
 			const prevSize = prevLayout[index];
 			console.log("prevSize", prevSize);

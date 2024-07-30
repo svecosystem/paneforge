@@ -14,8 +14,10 @@ type FlyAndScaleParams = {
 	duration?: number;
 };
 
-export function flyAndScale (node: Element,
-	params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }): TransitionConfig {
+export function flyAndScale(
+	node: Element,
+	params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }
+): TransitionConfig {
 	const style = getComputedStyle(node);
 	const transform = style.transform === "none" ? "" : style.transform;
 
@@ -36,7 +38,7 @@ export function flyAndScale (node: Element,
 	const styleToString = (style: Record<string, number | string | undefined>): string => {
 		return Object.keys(style).reduce((str, key) => {
 			if (style[key] === undefined) return str;
-			return `${str  }${key}:${style[key]};`;
+			return `${str}${key}:${style[key]};`;
 		}, "");
 	};
 

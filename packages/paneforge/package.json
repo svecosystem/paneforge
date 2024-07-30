@@ -19,8 +19,6 @@
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"watch": "svelte-kit sync && svelte-package --watch"

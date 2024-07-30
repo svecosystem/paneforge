@@ -30,7 +30,6 @@ export function initializeStorage(storageObject: PaneGroupStorage): void {
 		storageObject.getItem = (name: string) => localStorage.getItem(name);
 		storageObject.setItem = (name: string, value: string) => localStorage.setItem(name, value);
 	} catch (err) {
-		 
 		console.error(err);
 		storageObject.getItem = () => null;
 		storageObject.setItem = () => {};
@@ -120,7 +119,6 @@ export function savePaneGroupState(
 	try {
 		storage.setItem(paneGroupKey, JSON.stringify(state));
 	} catch (error) {
-		 
 		console.error(error);
 	}
 }
