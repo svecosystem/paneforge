@@ -13,71 +13,71 @@ export type PaneProps = {
 	/**
 	 * The size of the pane when it is in a collapsed state.
 	 */
-	collapsedSize?: number;
+	collapsedSize?: number | undefined;
 
 	/**
 	 * Whether the pane can be collapsed.
 	 *
 	 * @defaultValue `false`
 	 */
-	collapsible?: boolean;
+	collapsible?: boolean | undefined;
 
 	/**
 	 * The default size of the pane in percentage.
 	 */
-	defaultSize?: number;
+	defaultSize?: number | undefined;
 
 	/**
 	 * The id of the pane element.
 	 */
-	id?: string | null;
+	id?: string | null | undefined;
 
 	/**
 	 * The maximum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `100`
 	 */
-	maxSize?: number;
+	maxSize?: number | undefined;
 
 	/**
 	 * The minimum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `0`
 	 */
-	minSize?: number;
+	minSize?: number | undefined;
 
 	/**
 	 * The order of the pane in the group.
 	 * Useful for maintaining order when conditionally rendering panes.
 	 */
-	order?: number;
+	order?: number | undefined;
 
 	/**
 	 * A callback that is called when the pane is collapsed.
 	 */
-	onCollapse?: PaneOnCollapse;
+	onCollapse?: PaneOnCollapse | undefined;
 
 	/**
 	 * A callback that is called when the pane is expanded.
 	 */
-	onExpand?: PaneOnExpand;
+	onExpand?: PaneOnExpand | undefined;
 
 	/**
 	 * A callback that is called when the pane is resized.
 	 */
-	onResize?: PaneOnResize;
+	onResize?: PaneOnResize | undefined;
 
 	/**
 	 * The underlying DOM element of the pane. You can `bind` to this
 	 * prop to get a reference to the element.
 	 */
-	el?: HTMLElement | null;
+	el?: HTMLElement | null | undefined;
 
 	/**
 	 * An imperative API for the pane. `bind` to this prop to get access
 	 * to methods for controlling the pane.
 	 */
-	pane?: PaneAPI;
+	pane?: PaneAPI | undefined;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 
 export type PaneResizerProps = {
@@ -86,30 +86,30 @@ export type PaneResizerProps = {
 	 *
 	 * @defaultValue `false`
 	 */
-	disabled?: boolean;
+	disabled?: boolean | undefined;
 
 	/**
 	 * A callback that is called when the resize handle is being dragged.
 	 */
-	onDraggingChange?: PaneResizeHandleOnDragging;
+	onDraggingChange?: PaneResizeHandleOnDragging | undefined;
 
 	/**
 	 * The tabIndex of the resize handle.
 	 */
-	tabIndex?: number;
+	tabIndex?: number | undefined;
 
 	/**
 	 * The underlying DOM element of the resize handle. You can `bind` to this
 	 * prop to get a reference to the element.
 	 */
-	el?: HTMLElement | null;
+	el?: HTMLElement | null | undefined;
 } & HTMLAttributes<HTMLDivElement>;
 
 export type PaneGroupProps = {
 	/**
 	 * The id to save the layout of the panes to in local storage.
 	 */
-	autoSaveId?: string | null;
+	autoSaveId?: string | null | undefined;
 
 	/**
 	 * The direction of the panes.
@@ -121,41 +121,41 @@ export type PaneGroupProps = {
 	/**
 	 * The id of the pane group DOM element.
 	 */
-	id?: string | null;
+	id?: string | null | undefined;
 
 	/**
 	 * The amount of space to add to the pane group when the keyboard
 	 * resize event is triggered.
 	 */
-	keyboardResizeBy?: number | null;
+	keyboardResizeBy?: number | null | undefined;
 
 	/**
 	 * A callback called when the layout of the panes within the group changes.
 	 */
-	onLayoutChange?: PaneGroupOnLayout | null;
+	onLayoutChange?: PaneGroupOnLayout | null | undefined;
 
 	/**
 	 * The storage object to use for saving the layout of the panes in the group.
 	 */
-	storage?: PaneGroupStorage;
+	storage?: PaneGroupStorage | undefined;
 
 	/**
 	 * The style of the pane group. This will be appended to styles applied by
 	 * the library.
 	 */
-	style?: string;
+	style?: string | undefined;
 
 	/**
 	 * The underlying DOM element of the pane group. You can `bind` to this
 	 * prop to get a reference to the element.
 	 */
-	el?: HTMLElement | null;
+	el?: HTMLElement | null | undefined;
 
 	/**
 	 * An imperative API for the pane group. `bind` to this prop to get access
 	 * to methods for controlling the pane group.
 	 */
-	paneGroup?: PaneGroupAPI;
+	paneGroup?: PaneGroupAPI | undefined;
 } & Omit<HTMLAttributes<HTMLDivElement>, "id">;
 
 export type PaneAPI = {
