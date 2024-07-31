@@ -26,7 +26,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/huntabyte/svecodocs.git"
+		"url": "https://github.com/svecosystem/paneforge"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^4.1.0",
