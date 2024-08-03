@@ -1,5 +1,11 @@
 # paneforge
 
+## 0.0.6
+
+### Patch Changes
+
+- chore: add license to `package.json` ([#36](https://github.com/svecosystem/paneforge/pull/36))
+
 ## 0.0.5
 
 ### Patch Changes
