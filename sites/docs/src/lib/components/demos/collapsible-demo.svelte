@@ -3,7 +3,7 @@
 	import { DotsSixVertical } from "$icons/index.js";
 	import { Button } from "$lib/components/ui/button";
 
-	let paneOne = $state<Pane>();
+	let paneOne = $state<Pane>(null!);
 	let collapsed = $state(false);
 </script>
 
@@ -42,7 +42,10 @@
 			<span class="font-semibold">One</span>
 		</div>
 	</Pane>
-	<PaneResizer class="bg-background relative flex w-2 items-center justify-center">
+	<PaneResizer
+		ondblclick={() => paneOne.expand()}
+		class="bg-background relative flex w-2 items-center justify-center"
+	>
 		<div class="bg-brand z-10 flex h-7 w-5 items-center justify-center rounded-sm border">
 			<DotsSixVertical class="size-4 text-black" weight="bold" />
 		</div>
