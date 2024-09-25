@@ -43,57 +43,54 @@ export type PanePropsWithoutHTML = WithChild<{
 	/**
 	 * The size of the pane when it is in a collapsed state.
 	 */
-	collapsedSize?: number | undefined;
-	collapsedSize?: number | undefined;
+	collapsedSize?: number;
 
 	/**
 	 * Whether the pane can be collapsed.
 	 *
 	 * @defaultValue `false`
 	 */
-	collapsible?: boolean | undefined;
-	collapsible?: boolean | undefined;
+	collapsible?: boolean;
 
 	/**
 	 * The default size of the pane in percentage.
 	 */
-	defaultSize?: number | undefined;
+	defaultSize?: number;
 
 	/**
 	 * The maximum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `100`
 	 */
-	maxSize?: number | undefined;
+	maxSize?: number;
 
 	/**
 	 * The minimum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `0`
 	 */
-	minSize?: number | undefined;
+	minSize?: number;
 
 	/**
 	 * The order of the pane in the group.
 	 * Useful for maintaining order when conditionally rendering panes.
 	 */
-	order?: number | undefined;
+	order?: number;
 
 	/**
 	 * A callback that is called when the pane is collapsed.
 	 */
-	onCollapse?: PaneOnCollapse | undefined;
+	onCollapse?: PaneOnCollapse;
 
 	/**
 	 * A callback that is called when the pane is expanded.
 	 */
-	onExpand?: PaneOnExpand | undefined;
-	onExpand?: PaneOnExpand | undefined;
+	onExpand?: PaneOnExpand;
 
 	/**
 	 * A callback that is called when the pane is resized.
 	 */
-	onResize?: PaneOnResize | undefined;
+	onResize?: PaneOnResize;
 }>;
 
 export type PaneProps = PanePropsWithoutHTML &
@@ -103,7 +100,7 @@ export type PaneGroupPropsWithoutHTML = WithChild<{
 	/**
 	 * The id to save the layout of the panes to in local storage.
 	 */
-	autoSaveId?: string | null | undefined;
+	autoSaveId?: string | null;
 
 	/**
 	 * The direction of the panes.
@@ -116,17 +113,17 @@ export type PaneGroupPropsWithoutHTML = WithChild<{
 	 * The amount of space to add to the pane group when the keyboard
 	 * resize event is triggered.
 	 */
-	keyboardResizeBy?: number | null | undefined;
+	keyboardResizeBy?: number | null;
 
 	/**
 	 * A callback called when the layout of the panes within the group changes.
 	 */
-	onLayoutChange?: (layout: number[]) => void | null | undefined;
+	onLayoutChange?: (layout: number[]) => void | null;
 
 	/**
 	 * The storage object to use for saving the layout of the panes in the group.
 	 */
-	storage?: PaneGroupStorage | undefined;
+	storage?: PaneGroupStorage;
 }>;
 
 export type PaneGroupProps = PaneGroupPropsWithoutHTML &
@@ -138,12 +135,12 @@ export type PaneResizerPropsWithoutHTML = WithChild<{
 	 *
 	 * @defaultValue `false`
 	 */
-	disabled?: boolean | undefined;
+	disabled?: boolean;
 
 	/**
 	 * A callback that is called when the resize handle is being dragged.
 	 */
-	onDraggingChange?: PaneResizeHandleOnDragging | undefined;
+	onDraggingChange?: PaneResizeHandleOnDragging;
 
 	/**
 	 * The tabIndex of the resize handle.

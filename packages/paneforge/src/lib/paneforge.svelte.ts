@@ -74,12 +74,12 @@ export const defaultStorage: PaneGroupStorage = {
 
 class PaneGroupState {
 	id: PaneGroupStateProps["id"];
-	ref: PaneGroupStateProps["ref"];
-	autoSaveId: PaneGroupStateProps["autoSaveId"];
+	#ref: PaneGroupStateProps["ref"];
+	#autoSaveId: PaneGroupStateProps["autoSaveId"];
 	direction: PaneGroupStateProps["direction"];
-	keyboardResizeBy: PaneGroupStateProps["keyboardResizeBy"];
-	onLayout: PaneGroupStateProps["onLayout"];
-	storage: PaneGroupStateProps["storage"];
+	#keyboardResizeBy: PaneGroupStateProps["keyboardResizeBy"];
+	#onLayout: PaneGroupStateProps["onLayout"];
+	#storage: PaneGroupStateProps["storage"];
 	dragState = $state<DragState | null>(null);
 	layout = $state<number[]>([]);
 	paneDataArray = $state<PaneData[]>([]);
@@ -91,16 +91,16 @@ class PaneGroupState {
 
 	constructor(props: PaneGroupStateProps) {
 		this.id = props.id;
-		this.ref = props.ref;
-		this.autoSaveId = props.autoSaveId;
+		this.#ref = props.ref;
+		this.#autoSaveId = props.autoSaveId;
 		this.direction = props.direction;
-		this.keyboardResizeBy = props.keyboardResizeBy;
-		this.onLayout = props.onLayout;
-		this.storage = props.storage;
+		this.#keyboardResizeBy = props.keyboardResizeBy;
+		this.#onLayout = props.onLayout;
+		this.#storage = props.storage;
 
 		useRefById({
 			id: this.id,
-			ref: this.ref,
+			ref: this.#ref,
 		});
 
 		$effect(() => {
@@ -127,9 +127,9 @@ class PaneGroupState {
 		});
 
 		$effect(() => {
-			const autoSaveId = this.autoSaveId.current;
+			const autoSaveId = this.#autoSaveId.current;
 			const layout = this.layout;
-			const storage = this.storage.current;
+			const storage = this.#storage.current;
 			if (!autoSaveId) return;
 
 			untrack(() => {
@@ -148,8 +148,8 @@ class PaneGroupState {
 			if (!paneDataArrayChanged) return;
 			untrack(() => {
 				this.paneDataArrayChanged = false;
-				const autoSaveId = this.autoSaveId.current;
-				const storage = this.storage.current;
+				const autoSaveId = this.#autoSaveId.current;
+				const storage = this.#storage.current;
 				const prevLayout = this.layout;
 				const paneDataArray = this.paneDataArray;
 
@@ -179,16 +179,16 @@ class PaneGroupState {
 				if (areArraysEqual(prevLayout, nextLayout)) return;
 
 				this.layout = nextLayout;
-				this.onLayout.current?.(nextLayout);
+				this.#onLayout.current?.(nextLayout);
 
 				callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 			});
 		});
 	}
 
-	setLayout(newLayout: number[]) {
+	setLayout = (newLayout: number[]) => {
 		this.layout = newLayout;
-	}
+	};
 
 	registerResizeHandle = (dragHandleId: string) => {
 		return (e: ResizeEvent) => {
@@ -197,7 +197,7 @@ class PaneGroupState {
 			const direction = this.direction.current;
 			const dragState = this.dragState;
 			const groupId = this.id.current;
-			const keyboardResizeBy = this.keyboardResizeBy.current;
+			const keyboardResizeBy = this.#keyboardResizeBy.current;
 
 			const prevLayout = this.layout;
 			const paneDataArray = this.paneDataArray;
@@ -253,7 +253,7 @@ class PaneGroupState {
 			}
 			if (layoutChanged) {
 				this.setLayout(nextLayout);
-				this.onLayout.current?.(nextLayout);
+				this.#onLayout.current?.(nextLayout);
 				callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 			}
 		};
@@ -285,7 +285,7 @@ class PaneGroupState {
 
 		this.setLayout(nextLayout);
 
-		this.onLayout.current?.(nextLayout);
+		this.#onLayout.current?.(nextLayout);
 
 		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
@@ -369,7 +369,7 @@ class PaneGroupState {
 
 		this.setLayout(nextLayout);
 
-		this.onLayout.current?.(nextLayout);
+		this.#onLayout.current?.(nextLayout);
 
 		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
@@ -409,7 +409,7 @@ class PaneGroupState {
 		if (areArraysEqual(prevLayout, nextLayout)) return;
 
 		this.layout = nextLayout;
-		this.onLayout.current?.(nextLayout);
+		this.#onLayout.current?.(nextLayout);
 
 		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
@@ -558,43 +558,43 @@ type PaneResizerStateProps = WithRefProps<
 const resizeKeys = ["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "End", "Home"];
 
 class PaneResizerState {
-	id: PaneResizerStateProps["id"];
-	ref: PaneResizerStateProps["ref"];
-	onDraggingChange: PaneResizerStateProps["onDraggingChange"];
-	disabled: PaneResizerStateProps["disabled"];
-	tabIndex: PaneResizerStateProps["tabIndex"];
-	group: PaneGroupState;
-	isDragging = $derived.by(() => this.group.dragState?.dragHandleId === this.id.current);
-	isFocused = $state(false);
+	#id: PaneResizerStateProps["id"];
+	#ref: PaneResizerStateProps["ref"];
+	#onDraggingChange: PaneResizerStateProps["onDraggingChange"];
+	#disabled: PaneResizerStateProps["disabled"];
+	#tabIndex: PaneResizerStateProps["tabIndex"];
+	#group: PaneGroupState;
+	#isDragging = $derived.by(() => this.#group.dragState?.dragHandleId === this.#id.current);
+	#isFocused = $state(false);
 	resizeHandler: ResizeHandler | null = null;
 
 	constructor(props: PaneResizerStateProps, group: PaneGroupState) {
-		this.id = props.id;
-		this.ref = props.ref;
-		this.group = group;
-		this.onDraggingChange = props.onDraggingChange;
-		this.disabled = props.disabled;
-		this.tabIndex = props.tabIndex;
+		this.#id = props.id;
+		this.#ref = props.ref;
+		this.#group = group;
+		this.#onDraggingChange = props.onDraggingChange;
+		this.#disabled = props.disabled;
+		this.#tabIndex = props.tabIndex;
 
 		useRefById({
-			id: this.id,
-			ref: this.ref,
+			id: this.#id,
+			ref: this.#ref,
 		});
 
 		$effect(() => {
-			if (this.disabled.current) {
+			if (this.#disabled.current) {
 				this.resizeHandler = null;
 			} else {
-				this.resizeHandler = this.group.registerResizeHandle(this.id.current);
+				this.resizeHandler = this.#group.registerResizeHandle(this.#id.current);
 			}
 		});
 
 		$effect(() => {
-			const node = this.ref.current;
+			const node = this.#ref.current;
 			if (!node) return;
-			const disabled = this.disabled.current;
+			const disabled = this.#disabled.current;
 			const resizeHandler = this.resizeHandler;
-			const isDragging = this.isDragging;
+			const isDragging = this.#isDragging;
 			if (disabled || resizeHandler === null || !isDragging) return;
 
 			const onMove = (e: ResizeEvent) => {
@@ -607,8 +607,8 @@ class PaneResizerState {
 
 			const stopDraggingAndBlur = () => {
 				node.blur();
-				this.group.stopDragging();
-				this.onDraggingChange.current(false);
+				this.#group.stopDragging();
+				this.#onDraggingChange.current(false);
 			};
 
 			const unsub = executeCallbacks(
@@ -625,15 +625,15 @@ class PaneResizerState {
 	}
 
 	#stopDraggingAndBlur = () => {
-		const node = this.ref.current;
+		const node = this.#ref.current;
 		if (!node) return;
 		node.blur();
-		this.group.stopDragging();
-		this.onDraggingChange.current(false);
+		this.#group.stopDragging();
+		this.#onDraggingChange.current(false);
 	};
 
 	#onkeydown = (e: KeyboardEvent) => {
-		if (this.disabled.current || !this.resizeHandler || e.defaultPrevented) return;
+		if (this.#disabled.current || !this.resizeHandler || e.defaultPrevented) return;
 
 		if (resizeKeys.includes(e.key)) {
 			e.preventDefault();
@@ -645,8 +645,8 @@ class PaneResizerState {
 
 		e.preventDefault();
 
-		const handles = getResizeHandleElementsForGroup(this.group.id.current);
-		const index = getResizeHandleElementIndex(this.group.id.current, this.id.current);
+		const handles = getResizeHandleElementsForGroup(this.#group.id.current);
+		const index = getResizeHandleElementIndex(this.#group.id.current, this.#id.current);
 
 		if (index === null) return;
 
@@ -673,17 +673,17 @@ class PaneResizerState {
 	};
 
 	#onblur = () => {
-		this.isFocused = false;
+		this.#isFocused = false;
 	};
 
 	#onfocus = () => {
-		this.isFocused = true;
+		this.#isFocused = true;
 	};
 
 	#onmousedown = (e: MouseEvent) => {
 		e.preventDefault();
-		this.group.startDragging(this.id.current, e);
-		this.onDraggingChange.current(true);
+		this.#group.startDragging(this.#id.current, e);
+		this.#onDraggingChange.current(true);
 	};
 
 	#onmouseup = () => {
@@ -700,28 +700,28 @@ class PaneResizerState {
 
 	#ontouchstart = (e: TouchEvent) => {
 		e.preventDefault();
-		this.group.startDragging(this.id.current, e);
-		this.onDraggingChange.current(true);
+		this.#group.startDragging(this.#id.current, e);
+		this.#onDraggingChange.current(true);
 	};
 
 	props = $derived.by(
 		() =>
 			({
-				id: this.id.current,
+				id: this.#id.current,
 				role: "separator",
-				"data-direction": this.group.direction.current,
-				"data-pane-group-id": this.group.id.current,
-				"data-active": this.isDragging
+				"data-direction": this.#group.direction.current,
+				"data-pane-group-id": this.#group.id.current,
+				"data-active": this.#isDragging
 					? "pointer"
-					: this.isFocused
+					: this.#isFocused
 						? "keyboard"
 						: undefined,
-				"data-enabled": !this.disabled.current,
-				"data-pane-resizer-id": this.id.current,
+				"data-enabled": !this.#disabled.current,
+				"data-pane-resizer-id": this.#id.current,
 				"data-pane-resizer": "",
-				tabIndex: this.tabIndex.current,
+				tabIndex: this.#tabIndex.current,
 				style: {
-					cursor: getCursorStyle(this.group.direction.current),
+					cursor: getCursorStyle(this.#group.direction.current),
 					touchAction: "none",
 					userSelect: "none",
 					"-webkit-user-select": "none",
@@ -754,83 +754,83 @@ type PaneStateProps = WithRefProps<
 >;
 
 class PaneState {
-	id: PaneStateProps["id"];
-	ref: PaneStateProps["ref"];
-	collapsedSize: PaneStateProps["collapsedSize"];
-	collapsible: PaneStateProps["collapsible"];
-	defaultSize: PaneStateProps["defaultSize"];
-	maxSize: PaneStateProps["maxSize"];
-	minSize: PaneStateProps["minSize"];
-	order: PaneStateProps["order"];
-	onCollapse: PaneStateProps["onCollapse"];
-	onExpand: PaneStateProps["onExpand"];
-	onResize: PaneStateProps["onResize"];
-	group: PaneGroupState;
+	#id: PaneStateProps["id"];
+	#ref: PaneStateProps["ref"];
+	#collapsedSize: PaneStateProps["collapsedSize"];
+	#collapsible: PaneStateProps["collapsible"];
+	#defaultSize: PaneStateProps["defaultSize"];
+	#maxSize: PaneStateProps["maxSize"];
+	#minSize: PaneStateProps["minSize"];
+	#order: PaneStateProps["order"];
+	#onCollapse: PaneStateProps["onCollapse"];
+	#onExpand: PaneStateProps["onExpand"];
+	#onResize: PaneStateProps["onResize"];
+	#group: PaneGroupState;
 
-	paneData = $derived.by(() => ({
+	#paneData = $derived.by(() => ({
 		callbacks: {
-			onCollapse: this.onCollapse.current,
-			onExpand: this.onExpand.current,
-			onResize: this.onResize.current,
+			onCollapse: this.#onCollapse.current,
+			onExpand: this.#onExpand.current,
+			onResize: this.#onResize.current,
 		},
 		constraints: {
-			collapsedSize: this.collapsedSize.current,
-			collapsible: this.collapsible.current,
-			defaultSize: this.defaultSize.current,
-			maxSize: this.maxSize.current,
-			minSize: this.minSize.current,
+			collapsedSize: this.#collapsedSize.current,
+			collapsible: this.#collapsible.current,
+			defaultSize: this.#defaultSize.current,
+			maxSize: this.#maxSize.current,
+			minSize: this.#minSize.current,
 		},
-		id: this.id.current,
+		id: this.#id.current,
 		idIsFromProps: false,
-		order: this.order.current,
+		order: this.#order.current,
 	}));
 
 	pane = {
 		collapse: () => {
-			this.group.collapsePane(this.paneData);
+			this.#group.collapsePane(this.#paneData);
 		},
-		expand: () => this.group.expandPane(this.paneData),
-		getSize: () => this.group.getPaneSize(this.paneData),
-		isCollapsed: () => this.group.isPaneCollapsed(this.paneData),
-		isExpanded: () => this.group.isPaneExpanded(this.paneData),
-		resize: (size: number) => this.group.resizePane(this.paneData, size),
-		getId: () => this.id.current,
+		expand: () => this.#group.expandPane(this.#paneData),
+		getSize: () => this.#group.getPaneSize(this.#paneData),
+		isCollapsed: () => this.#group.isPaneCollapsed(this.#paneData),
+		isExpanded: () => this.#group.isPaneExpanded(this.#paneData),
+		resize: (size: number) => this.#group.resizePane(this.#paneData, size),
+		getId: () => this.#id.current,
 	};
 
 	constructor(props: PaneStateProps, group: PaneGroupState) {
-		this.id = props.id;
-		this.ref = props.ref;
-		this.collapsedSize = props.collapsedSize;
-		this.collapsible = props.collapsible;
-		this.defaultSize = props.defaultSize;
-		this.maxSize = props.maxSize;
-		this.minSize = props.minSize;
-		this.order = props.order;
-		this.onCollapse = props.onCollapse;
-		this.onExpand = props.onExpand;
-		this.onResize = props.onResize;
-		this.group = group;
+		this.#id = props.id;
+		this.#ref = props.ref;
+		this.#collapsedSize = props.collapsedSize;
+		this.#collapsible = props.collapsible;
+		this.#defaultSize = props.defaultSize;
+		this.#maxSize = props.maxSize;
+		this.#minSize = props.minSize;
+		this.#order = props.order;
+		this.#onCollapse = props.onCollapse;
+		this.#onExpand = props.onExpand;
+		this.#onResize = props.onResize;
+		this.#group = group;
 
 		useRefById({
-			id: this.id,
-			ref: this.ref,
+			id: this.#id,
+			ref: this.#ref,
 		});
 
 		onMount(() => {
-			this.group.registerPane(this.paneData);
+			this.#group.registerPane(this.#paneData);
 
 			return () => {
-				this.group.unregisterPane(this.paneData);
+				this.#group.unregisterPane(this.#paneData);
 			};
 		});
 	}
 
 	props = $derived.by(() => ({
-		id: this.id.current,
-		style: this.group.getPaneStyle(this.paneData, this.defaultSize.current),
+		id: this.#id.current,
+		style: this.#group.getPaneStyle(this.#paneData, this.#defaultSize.current),
 		"data-pane": "",
-		"data-pane-id": this.id.current,
-		"data-pane-group-id": this.group.id.current,
+		"data-pane-id": this.#id.current,
+		"data-pane-group-id": this.#group.id.current,
 	}));
 }
 

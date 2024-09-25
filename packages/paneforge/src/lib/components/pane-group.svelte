@@ -31,7 +31,7 @@
 		storage: box.with(() => storage),
 	});
 
-	export const getLayout = () => paneGroupState.layout;
+	export const getLayout = () => paneGroupState.#layout;
 	export const setLayout = paneGroupState.setLayout;
 	export const getId = () => paneGroupState.id.current;
 
