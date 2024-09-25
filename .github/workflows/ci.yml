@@ -17,13 +17,19 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v4
+              with:
+                  version: 8
+
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 18
                   cache: pnpm
 
             - name: Install dependencies
               run: pnpm install
+
+            - name: Build
+              run: pnpm build
 
             - name: Sync
               run: pnpm sync
@@ -37,9 +43,14 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v4
+              name: Install pnpm
               with:
-                  node-version: 20
+                  version: 8
+
+            - name: Install Node.JS
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 18
                   cache: pnpm
 
             - name: Install dependencies
