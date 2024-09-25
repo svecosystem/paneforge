@@ -44,12 +44,14 @@ export type PanePropsWithoutHTML = WithChild<{
 	 * The size of the pane when it is in a collapsed state.
 	 */
 	collapsedSize?: number | undefined;
+	collapsedSize?: number | undefined;
 
 	/**
 	 * Whether the pane can be collapsed.
 	 *
 	 * @defaultValue `false`
 	 */
+	collapsible?: boolean | undefined;
 	collapsible?: boolean | undefined;
 
 	/**
@@ -85,6 +87,7 @@ export type PanePropsWithoutHTML = WithChild<{
 	/**
 	 * A callback that is called when the pane is expanded.
 	 */
+	onExpand?: PaneOnExpand | undefined;
 	onExpand?: PaneOnExpand | undefined;
 
 	/**
@@ -135,12 +138,12 @@ export type PaneResizerPropsWithoutHTML = WithChild<{
 	 *
 	 * @defaultValue `false`
 	 */
-	disabled?: boolean;
+	disabled?: boolean | undefined;
 
 	/**
 	 * A callback that is called when the resize handle is being dragged.
 	 */
-	onDraggingChange?: PaneResizeHandleOnDragging;
+	onDraggingChange?: PaneResizeHandleOnDragging | undefined;
 
 	/**
 	 * The tabIndex of the resize handle.

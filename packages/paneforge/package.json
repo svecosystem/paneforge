@@ -7,9 +7,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/huntabyte/paneforge",
+		"url": "https://github.com/svecosystem/paneforge",
 		"directory": "packages/paneforge"
 	},
+	"license": "MIT",
 	"scripts": {
 		"build": "pnpm package",
 		"dev": "pnpm watch",
