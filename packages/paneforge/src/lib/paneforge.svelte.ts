@@ -825,12 +825,16 @@ class PaneState {
 		});
 	}
 
+	#isCollapsed = $derived.by(() => this.#group.isPaneCollapsed(this.#paneData));
+
 	props = $derived.by(() => ({
 		id: this.#id.current,
 		style: this.#group.getPaneStyle(this.#paneData, this.#defaultSize.current),
 		"data-pane": "",
 		"data-pane-id": this.#id.current,
 		"data-pane-group-id": this.#group.id.current,
+		"data-collapsed": this.#isCollapsed ? "" : undefined,
+		"data-expanded": this.#isCollapsed ? undefined : "",
 	}));
 }
 

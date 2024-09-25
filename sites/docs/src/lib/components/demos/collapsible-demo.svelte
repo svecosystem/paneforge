@@ -11,7 +11,7 @@
 	{#if collapsed}
 		<Button
 			variant="outline"
-			on:click={() => {
+			onclick={() => {
 				paneOne?.expand();
 			}}
 		>
@@ -20,7 +20,7 @@
 	{:else}
 		<Button
 			variant="outline"
-			on:click={() => {
+			onclick={() => {
 				paneOne?.collapse();
 			}}
 		>
@@ -36,6 +36,7 @@
 		minSize={15}
 		onCollapse={() => (collapsed = true)}
 		onExpand={() => (collapsed = false)}
+		bind:this={paneOne}
 	>
 		<div class="bg-muted flex h-[400px] items-center justify-center rounded-lg p-6">
 			<span class="font-semibold">One</span>
