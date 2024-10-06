@@ -16,15 +16,30 @@
 		"build:packages": "pnpm -F \"./packages/**\" --parallel build",
 		"build:content": "pnpm -F \"./sites/**\" --parallel build:content",
 		"ci:publish": "pnpm build:packages && changeset publish",
-		"lint": "pnpm -r lint",
-		"format": "pnpm -r format",
-		"check": "pnpm -r check",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"check": "pnpm build:packages && pnpm -r check",
 		"sync": "pnpm -r sync",
 		"postinstall": "pnpm -r sync"
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@changesets/cli": "^2.26.2",
-		"@svitejs/changesets-changelog-github-compact": "^1.1.0"
-	}
+		"@changesets/cli": "^2.27.1",
+		"@huntabyte/eslint-config": "^0.3.2",
+		"@huntabyte/eslint-plugin": "^0.1.0",
+		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
+		"eslint": "^9.8.0",
+		"eslint-plugin-svelte": "^2.44.1",
+		"prettier": "^3.3.3",
+		"prettier-plugin-svelte": "^3.2.7",
+		"prettier-plugin-tailwindcss": "^0.6.5",
+		"svelte": "5.0.0-next.262",
+		"svelte-eslint-parser": "^0.41.1"
+	},
+	"type": "module",
+	"engines": {
+		"pnpm": ">=8.6.0",
+		"node": ">=18"
+	},
+	"packageManager": "pnpm@9.6.0"
 }

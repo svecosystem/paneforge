@@ -1,6 +1,4 @@
-import type { PageServerLoad } from "./$types";
-
-export const load: PageServerLoad = async (event) => {
+export async function load(event) {
 	let layout = event.cookies.get("PaneForge:layout");
 	if (layout) {
 		layout = JSON.parse(layout);
@@ -9,4 +7,4 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		layout,
 	};
-};
+}

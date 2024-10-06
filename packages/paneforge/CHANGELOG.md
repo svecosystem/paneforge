@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.0-next.0
+
+### Major Changes
+
+- Svelte 5 ([#46](https://github.com/svecosystem/paneforge/pull/46))
+
 ## 0.0.6
 
 ### Patch Changes

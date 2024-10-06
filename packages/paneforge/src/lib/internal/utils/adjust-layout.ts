@@ -1,10 +1,7 @@
 import type { PaneConstraints } from "../types.js";
 import { assert } from "./assert.js";
-import {
-	compareNumbersWithTolerance,
-	areNumbersAlmostEqual,
-	resizePane,
-} from "$lib/internal/utils/index.js";
+import { areNumbersAlmostEqual, compareNumbersWithTolerance } from "./compare.js";
+import { resizePane } from "./resize.js";
 
 /**
  * Adjusts the layout of panes based on the delta of the resize handle.
@@ -41,6 +38,7 @@ export function adjustLayoutByDelta({
 	// A positive delta means the pane(s) immediately before the resize handle should "expand".
 	// This is accomplished by shrinking/contracting (and shifting) one or more of the panes after the resize handle.
 
+	// eslint-disable-next-line no-lone-blocks
 	{
 		// If this is a resize triggered by a keyboard event, our logic for expanding/collapsing is different.
 		// We no longer check the halfway threshold because this may prevent the pane from expanding at all.
@@ -110,7 +108,6 @@ export function adjustLayoutByDelta({
 		let index = delta < 0 ? secondPivotIndex : firstPivotIndex;
 		let maxAvailableDelta = 0;
 
-		// eslint-disable-next-line no-constant-condition
 		while (true) {
 			const prevSize = prevLayout[index];
 			assert(prevSize != null);
@@ -158,9 +155,11 @@ export function adjustLayoutByDelta({
 				nextLayout[index] = safeSize;
 
 				if (
-					deltaApplied.toPrecision(3).localeCompare(Math.abs(delta).toPrecision(3), undefined, {
-						numeric: true,
-					}) >= 0
+					deltaApplied
+						.toPrecision(3)
+						.localeCompare(Math.abs(delta).toPrecision(3), undefined, {
+							numeric: true,
+						}) >= 0
 				) {
 					break;
 				}

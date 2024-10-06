@@ -27,7 +27,7 @@ export function resizePane({
 	}
 
 	newSize = Math.min(maxSize, newSize);
-	return parseFloat(newSize.toFixed(PRECISION));
+	return Number.parseFloat(newSize.toFixed(PRECISION));
 }
 
 /**
