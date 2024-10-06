@@ -97,7 +97,7 @@
 			"user-select": "none",
 			"-webkit-user-select": "none",
 			"-webkit-touch-callout": "none",
-		}) + styleFromProps ?? "";
+		}) + styleFromProps;
 
 	$: attrs = {
 		"data-direction": $direction,
