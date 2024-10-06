@@ -4,7 +4,7 @@
 
 ### Major Changes
 
-- aad27de: Svelte 5
+- Svelte 5 ([#46](https://github.com/svecosystem/paneforge/pull/46))
 
 ## 0.0.6
 
