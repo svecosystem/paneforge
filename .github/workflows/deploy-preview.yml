@@ -33,6 +33,5 @@ jobs:
                   accountId: ${{ secrets.CF_ACCOUNT_ID }}
                   githubToken: ${{ secrets.GITHUB_TOKEN }}
                   projectName: paneforge
-                  directory: ${{ steps.preview-build-artifact.outputs.download-path }}
-                  workingDirectory: sites/docs
                   deploymentName: Preview
+                  directory: ${{ steps.preview-build-artifact.outputs.download-path }}
