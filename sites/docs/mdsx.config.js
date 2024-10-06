@@ -93,7 +93,6 @@ function remarkRemovePrettierIgnore() {
 	return async (tree) => {
 		visit(tree, "code", (node) => {
 			node.value = node.value
-				// @ts-expect-error - not dealing with this rn
 				.replaceAll("<!-- prettier-ignore -->\n", "")
 				.replaceAll("// prettier-ignore\n", "");
 		});

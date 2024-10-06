@@ -25,7 +25,7 @@ export type WithChild<
 	SnippetProps extends Record<PropertyKey, unknown> = { _default: never },
 	/**
 	 * The underlying DOM element being rendered. You can bind to this prop to
-	 * programatically interact with the element.
+	 * programmatically interact with the element.
 	 */
 	Ref = HTMLElement,
 > = Omit<Props, "child" | "children"> & {
@@ -37,7 +37,7 @@ export type WithChild<
 	ref?: Ref | null | undefined;
 };
 
-export type PrimitiveDivAttributes = Primitive<HTMLAttributes<HTMLDivElement>>;
+export type PaneForgePrimitiveDivAttributes = Primitive<HTMLAttributes<HTMLDivElement>>;
 
 export type PanePropsWithoutHTML = WithChild<{
 	/**
@@ -94,7 +94,7 @@ export type PanePropsWithoutHTML = WithChild<{
 }>;
 
 export type PaneProps = PanePropsWithoutHTML &
-	Without<PrimitiveDivAttributes, PanePropsWithoutHTML>;
+	Without<PaneForgePrimitiveDivAttributes, PanePropsWithoutHTML>;
 
 export type PaneGroupPropsWithoutHTML = WithChild<{
 	/**
@@ -127,7 +127,7 @@ export type PaneGroupPropsWithoutHTML = WithChild<{
 }>;
 
 export type PaneGroupProps = PaneGroupPropsWithoutHTML &
-	Without<PrimitiveDivAttributes, PaneGroupPropsWithoutHTML>;
+	Without<PaneForgePrimitiveDivAttributes, PaneGroupPropsWithoutHTML>;
 
 export type PaneResizerPropsWithoutHTML = WithChild<{
 	/**
@@ -149,10 +149,10 @@ export type PaneResizerPropsWithoutHTML = WithChild<{
 }>;
 
 export type PaneResizerProps = PaneResizerPropsWithoutHTML &
-	Without<PrimitiveDivAttributes, PaneResizerPropsWithoutHTML>;
+	Without<PaneForgePrimitiveDivAttributes, PaneResizerPropsWithoutHTML>;
 
 export type PaneAPI = {
-	/* Collapse the panee to its minimum size */
+	/* Collapse the pane to its minimum size */
 	collapse: () => void;
 	/* Expand the pane to its previous size */
 	expand: () => void;

@@ -3,14 +3,14 @@
 	import { DotsSixVertical } from "$icons/index.js";
 	import { Button } from "$lib/components/ui/button";
 
-	let showPaneOne = true;
-	let showPaneThree = true;
+	let showPaneOne = $state(true);
+	let showPaneThree = $state(true);
 </script>
 
 <div class="flex items-center gap-2">
 	<Button
 		variant="outline"
-		on:click={() => {
+		onclick={() => {
 			showPaneOne = !showPaneOne;
 		}}
 	>
@@ -18,7 +18,7 @@
 	</Button>
 	<Button
 		variant="outline"
-		on:click={() => {
+		onclick={() => {
 			showPaneThree = !showPaneThree;
 		}}
 	>
