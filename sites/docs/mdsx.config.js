@@ -86,7 +86,7 @@ export const mdsxConfig = defineConfig({
  * itself and checking for it in the code block, but that's not something we need
  * at the moment.
  *
- * @returns {MdastTransformer} - a mdast transformer that removes the prettier-ignore comment
+ * @returns {MdastTransformer} - a mdast transformer that removes the prettier-ignore comment and trailing whitespace
  *
  */
 function remarkRemovePrettierIgnore() {
