@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.0-next.1
+
+### Patch Changes
+
+- fix: issue with useId causing duplicate IDs ([#49](https://github.com/svecosystem/paneforge/pull/49))
+
 ## 1.0.0-next.0
 
 ### Major Changes
