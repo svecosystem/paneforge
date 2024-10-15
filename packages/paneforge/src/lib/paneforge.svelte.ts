@@ -80,9 +80,9 @@ class PaneGroupState {
 	#keyboardResizeBy: PaneGroupStateProps["keyboardResizeBy"];
 	#onLayout: PaneGroupStateProps["onLayout"];
 	#storage: PaneGroupStateProps["storage"];
-	dragState = $state<DragState | null>(null);
-	layout = $state<number[]>([]);
-	paneDataArray = $state<PaneData[]>([]);
+	dragState = $state.raw<DragState | null>(null);
+	layout = $state.raw<number[]>([]);
+	paneDataArray = $state.raw<PaneData[]>([]);
 	paneDataArrayChanged = $state<boolean>(false);
 
 	paneIdToLastNotifiedSizeMap = $state<Record<string, number>>({});
