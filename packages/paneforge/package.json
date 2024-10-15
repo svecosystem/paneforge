@@ -43,7 +43,7 @@
 		"postcss": "^8.4.32",
 		"postcss-load-config": "^5.0.2",
 		"publint": "^0.2.8",
-		"svelte": "5.0.0-next.262",
+		"svelte": "^5.0.0-next.262",
 		"svelte-check": "^4.0.4",
 		"tailwindcss": "^3.4.1",
 		"tslib": "^2.6.3",
@@ -55,6 +55,6 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"svelte-toolbelt": "^0.4.1"
+		"svelte-toolbelt": "^0.4.2"
 	}
 }
