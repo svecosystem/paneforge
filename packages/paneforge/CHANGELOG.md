@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.0-next.2
+
+### Patch Changes
+
+- fix: issue where conditional panes would increase size on show/hide ([#58](https://github.com/svecosystem/paneforge/pull/58))
+
 ## 1.0.0-next.1
 
 ### Patch Changes
