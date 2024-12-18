@@ -75,7 +75,15 @@ export const defaultStorage: PaneGroupStorage = {
 	},
 };
 
-export const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
+const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
+
+export function useEnvironment() {
+	return environmentContext.getOr(
+		new EnvironmentState({
+			getRootNode: () => document,
+		})
+	);
+}
 
 class PaneGroupState {
 	id: PaneGroupStateProps["id"];
@@ -105,9 +113,7 @@ class PaneGroupState {
 		this.#onLayout = props.onLayout;
 		this.#storage = props.storage;
 
-		this.#domEnv = environmentContext.getOr(
-			new EnvironmentState({ getRootNode: () => document })
-		);
+		this.#domEnv = useEnvironment();
 
 		useRefById({
 			id: this.id,
@@ -121,7 +127,6 @@ class PaneGroupState {
 					groupId,
 					layout,
 					paneDataArray,
-					getDoc: this.getDoc,
 				});
 
 				return cleanup;
@@ -208,14 +213,21 @@ class PaneGroupState {
 
 			const { initialLayout } = dragState ?? {};
 
-			const pivotIndices = getPivotIndices(groupId, dragHandleId, this.getDoc);
+			const pivotIndices = getPivotIndices(groupId, dragHandleId);
 
-			let delta = getDeltaPercentage(e, dragHandleId, direction, dragState, keyboardResizeBy);
+			let delta = getDeltaPercentage({
+				event: e,
+				dragHandleId,
+				dir: direction,
+				initialDragState: dragState,
+				keyboardResizeBy,
+				getDoc: this.getDoc,
+			});
 			if (delta === 0) return;
 
 			// support RTL
 			const isHorizontal = direction === "horizontal";
-			if (document.dir === "rtl" && isHorizontal) {
+			if (this.getDoc().dir === "rtl" && isHorizontal) {
 				delta = -delta;
 			}
 
@@ -298,7 +310,7 @@ class PaneGroupState {
 		const direction = this.direction.current;
 		const layout = this.layout;
 
-		const handleElement = getResizeHandleElement(dragHandleId);
+		const handleElement = getResizeHandleElement(dragHandleId, this.getDoc);
 
 		assert(handleElement);
 
@@ -470,10 +482,7 @@ class PaneGroupState {
 
 	#setResizeHandlerEventListeners = () => {
 		const groupId = this.id.current;
-		const handles = getResizeHandleElementsForGroup(
-			groupId,
-			() => this.#domEnv?.getDoc() ?? document
-		);
+		const handles = getResizeHandleElementsForGroup(groupId);
 		const paneDataArray = this.paneDataArray;
 
 		const unsubHandlers = handles.map((handle) => {
@@ -514,7 +523,7 @@ class PaneGroupState {
 						: collapsedSize - size,
 					layout,
 					paneConstraints: paneDataArray.map((paneData) => paneData.constraints),
-					pivotIndices: getPivotIndices(groupId, handleId, this.getDoc),
+					pivotIndices: getPivotIndices(groupId, handleId),
 					trigger: "keyboard",
 				});
 
@@ -661,12 +670,8 @@ class PaneResizerState {
 
 		e.preventDefault();
 
-		const handles = getResizeHandleElementsForGroup(this.#group.id.current, this.#group.getDoc);
-		const index = getResizeHandleElementIndex(
-			this.#group.id.current,
-			this.#id.current,
-			this.#group.getDoc
-		);
+		const handles = getResizeHandleElementsForGroup(this.#group.id.current);
+		const index = getResizeHandleElementIndex(this.#group.id.current, this.#id.current);
 
 		if (index === null) return;
 
