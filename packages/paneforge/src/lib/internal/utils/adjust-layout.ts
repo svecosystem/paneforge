@@ -38,7 +38,6 @@ export function adjustLayoutByDelta({
 	// A positive delta means the pane(s) immediately before the resize handle should "expand".
 	// This is accomplished by shrinking/contracting (and shifting) one or more of the panes after the resize handle.
 
-	// eslint-disable-next-line no-lone-blocks
 	{
 		// If this is a resize triggered by a keyboard event, our logic for expanding/collapsing is different.
 		// We no longer check the halfway threshold because this may prevent the pane from expanding at all.

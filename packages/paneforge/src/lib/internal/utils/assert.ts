@@ -1,5 +1,5 @@
 export function assert(
-	// eslint-disable-next-line ts/no-explicit-any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	expectedCondition: any,
 	message: string = "Assertion failed!"
 ): asserts expectedCondition {
