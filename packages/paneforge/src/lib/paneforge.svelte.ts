@@ -75,7 +75,7 @@ export const defaultStorage: PaneGroupStorage = {
 	},
 };
 
-const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
+export const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
 
 export function useEnvironment() {
 	return environmentContext.getOr(
