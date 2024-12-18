@@ -17,6 +17,7 @@ export type WithChild<
 	/**
 	 * The props that the component accepts.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	Props extends Record<PropertyKey, unknown> = {},
 	/**
 	 * The props that are passed to the `child` and `children` snippets. The `ElementProps` are

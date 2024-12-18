@@ -12,13 +12,13 @@ PaneForge provides components that make it easy to create resizable panes in you
 
 ## Features
 
--   **Simple API**: PaneForge is designed to be easy to use. It provides a small set of components that can be combined to create complex layouts.
--   **Resizable Panes**: Panes can be resized by dragging the resizer between them.
--   **Nested Groups**: Groups of panes can be nested inside other groups to create complex layouts.
--   **Customizable**: The appearance and behavior of the panes can be customized using CSS and Svelte props.
--   **Persistent Layouts**: PaneForge can be used with LocalStorage or cookies to persist the layout of the panes between page loads.
--   **Accessible**: PaneForge is designed to be accessible to all users, including those who use assistive technologies.
--   **Community-driven**: PaneForge is an open-source project that welcomes contributions from the community. If you have an idea for a new feature or an improvement, we'd love to hear from you!
+- **Simple API**: PaneForge is designed to be easy to use. It provides a small set of components that can be combined to create complex layouts.
+- **Resizable Panes**: Panes can be resized by dragging the resizer between them.
+- **Nested Groups**: Groups of panes can be nested inside other groups to create complex layouts.
+- **Customizable**: The appearance and behavior of the panes can be customized using CSS and Svelte props.
+- **Persistent Layouts**: PaneForge can be used with LocalStorage or cookies to persist the layout of the panes between page loads.
+- **Accessible**: PaneForge is designed to be accessible to all users, including those who use assistive technologies.
+- **Community-driven**: PaneForge is an open-source project that welcomes contributions from the community. If you have an idea for a new feature or an improvement, we'd love to hear from you!
 
 ## Installation
 

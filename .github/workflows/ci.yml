@@ -4,7 +4,18 @@ on:
     push:
         branches:
             - main
+            - next
+        paths-ignore:
+            - ".changeset/**"
+            - README.md
+            - ".vscode/**"
+            - CHANGELOG.md
     pull_request:
+        paths-ignore:
+            - ".changeset/**"
+            - README.md
+            - ".vscode/**"
+            - CHANGELOG.md
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
@@ -13,7 +24,7 @@ concurrency:
 jobs:
     Check:
         name: Run svelte-check
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v4
@@ -29,7 +40,7 @@ jobs:
               run: pnpm check
 
     Lint:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         name: Lint
         steps:
             - uses: actions/checkout@v4

@@ -75,3 +75,6 @@ web_modules/
 .env.local
 
 sites/docs/.vercel
+docs/.velite
+docs/.wrangler
+docs/public
