@@ -7,7 +7,7 @@
 	let showPaneThree = $state(true);
 </script>
 
-<div class="flex items-center gap-2">
+<div class="mt-4 flex items-center gap-2">
 	<Button
 		variant="outline"
 		onclick={() => {

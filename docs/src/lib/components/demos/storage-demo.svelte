@@ -3,7 +3,7 @@
 	import DotsSixVertical from "phosphor-svelte/lib/DotsSixVertical";
 </script>
 
-<div>
+<div class="mt-4">
 	<PaneGroup direction="horizontal" class="w-full rounded-lg" autoSaveId="someGroupId">
 		<Pane defaultSize={50} class="bg-muted rounded-lg">
 			<div class="flex h-[400px] items-center justify-center p-6">
