@@ -1,3 +1,4 @@
+import type { EnvironmentState } from "svelte-toolbelt";
 import type { Direction, DragState, PaneConstraints, PaneData, ResizeEvent } from "./types.js";
 import { calculateAriaValues } from "./utils/aria.js";
 import { assert } from "./utils/assert.js";
@@ -11,12 +12,14 @@ export function updateResizeHandleAriaValues({
 	groupId,
 	layout,
 	paneDataArray,
+	getDoc,
 }: {
 	groupId: string;
 	layout: number[];
 	paneDataArray: PaneData[];
+	getDoc: EnvironmentState["getDoc"];
 }) {
-	const resizeHandleElements = getResizeHandleElementsForGroup(groupId);
+	const resizeHandleElements = getResizeHandleElementsForGroup(groupId, getDoc);
 
 	for (let index = 0; index < paneDataArray.length - 1; index++) {
 		const { valueMax, valueMin, valueNow } = calculateAriaValues({
@@ -50,25 +53,34 @@ export function updateResizeHandleAriaValues({
 	};
 }
 
-export function getResizeHandleElementsForGroup(groupId: string): HTMLElement[] {
+export function getResizeHandleElementsForGroup(
+	groupId: string,
+	getDoc: EnvironmentState["getDoc"]
+): HTMLElement[] {
 	if (!isBrowser) return [];
+	const doc = getDoc();
 	return Array.from(
-		document.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
+		doc.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
 	);
 }
 
-export function getResizeHandleElementIndex(groupId: string, id: string): number | null {
+export function getResizeHandleElementIndex(
+	groupId: string,
+	id: string,
+	getDoc: EnvironmentState["getDoc"]
+): number | null {
 	if (!isBrowser) return null;
-	const handles = getResizeHandleElementsForGroup(groupId);
+	const handles = getResizeHandleElementsForGroup(groupId, getDoc);
 	const index = handles.findIndex((handle) => handle.getAttribute("data-pane-resizer-id") === id);
 	return index ?? null;
 }
 
 export function getPivotIndices(
 	groupId: string,
-	dragHandleId: string
+	dragHandleId: string,
+	getDoc: EnvironmentState["getDoc"]
 ): [indexBefore: number, indexAfter: number] {
-	const index = getResizeHandleElementIndex(groupId, dragHandleId);
+	const index = getResizeHandleElementIndex(groupId, dragHandleId, getDoc);
 
 	return index != null ? [index, index + 1] : [-1, -1];
 }
@@ -371,17 +383,23 @@ export function getResizeEventCursorPosition(dir: Direction, e: ResizeEvent): nu
 	}
 }
 
-export function getResizeHandlePaneIds(
-	groupId: string,
-	handleId: string,
-	panesArray: PaneData[]
-): [idBefore: string | null, idAfter: string | null] {
+export function getResizeHandlePaneIds({
+	groupId,
+	handleId,
+	paneDataArray,
+	getDoc,
+}: {
+	groupId: string;
+	handleId: string;
+	paneDataArray: PaneData[];
+	getDoc: EnvironmentState["getDoc"];
+}): [idBefore: string | null, idAfter: string | null] {
 	const handle = getResizeHandleElement(handleId);
-	const handles = getResizeHandleElementsForGroup(groupId);
+	const handles = getResizeHandleElementsForGroup(groupId, getDoc);
 	const index = handle ? handles.indexOf(handle) : -1;
 
-	const idBefore: string | null = panesArray[index]?.id ?? null;
-	const idAfter: string | null = panesArray[index + 1]?.id ?? null;
+	const idBefore: string | null = paneDataArray[index]?.id ?? null;
+	const idAfter: string | null = paneDataArray[index + 1]?.id ?? null;
 
 	return [idBefore, idAfter];
 }

@@ -4,6 +4,10 @@ description: A draggable handle between two panes that allows the user to resize
 section: Components
 ---
 
+<script>
+	import { PropField } from '@svecodocs/kit'
+</script>
+
 The `PaneResizer` component is used to create a draggable handle between two panes that allows the user to resize them.
 
 ## Usage
@@ -20,38 +24,29 @@ The `PaneResizer` component is used to create a draggable handle between two pan
 </PaneGroup>
 ```
 
-## Props
+## API Reference
 
-Here are the props available for the `PaneResizer` component:
+### Props
 
-```ts
-export type PaneResizerProps = {
-	/**
-	 * Whether the resize handle is disabled.
-	 *
-	 * @defaultValue `false`
-	 */
-	disabled?: boolean;
+<PropField name="disabled" type="boolean" defaultValue="false">
+Whether the resize handle is disabled.
+</PropField>
 
-	/**
-	 * A callback that is called when the resize handle's dragging state changes.
-	 */
-	onDraggingChange?: (isDragging: boolean) => void;
+<PropField name="onDraggingChange" type="(isDragging: boolean) => void">
+A callback that is called when the resize handle's dragging state changes.
+</PropField>
 
-	/**
-	 * The tabIndex of the resize handle.
-	 */
-	tabIndex?: number;
+<PropField name="tabIndex" type="number">
+The tabIndex of the resize handle.
+</PropField>
 
-	/**
-	 * The underlying DOM element of the resize handle. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null;
-} & HTMLAttributes<HTMLDivElement>;
-```
+<PropField name="ref" type="HTMLElement | null">
 
-## Data Attributes
+The underlying DOM element of the resize handle. You can `bind` to this prop to get a reference to the element.
+
+</PropField>
+
+### Data Attributes
 
 The following data attributes are available for the `PaneResizer` component:
 

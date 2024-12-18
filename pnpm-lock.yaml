@@ -113,9 +113,12 @@ importers:
 
   packages/paneforge:
     dependencies:
+      runed:
+        specifier: ^0.20.0
+        version: 0.20.0(svelte@5.14.4)
       svelte-toolbelt:
-        specifier: ^0.4.2
-        version: 0.4.6(svelte@5.14.4)
+        specifier: ^0.7.0
+        version: 0.7.0(svelte@5.14.4)
     devDependencies:
       '@sveltejs/kit':
         specifier: ^2.5.3
@@ -2943,6 +2946,11 @@ packages:
     peerDependencies:
       svelte: ^5.0.0-next.1
 
+  runed@0.20.0:
+    resolution: {integrity: sha512-YqPxaUdWL5nUXuSF+/v8a+NkVN8TGyEGbQwTA25fLY35MR/2bvZ1c6sCbudoo1kT4CAJPh4kUkcgGVxW127WKw==}
+    peerDependencies:
+      svelte: ^5.7.0
+
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
@@ -3102,6 +3110,12 @@ packages:
     engines: {node: '>=18', pnpm: '>=8.7.0'}
     peerDependencies:
       svelte: ^5.0.0-next.126
+
+  svelte-toolbelt@0.7.0:
+    resolution: {integrity: sha512-i/Tv4NwAWWqJnK5H0F8y/ubDnogDYlwwyzKhrspTUFzrFuGnYshqd2g4/R43ds841wmaFiSW/HsdsdWhPOlrAA==}
+    engines: {node: '>=18', pnpm: '>=8.7.0'}
+    peerDependencies:
+      svelte: ^5.0.0
 
   svelte2tsx@0.7.31:
     resolution: {integrity: sha512-exrN1o9mdCLAA7hTCudz731FIxomH/0SN9ZIX+WrY/XnlLuno/NNC1PF6JXPZVqp/4sMMDKteqyKoG44hliljQ==}
@@ -6600,6 +6614,11 @@ snapshots:
       esm-env: 1.2.1
       svelte: 5.14.4
 
+  runed@0.20.0(svelte@5.14.4):
+    dependencies:
+      esm-env: 1.2.1
+      svelte: 5.14.4
+
   sade@1.8.1:
     dependencies:
       mri: 1.2.0
@@ -6771,6 +6790,13 @@ snapshots:
   svelte-toolbelt@0.4.6(svelte@5.14.4):
     dependencies:
       clsx: 2.1.1
+      style-to-object: 1.0.8
+      svelte: 5.14.4
+
+  svelte-toolbelt@0.7.0(svelte@5.14.4):
+    dependencies:
+      clsx: 2.1.1
+      runed: 0.20.0(svelte@5.14.4)
       style-to-object: 1.0.8
       svelte: 5.14.4
 

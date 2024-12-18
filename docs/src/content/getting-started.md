@@ -9,7 +9,7 @@ section: Anchors
 Install Paneforge using your favorite package manager:
 
 ```bash
-npm install paneforge
+npm install paneforge@next
 ```
 
 ## Basic Usage
