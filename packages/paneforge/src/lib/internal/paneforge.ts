@@ -423,6 +423,8 @@ export function createPaneForge(props: CreatePaneForgeProps) {
 		});
 	}
 
+
+
 	function isPaneCollapsed(paneData: PaneData) {
 		const $paneDataArray = get(paneDataArray);
 		const $layout = get(layout);
