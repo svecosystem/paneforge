@@ -319,6 +319,7 @@ class PaneGroupState {
 
 		if (index < 0) return;
 		paneDataArray.splice(index, 1);
+		this.paneDataArray = paneDataArray;
 		delete this.paneIdToLastNotifiedSizeMap[paneData.id];
 		this.paneDataArrayChanged = true;
 	};

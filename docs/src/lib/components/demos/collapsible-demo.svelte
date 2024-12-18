@@ -7,7 +7,7 @@
 	let collapsed = $state(false);
 </script>
 
-<div class="flex items-center gap-2">
+<div class="mt-4 flex items-center gap-2">
 	{#if collapsed}
 		<Button
 			variant="outline"
