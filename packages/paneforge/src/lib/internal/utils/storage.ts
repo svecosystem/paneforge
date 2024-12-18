@@ -1,4 +1,3 @@
-import { get, type Writable } from "svelte/store";
 import type { PaneData } from "../types.js";
 import { LOCAL_STORAGE_DEBOUNCE_INTERVAL } from "../constants.js";
 
@@ -12,8 +11,8 @@ export type SerializedPaneGroupState = {
 };
 
 export type PaneGroupStorage = {
-	getItem(name: string): string | null;
-	setItem(name: string, value: string): void;
+	getItem: (name: string) => string | null;
+	setItem: (name: string, value: string) => void;
 };
 
 /**
@@ -23,13 +22,12 @@ export type PaneGroupStorage = {
 export function initializeStorage(storageObject: PaneGroupStorage): void {
 	try {
 		if (typeof localStorage === "undefined") {
-			throw new Error("localStorage is not supported in this environment");
+			throw new TypeError("localStorage is not supported in this environment");
 		}
 
 		storageObject.getItem = (name: string) => localStorage.getItem(name);
 		storageObject.setItem = (name: string, value: string) => localStorage.setItem(name, value);
 	} catch (err) {
-		// eslint-disable-next-line no-console
 		console.error(err);
 		storageObject.getItem = () => null;
 		storageObject.setItem = () => {};
@@ -119,7 +117,6 @@ export function savePaneGroupState(
 	try {
 		storage.setItem(paneGroupKey, JSON.stringify(state));
 	} catch (error) {
-		// eslint-disable-next-line no-console
 		console.error(error);
 	}
 }
@@ -131,7 +128,7 @@ const debounceMap: {
 /**
  * Returns a debounced version of the given function.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 function debounce<T extends Function>(callback: T, durationMs: number = 10) {
 	let timeoutId: NodeJS.Timeout | null = null;
 
@@ -158,21 +155,19 @@ export function updateStorageValues({
 	autoSaveId,
 	layout,
 	storage,
-	paneDataArrayStore,
-	paneSizeBeforeCollapseStore,
+	paneDataArray,
+	paneSizeBeforeCollapse,
 }: {
 	autoSaveId: string;
 	layout: number[];
 	storage: PaneGroupStorage;
-	paneDataArrayStore: Writable<PaneData[]>;
-	paneSizeBeforeCollapseStore: Writable<Map<string, number>>;
+	paneDataArray: PaneData[];
+	paneSizeBeforeCollapse: Map<string, number>;
 }) {
-	const $paneDataArray = get(paneDataArrayStore);
-
 	// If this pane has been configured to persist sizing
 	// information, save sizes to local storage.
 
-	if (layout.length === 0 || layout.length !== $paneDataArray.length) return;
+	if (layout.length === 0 || layout.length !== paneDataArray.length) return;
 
 	let debouncedSave = debounceMap[autoSaveId];
 
@@ -184,9 +179,8 @@ export function updateStorageValues({
 
 	// Clone mutable data before passing to the debounced function,
 	// else we run the risk of saving an incorrect combination of mutable and immutable values to state.
-	const clonedPaneDataArray = [...$paneDataArray];
+	const clonedPaneDataArray = [...paneDataArray];
 
-	const $paneSizeBeforeCollapse = get(paneSizeBeforeCollapseStore);
-	const clonedPaneSizesBeforeCollapse = new Map($paneSizeBeforeCollapse);
+	const clonedPaneSizesBeforeCollapse = new Map(paneSizeBeforeCollapse);
 	debouncedSave(autoSaveId, clonedPaneDataArray, clonedPaneSizesBeforeCollapse, layout, storage);
 }

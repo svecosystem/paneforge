@@ -45,5 +45,5 @@ export function areArraysEqual<T extends Array<unknown>>(arrA: T, arrB: T): bool
  * Rounds a number to a given number of decimal places.
  */
 function roundTo(value: number, decimals: number): number {
-	return parseFloat(value.toFixed(decimals));
+	return Number.parseFloat(value.toFixed(decimals));
 }

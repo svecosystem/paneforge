@@ -4,8 +4,7 @@ export function assert(
 	message: string = "Assertion failed!"
 ): asserts expectedCondition {
 	if (!expectedCondition) {
-		// eslint-disable-next-line no-console
 		console.error(message);
-		throw Error(message);
+		throw new Error(message);
 	}
 }

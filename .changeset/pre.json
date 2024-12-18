@@ -1,0 +1,13 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "paneforge": "0.0.6",
+    "docs": "0.0.0"
+  },
+  "changesets": [
+    "chilled-monkeys-wink",
+    "large-zoos-obey",
+    "silent-rivers-sneeze"
+  ]
+}
