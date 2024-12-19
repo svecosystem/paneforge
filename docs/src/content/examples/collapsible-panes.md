@@ -27,34 +27,21 @@ Here's the high-level structure of the example above:
 <script lang="ts">
 	import { PaneGroup, Pane, PaneResizer, type PaneAPI } from "paneforge";
 
-	let paneOne: PaneAPI;
-	let collapsed = false;
+	let paneOne = $state<Pane>();
+	let collapsed = $state(false);
 </script>
 
-{#if collapsed}
-	<button
-		on:click={() => {
-			paneOne.expand();
-		}}
-	>
-		Expand Pane One
-	</button>
-{:else}
-	<button
-		on:click={() => {
-			paneOne.collapse();
-		}}
-	>
-		Collapse Pane One
-	</button>
-{/if}
+<button onclick={() => (collapsed ? paneOne?.expand() : paneOne?.collapse())}>
+	{collapsed ? "Expand" : "Collapse"} Pane One
+</button>
+
 <PaneGroup direction="horizontal">
 	<Pane
 		defaultSize={50}
 		collapsedSize={5}
 		collapsible={true}
 		minSize={15}
-		bind:pane={paneOne}
+		bind:this={paneOne}
 		onCollapse={() => (collapsed = true)}
 		onExpand={() => (collapsed = false)}
 	/>

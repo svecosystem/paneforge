@@ -61,11 +61,12 @@ export const load: PageServerLoad = async (event) => {
 };
 ```
 
-```svelte
+```svelte title="MyPaneGroup.svelte"
 <script lang="ts">
 	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 
-	export let layout: number[] | undefined = undefined;
+	let { layout }: { layout?: number[] } = $props();
+
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}

@@ -4,80 +4,74 @@ description: A container for panes or nested pane groups.
 section: Components
 ---
 
-The `PaneGroup` component wraps a collection of panes or nested `PaneGroup`s and is used to initialize and manage the layout of the panes.
+<script>
+	import { PropField, Collapsible } from '@svecodocs/kit';
+</script>
 
-## Props
+The `PaneGroup` component wraps a collection of `Pane`s or nested `PaneGroup`s and is used to initialize and manage the layout of the panes.
 
-Here are the props available for the `PaneGroup` component:
+## API Reference
 
-```ts
-export type PaneGroupProps = {
-	/**
-	 * The id to save the layout of the panes to in local storage.
-	 */
-	autoSaveId?: string | null;
+### Props
 
-	/**
-	 * The direction of the panes.
-	 * @required
-	 */
-	direction: "horizontal" | "vertical";
+<PropField name="direction" required type="'horizontal' | 'vertical'">
+The direction of the panes within the group.
+</PropField>
 
-	/**
-	 * The id of the pane group DOM element.
-	 */
-	id?: string | null;
+<PropField name="autoSaveId" type="string">
+The id to save the layout of the panes to in local storage.
+</PropField>
 
-	/**
-	 * The amount of space to add to the pane group when the keyboard
-	 * resize event is triggered.
-	 */
-	keyboardResizeBy?: number | null;
+<PropField name="keyboardResizeBy" type="number">
+The amount of space to add to the pane group when the keyboard resize event is triggered.
+</PropField>
 
-	/**
-	 * A callback called when the layout of the panes within the group changes.
-	 */
-	onLayoutChange?: (layout: number[]) => void | null;
+<PropField name="onLayoutChange" type="(layout: number) => void | null">
+A callback called when the layout of the panes within the group changes.
+</PropField>
 
-	/**
-	 * The storage object to use for saving the layout of the panes in the group.
-	 *
-	 * Defaults to use `localStorage` if an `autoSaveId` is provided and no storage is provided.
-	 */
-	storage?: PaneGroupStorage;
+<PropField name="storage" type="PaneGroupStorage" defaultValue="localStorage">
+<Collapsible title="properties">
+<PropField name="getItem" type="(name: string) => string | null" required>
+	Retrieves the item from storage.
+</PropField>
+<PropField name="setItem" type="(name: string, value: string) => void" required>
+	Sets the item to storage.
+</PropField>
+</Collapsible>
+</PropField>
 
-	/**
-	 * The style of the pane group. This will be appended to styles applied by
-	 * the library.
-	 */
-	style?: string;
+<PropField name="ref" type="HTMLElement | null">
+A reference to the underlying DOM element of the pane group. You can bind to this prop to get a reference to the element.
+</PropField>
 
-	/**
-	 * The underlying DOM element of the pane group. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null;
+<PropField name="this" type="PaneGroup">
+Retrieve a reference to the component to access methods for controlling the pane group.
+<Collapsible title="methods">
+<PropField name="getLayout" type="() => number[]">
+Get the layout of the pane group.
+</PropField>
+<PropField name="setLayout" type="(layout: number[]) => void">
+Set the layout of the pane group.
+</PropField>
+<PropField name="getId" type="() => string">
+Get the ID of the pane group.
+</PropField>
+</Collapsible>
+</PropField>
 
-	/**
-	 * An imperative API for the pane group. `bind` to this prop to get access
-	 * to methods for controlling the pane group.
-	 */
-	paneGroup?: PaneGroupAPI;
-} & Omit<HTMLAttributes<HTMLDivElement>, "id">;
-```
+### Data Attributes
 
-## Imperative API
-
-The `PaneGroup` component provides an imperative API for controlling the pane group which can be accessed by binding a variable to the `api` prop. Here are the methods available on the `PaneGroupAPI`:
+The following data attributes are available for the `PaneGroup` component:
 
 ```ts
-export type PaneGroupAPI = {
-	/** Get the ID of the PaneGroup */
-	getId: () => string;
-	/** Get the layout of the PaneGroup */
-	getLayout: () => number[];
-	/** Set the layout of the PaneGroup */
-	setLayout: (layout: number[]) => void;
+export type PaneGroupAttributes = {
+	/** Applied to every pane group element. */
+	"data-pane-group": "";
+	/** The direction of the pane group. */
+	"data-direction": "horizontal" | "vertical";
+	/** The ID of the pane group. */
+	"data-pane-group-id": string;
 };
 ```
 
@@ -91,20 +85,5 @@ export type PaneGroupStorage = {
 	getItem(name: string): string | null;
 	/** Sets the item to storage */
 	setItem(name: string, value: string): void;
-};
-```
-
-## Data Attributes
-
-The following data attributes are available for the `PaneGroup` component:
-
-```ts
-export type PaneGroupAttributes = {
-	/** Applied to every pane group element. */
-	"data-pane-group": "";
-	/** The direction of the pane group. */
-	"data-direction": "horizontal" | "vertical";
-	/** The ID of the pane group. */
-	"data-pane-group-id": string;
 };
 ```

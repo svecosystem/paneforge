@@ -1,11 +1,13 @@
 import {
+	EnvironmentState,
 	type ReadableBoxedValues,
 	type WithRefProps,
 	addEventListener,
 	executeCallbacks,
+	onMountEffect,
 	useRefById,
 } from "svelte-toolbelt";
-import { onMount, untrack } from "svelte";
+import { onMount } from "svelte";
 import { createContext } from "$lib/internal/utils/createContext.js";
 import {
 	callPaneCallbacks,
@@ -50,6 +52,7 @@ import {
 	loadPaneGroupState,
 	updateStorageValues,
 } from "$lib/internal/utils/storage.js";
+import { Context, watch } from "runed";
 
 type PaneGroupStateProps = WithRefProps<
 	ReadableBoxedValues<{
@@ -72,6 +75,16 @@ export const defaultStorage: PaneGroupStorage = {
 	},
 };
 
+export const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
+
+const defaultEnvironment = new EnvironmentState({
+	getRootNode: () => document,
+});
+
+export function useEnvironment() {
+	return environmentContext.getOr(defaultEnvironment);
+}
+
 class PaneGroupState {
 	id: PaneGroupStateProps["id"];
 	#ref: PaneGroupStateProps["ref"];
@@ -84,10 +97,12 @@ class PaneGroupState {
 	layout = $state.raw<number[]>([]);
 	paneDataArray = $state.raw<PaneData[]>([]);
 	paneDataArrayChanged = $state<boolean>(false);
-
 	paneIdToLastNotifiedSizeMap = $state<Record<string, number>>({});
 	paneSizeBeforeCollapseMap = new Map<string, number>();
 	prevDelta = $state(0);
+	#domEnv: EnvironmentState;
+	getDoc = () => this.#domEnv.getDoc();
+	getWindow = () => this.#domEnv.getWin();
 
 	constructor(props: PaneGroupStateProps) {
 		this.id = props.id;
@@ -98,41 +113,35 @@ class PaneGroupState {
 		this.#onLayout = props.onLayout;
 		this.#storage = props.storage;
 
+		this.#domEnv = useEnvironment();
+
 		useRefById({
 			id: this.id,
 			ref: this.#ref,
 		});
 
-		$effect(() => {
-			const groupId = this.id.current;
-			const layout = this.layout;
-			const paneDataArray = this.paneDataArray;
-
-			untrack(() => {
-				const unsub = updateResizeHandleAriaValues({
+		watch(
+			[() => this.id.current, () => this.layout, () => this.paneDataArray],
+			([groupId, layout, paneDataArray]) => {
+				const cleanup = updateResizeHandleAriaValues({
 					groupId,
 					layout,
 					paneDataArray,
 				});
 
-				return unsub;
-			});
+				return cleanup;
+			}
+		);
+
+		onMountEffect(() => {
+			const cleanup = this.#setResizeHandlerEventListeners();
+			return cleanup;
 		});
 
-		$effect(() => {
-			untrack(() => {
-				const unsub = this.#setResizeHandlerEventListeners();
-				return unsub;
-			});
-		});
-
-		$effect(() => {
-			const autoSaveId = this.#autoSaveId.current;
-			const layout = this.layout;
-			const storage = this.#storage.current;
-			if (!autoSaveId) return;
-
-			untrack(() => {
+		watch(
+			[() => this.#autoSaveId.current, () => this.layout, () => this.#storage.current],
+			([autoSaveId, layout, storage]) => {
+				if (!autoSaveId) return;
 				updateStorageValues({
 					autoSaveId,
 					layout,
@@ -140,13 +149,13 @@ class PaneGroupState {
 					paneDataArray: this.paneDataArray,
 					paneSizeBeforeCollapse: this.paneSizeBeforeCollapseMap,
 				});
-			});
-		});
+			}
+		);
 
-		$effect(() => {
-			const paneDataArrayChanged = this.paneDataArrayChanged;
-			if (!paneDataArrayChanged) return;
-			untrack(() => {
+		watch(
+			() => this.paneDataArrayChanged,
+			(paneDataArrayChanged) => {
+				if (!paneDataArrayChanged) return;
 				this.paneDataArrayChanged = false;
 				const autoSaveId = this.#autoSaveId.current;
 				const storage = this.#storage.current;
@@ -182,8 +191,8 @@ class PaneGroupState {
 				this.#onLayout.current?.(nextLayout);
 
 				callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
-			});
-		});
+			}
+		);
 	}
 
 	setLayout = (newLayout: number[]) => {
@@ -206,12 +215,19 @@ class PaneGroupState {
 
 			const pivotIndices = getPivotIndices(groupId, dragHandleId);
 
-			let delta = getDeltaPercentage(e, dragHandleId, direction, dragState, keyboardResizeBy);
+			let delta = getDeltaPercentage({
+				event: e,
+				dragHandleId,
+				dir: direction,
+				initialDragState: dragState,
+				keyboardResizeBy,
+				getDoc: this.getDoc,
+			});
 			if (delta === 0) return;
 
 			// support RTL
 			const isHorizontal = direction === "horizontal";
-			if (document.dir === "rtl" && isHorizontal) {
+			if (this.getDoc().dir === "rtl" && isHorizontal) {
 				delta = -delta;
 			}
 
@@ -294,7 +310,7 @@ class PaneGroupState {
 		const direction = this.direction.current;
 		const layout = this.layout;
 
-		const handleElement = getResizeHandleElement(dragHandleId);
+		const handleElement = getResizeHandleElement(dragHandleId, this.getDoc);
 
 		assert(handleElement);
 
@@ -473,7 +489,12 @@ class PaneGroupState {
 			const handleId = handle.getAttribute("data-pane-resizer-id");
 			if (!handleId) return noop;
 
-			const [idBefore, idAfter] = getResizeHandlePaneIds(groupId, handleId, paneDataArray);
+			const [idBefore, idAfter] = getResizeHandlePaneIds({
+				groupId,
+				handleId,
+				paneDataArray,
+				getDoc: this.getDoc,
+			});
 
 			if (idBefore == null || idAfter == null) return noop;
 
@@ -612,13 +633,16 @@ class PaneResizerState {
 				this.#onDraggingChange.current(false);
 			};
 
+			const doc = this.#group.getDoc();
+			const win = this.#group.getWindow();
+
 			const unsub = executeCallbacks(
-				addEventListener(document.body, "contextmenu", stopDraggingAndBlur),
-				addEventListener(document.body, "mousemove", onMove),
-				addEventListener(document.body, "touchmove", onMove, { passive: false }),
-				addEventListener(document.body, "mouseleave", onMouseLeave),
-				addEventListener(window, "mouseup", stopDraggingAndBlur),
-				addEventListener(window, "touchend", stopDraggingAndBlur)
+				addEventListener(doc.body, "contextmenu", stopDraggingAndBlur),
+				addEventListener(doc.body, "mousemove", onMove),
+				addEventListener(doc.body, "touchmove", onMove, { passive: false }),
+				addEventListener(doc.body, "mouseleave", onMouseLeave),
+				addEventListener(win, "mouseup", stopDraggingAndBlur),
+				addEventListener(win, "touchend", stopDraggingAndBlur)
 			);
 
 			return unsub;

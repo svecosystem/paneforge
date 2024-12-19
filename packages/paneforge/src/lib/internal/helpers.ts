@@ -1,9 +1,11 @@
+import type { EnvironmentState } from "svelte-toolbelt";
 import type { Direction, DragState, PaneConstraints, PaneData, ResizeEvent } from "./types.js";
 import { calculateAriaValues } from "./utils/aria.js";
 import { assert } from "./utils/assert.js";
 import { areNumbersAlmostEqual } from "./utils/compare.js";
 import { isBrowser, isHTMLElement, isKeyDown, isMouseEvent, isTouchEvent } from "./utils/is.js";
 import { resizePane } from "./utils/resize.js";
+import { useEnvironment } from "$lib/paneforge.svelte.js";
 
 export function noop() {}
 
@@ -52,8 +54,9 @@ export function updateResizeHandleAriaValues({
 
 export function getResizeHandleElementsForGroup(groupId: string): HTMLElement[] {
 	if (!isBrowser) return [];
+	const doc = useEnvironment().getDoc();
 	return Array.from(
-		document.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
+		doc.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
 	);
 }
 
@@ -261,31 +264,43 @@ export function validatePaneGroupLayout({
 
 export function getPaneGroupElement(id: string): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = document.querySelector(`[data-pane-group][data-pane-group-id="${id}"]`);
+	const doc = useEnvironment().getDoc();
+	const element = doc.querySelector(`[data-pane-group][data-pane-group-id="${id}"]`);
 	if (element) {
 		return element as HTMLElement;
 	}
 	return null;
 }
 
-export function getResizeHandleElement(id: string): HTMLElement | null {
+export function getResizeHandleElement(
+	id: string,
+	getDoc: EnvironmentState["getDoc"]
+): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = document.querySelector(`[data-pane-resizer-id="${id}"]`);
+	const doc = getDoc();
+	const element = doc.querySelector(`[data-pane-resizer-id="${id}"]`);
 	if (element) {
 		return element as HTMLElement;
 	}
 	return null;
 }
 
-export function getDragOffsetPercentage(
-	e: ResizeEvent,
-	dragHandleId: string,
-	dir: Direction,
-	initialDragState: DragState
-): number {
+export function getDragOffsetPercentage({
+	event: e,
+	dragHandleId,
+	dir,
+	initialDragState,
+	getDoc,
+}: {
+	event: ResizeEvent;
+	dragHandleId: string;
+	dir: Direction;
+	initialDragState: DragState;
+	getDoc: EnvironmentState["getDoc"];
+}): number {
 	const isHorizontal = dir === "horizontal";
 
-	const handleElement = getResizeHandleElement(dragHandleId);
+	const handleElement = getResizeHandleElement(dragHandleId, getDoc);
 	assert(handleElement);
 
 	const groupId = handleElement.getAttribute("data-pane-group-id");
@@ -308,13 +323,21 @@ export function getDragOffsetPercentage(
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX
-export function getDeltaPercentage(
-	e: ResizeEvent,
-	dragHandleId: string,
-	dir: Direction,
-	initialDragState: DragState | null,
-	keyboardResizeBy: number | null
-): number {
+export function getDeltaPercentage({
+	event: e,
+	dragHandleId,
+	dir,
+	initialDragState,
+	keyboardResizeBy,
+	getDoc,
+}: {
+	event: ResizeEvent;
+	dragHandleId: string;
+	dir: Direction;
+	initialDragState: DragState | null;
+	keyboardResizeBy: number | null;
+	getDoc: EnvironmentState["getDoc"];
+}): number {
 	if (isKeyDown(e)) {
 		const isHorizontal = dir === "horizontal";
 
@@ -353,7 +376,7 @@ export function getDeltaPercentage(
 	} else {
 		if (initialDragState == null) return 0;
 
-		return getDragOffsetPercentage(e, dragHandleId, dir, initialDragState);
+		return getDragOffsetPercentage({ event: e, dragHandleId, dir, initialDragState, getDoc });
 	}
 }
 
@@ -371,17 +394,23 @@ export function getResizeEventCursorPosition(dir: Direction, e: ResizeEvent): nu
 	}
 }
 
-export function getResizeHandlePaneIds(
-	groupId: string,
-	handleId: string,
-	panesArray: PaneData[]
-): [idBefore: string | null, idAfter: string | null] {
-	const handle = getResizeHandleElement(handleId);
+export function getResizeHandlePaneIds({
+	groupId,
+	handleId,
+	paneDataArray,
+	getDoc,
+}: {
+	groupId: string;
+	handleId: string;
+	paneDataArray: PaneData[];
+	getDoc: EnvironmentState["getDoc"];
+}): [idBefore: string | null, idAfter: string | null] {
+	const handle = getResizeHandleElement(handleId, getDoc);
 	const handles = getResizeHandleElementsForGroup(groupId);
 	const index = handle ? handles.indexOf(handle) : -1;
 
-	const idBefore: string | null = panesArray[index]?.id ?? null;
-	const idAfter: string | null = panesArray[index + 1]?.id ?? null;
+	const idBefore: string | null = paneDataArray[index]?.id ?? null;
+	const idAfter: string | null = paneDataArray[index + 1]?.id ?? null;
 
 	return [idBefore, idAfter];
 }

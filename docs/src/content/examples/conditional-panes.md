@@ -25,14 +25,14 @@ Here's the high-level structure of the example above:
 <script lang="ts">
 	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 
-	let showPaneOne = true;
-	let showPaneThree = true;
+	let showPaneOne = $state(true);
+	let showPaneThree = $state(true);
 </script>
 
-<button variant="outline" on:click={() => (showPaneOne = !showPaneOne)}>
+<button variant="outline" onclick={() => (showPaneOne = !showPaneOne)}>
 	{showPaneOne ? "Hide" : "Show"} Pane One
 </button>
-<button variant="outline" on:click={() => (showPaneThree = !showPaneThree)}>
+<button variant="outline" onclick={() => (showPaneThree = !showPaneThree)}>
 	{showPaneThree ? "Hide" : "Show"} Pane Three
 </button>
 

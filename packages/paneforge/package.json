@@ -57,6 +57,7 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"svelte-toolbelt": "^0.4.2"
+		"runed": "^0.20.0",
+		"svelte-toolbelt": "^0.7.0"
 	}
 }

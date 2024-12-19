@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { Pane, PaneGroup, PaneResizer } from "paneforge";
+	import { DemoContainer } from "@svecodocs/kit";
 </script>
 
-<div>
+<DemoContainer>
 	<PaneGroup direction="horizontal" class="w-full">
 		<Pane defaultSize={50}>
 			<div class="bg-muted flex h-[400px] items-center justify-center rounded-lg">
@@ -58,4 +59,4 @@
 			</PaneGroup>
 		</Pane>
 	</PaneGroup>
-</div>
+</DemoContainer>

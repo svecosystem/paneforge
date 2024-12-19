@@ -2,7 +2,7 @@ import { defineNavigation } from "@svecodocs/kit";
 import ChalkboardTeacher from "phosphor-svelte/lib/ChalkboardTeacher";
 import RocketLaunch from "phosphor-svelte/lib/RocketLaunch";
 import Tag from "phosphor-svelte/lib/Tag";
-import Palette from "phosphor-svelte/lib/Palette";
+// import Palette from "phosphor-svelte/lib/Palette";
 import { getAllDocs } from "./utils.js";
 
 const allDocs = getAllDocs();
@@ -21,6 +21,10 @@ const examples = allDocs
 		href: `/docs/${doc.slug}`,
 	}));
 
+const utilities = allDocs
+	.filter((doc) => doc.section === "Utilities")
+	.map((doc) => ({ title: doc.title, href: `/docs/${doc.slug}` }));
+
 export const navigation = defineNavigation({
 	anchors: [
 		{
@@ -33,11 +37,11 @@ export const navigation = defineNavigation({
 			href: "/docs/getting-started",
 			icon: RocketLaunch,
 		},
-		{
-			title: "Styling",
-			href: "/docs/styling",
-			icon: Palette,
-		},
+		// {
+		// 	title: "Styling",
+		// 	href: "/docs/styling",
+		// 	icon: Palette,
+		// },
 		{
 			title: "Releases",
 			href: "https://github.com/svecosystem/svecodocs/releases",
@@ -48,6 +52,10 @@ export const navigation = defineNavigation({
 		{
 			title: "Components",
 			items: components,
+		},
+		{
+			title: "Utilities",
+			items: utilities,
 		},
 		{
 			title: "Examples",

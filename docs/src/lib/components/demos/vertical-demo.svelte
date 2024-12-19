@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Pane, PaneGroup, PaneResizer } from "paneforge";
 	import DotsSixVertical from "phosphor-svelte/lib/DotsSixVertical";
+	import { DemoContainer } from "@svecodocs/kit";
 </script>
 
-<div class="h-[400px]">
+<DemoContainer class="h-[400px]">
 	<PaneGroup direction="vertical" class="w-full rounded-lg">
 		<Pane defaultSize={50} class="bg-muted rounded-lg">
 			<div class="flex h-[200px] items-center justify-center p-6">
@@ -21,4 +22,4 @@
 			</div>
 		</Pane>
 	</PaneGroup>
-</div>
+</DemoContainer>

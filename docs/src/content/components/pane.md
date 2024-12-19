@@ -4,109 +4,86 @@ description: An individual pane within a pane group.
 section: Components
 ---
 
+<script>
+	import { PropField, Collapsible } from '@svecodocs/kit'
+</script>
+
 The `Pane` component is used to create an individual pane within a `PaneGroup`.
 
-## Props
+## API Reference
 
-Here are the props available for the `Pane` component:
+### Props
 
-```ts
-export type PaneProps = {
-	/**
-	 * The size of the pane when it is in a collapsed state.
-	 */
-	collapsedSize?: number;
+<PropField name="collapsedSize" type="number">
+	The size of the pane when it is in a collapsed state.
+</PropField>
 
-	/**
-	 * Whether the pane can be collapsed.
-	 *
-	 * @defaultValue `false`
-	 */
-	collapsible?: boolean;
+<PropField name="collapsible" type="boolean" defaultValue="false">
+	Whether the pane can be collapsed.
+</PropField>
 
-	/**
-	 * The default size of the pane in percentage of the group's size.
-	 */
-	defaultSize?: number;
+<PropField name="defaultSize" type="number">
+	The default size of the pane in percentage of the group's size.
+</PropField>
 
-	/**
-	 * The id of the pane element.
-	 */
-	id?: string | null;
+<PropField name="maxSize" type="number" defaultValue="100">
+	The maximum size of the pane in percentage of the group's size.
+</PropField>
 
-	/**
-	 * The maximum size of the pane in percentage of the group's size.
-	 *
-	 * @defaultValue `100`
-	 */
-	maxSize?: number;
+<PropField name="minSize" type="number" defaultValue="0">
+	The minimum size of the pane in percentage of the group's size.
+</PropField>
 
-	/**
-	 * The minimum size of the pane in percentage of the group's size.
-	 *
-	 * @defaultValue `0`
-	 */
-	minSize?: number;
+<PropField name="order" type="number">
+	The order of the pane in the group. Useful for maintaining order when conditionally rendering panes.
+</PropField>
 
-	/**
-	 * The order of the pane in the group.
-	 * Useful for maintaining order when conditionally rendering panes.
-	 */
-	order?: number;
+<PropField name="onCollapse" type="() => void">
+	A callback that is called when the pane is collapsed.
+</PropField>
 
-	/**
-	 * A callback that is called when the pane is collapsed.
-	 */
-	onCollapse?: () => void;
+<PropField name="onExpand" type="() => void">
+	A callback that is called when the pane is expanded.
+</PropField>
 
-	/**
-	 * A callback that is called when the pane is expanded.
-	 */
-	onExpand?: () => void;
+<PropField name="onResize" type="(size: number, prevSize: number | undefined) => void">
+	A callback that is called when the pane is resized.
+</PropField>
 
-	/**
-	 * A callback that is called when the pane is resized.
-	 */
-	onResize?: (size: number, prevSize: number | undefined) => void;
+<PropField name="ref" type="HTMLElement | null">
 
-	/**
-	 * The underlying DOM element of the pane. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null;
+The underlying DOM element of the pane. You can `bind` to this prop to get a reference to the element.
 
-	/**
-	 * An imperative API for the pane. `bind` to this prop to get access
-	 * to methods for controlling the pane.
-	 */
-	pane?: PaneAPI;
-} & Omit<HTMLAttributes<HTMLDivElement>, "id">;
-```
+</PropField>
 
-## Imperative API
+<PropField name="this" type="Pane">
+Retrieve a reference to the component to access methods for controlling the pane via its imperative API.
+<Collapsible title="methods">
+<PropField name="collapse" type="() => void">
+	Collapse the pane to its minimum size.
+</PropField>
+<PropField name="expand" type="() => void">
+	Expand the pane to its previous size.
+</PropField>
+<PropField name="getId" type="() => string">
+	Get the ID of the pane.
+</PropField>
+<PropField name="getSize" type="() => number">
+	Get the size of the pane.
+</PropField>
+<PropField name="isCollapsed" type="() => boolean">
+	Check if the pane is collapsed.
+</PropField>
+<PropField name="isExpanded" type="() => boolean">
+	Check if the pane is expanded.
+</PropField>
+<PropField name="resize" type="(size: number) => void">
+	Resize the pane to the specified size.
+</PropField>
+</Collapsible>
+</PropField>
 
-The `Pane` component provides an imperative API for controlling the pane which can be accessed by binding a variable to the `api` prop. Here are the methods available on the `PaneAPI`:
-
-```ts
-export type PaneAPI = {
-	/* Collapse the panee to its minimum size */
-	collapse: () => void;
-	/* Expand the pane to its previous size */
-	expand: () => void;
-	/* Get the pane's id */
-	getId: () => string;
-	/** Get the panes size */
-	getSize: () => number;
-	/** Check if the pane is collapsed */
-	isCollapsed: () => boolean;
-	/** Check if the pane is expanded */
-	isExpanded: () => boolean;
-	/** Resize the pane to the specified size */
-	resize: (size: number) => void;
-};
-```
-
-## Data Attributes
+### Data Attributes
 
 The following data attributes are available for the `Pane` component:
 

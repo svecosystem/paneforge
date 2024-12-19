@@ -8,6 +8,7 @@ import type {
 	PaneResizeHandleOnDragging,
 } from "$lib/internal/types.js";
 import type { PaneGroupStorage } from "$lib/internal/utils/storage.js";
+import type { EnvironmentStateProps, WithChildren } from "svelte-toolbelt";
 
 type Primitive<T> = Omit<T, "id" | "children"> & { id?: string | undefined };
 
@@ -151,6 +152,8 @@ export type PaneResizerPropsWithoutHTML = WithChild<{
 
 export type PaneResizerProps = PaneResizerPropsWithoutHTML &
 	Without<PaneForgePrimitiveDivAttributes, PaneResizerPropsWithoutHTML>;
+
+export type PaneForgeConfigProps = WithChildren<EnvironmentStateProps>;
 
 export type PaneAPI = {
 	/* Collapse the pane to its minimum size */

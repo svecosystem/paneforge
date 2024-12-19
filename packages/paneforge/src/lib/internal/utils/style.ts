@@ -1,3 +1,4 @@
+import { useEnvironment } from "$lib/paneforge.svelte.js";
 import type { DragState, PaneData } from "../types.js";
 
 type CursorState =
@@ -40,7 +41,7 @@ export function getCursorStyle(state: CursorState): string {
 export function resetGlobalCursorStyle() {
 	if (element === null) return;
 
-	document.head.removeChild(element);
+	useEnvironment().getDoc().head.removeChild(element);
 
 	currentState = null;
 	element = null;
