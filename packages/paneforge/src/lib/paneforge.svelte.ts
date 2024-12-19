@@ -77,12 +77,12 @@ export const defaultStorage: PaneGroupStorage = {
 
 export const environmentContext = new Context<EnvironmentState>("PaneForgeEnvironment");
 
+const defaultEnvironment = new EnvironmentState({
+	getRootNode: () => document,
+});
+
 export function useEnvironment() {
-	return environmentContext.getOr(
-		new EnvironmentState({
-			getRootNode: () => document,
-		})
-	);
+	return environmentContext.getOr(defaultEnvironment);
 }
 
 class PaneGroupState {
