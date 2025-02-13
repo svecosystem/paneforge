@@ -101,7 +101,7 @@ export function callPaneCallbacks(
 	layout: number[],
 	paneIdToLastNotifiedSizeMap: Record<string, number>
 ) {
-	for (let index = 0; index < layout.length - 1; index++) {
+	for (let index = 0; index < layout.length; index++) {
 		const size = layout[index];
 		const paneData = paneArray[index];
 		assert(paneData);
@@ -111,8 +111,7 @@ export function callPaneCallbacks(
 
 		const lastNotifiedSize = paneIdToLastNotifiedSizeMap[paneId];
 		// invert the logic from below
-
-		if (!(lastNotifiedSize == null || size !== lastNotifiedSize)) return;
+		if (!(lastNotifiedSize == null || size !== lastNotifiedSize)) continue;
 		paneIdToLastNotifiedSizeMap[paneId] = size;
 
 		const { onCollapse, onExpand, onResize } = callbacks;
