@@ -7,7 +7,9 @@
   },
   "changesets": [
     "chilled-monkeys-wink",
+    "eight-readers-sort",
     "large-zoos-obey",
-    "silent-rivers-sneeze"
+    "silent-rivers-sneeze",
+    "tall-guests-study"
   ]
 }
