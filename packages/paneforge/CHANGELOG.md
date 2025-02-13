@@ -1,5 +1,13 @@
 # paneforge
 
+## 1.0.0-next.3
+
+### Patch Changes
+
+- fix: callbacks for last pane ([#63](https://github.com/svecosystem/paneforge/pull/63))
+
+- fix: issue on reenabling resizer after trying to drag it while disabled ([#64](https://github.com/svecosystem/paneforge/pull/64))
+
 ## 1.0.0-next.2
 
 ### Patch Changes
