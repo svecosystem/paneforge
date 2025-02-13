@@ -625,6 +625,14 @@ class PaneResizerState {
 		});
 	}
 
+	#startDragging = (e: MouseEvent | TouchEvent) => {
+		e.preventDefault();
+
+		if (this.#disabled.current) return;
+		this.#group.startDragging(this.#id.current, e);
+		this.#onDraggingChange.current(true);
+	};
+
 	#stopDraggingAndBlur = () => {
 		const node = this.#ref.current;
 		if (!node) return;
@@ -682,9 +690,7 @@ class PaneResizerState {
 	};
 
 	#onmousedown = (e: MouseEvent) => {
-		e.preventDefault();
-		this.#group.startDragging(this.#id.current, e);
-		this.#onDraggingChange.current(true);
+		this.#startDragging(e);
 	};
 
 	#onmouseup = () => {
@@ -700,9 +706,7 @@ class PaneResizerState {
 	};
 
 	#ontouchstart = (e: TouchEvent) => {
-		e.preventDefault();
-		this.#group.startDragging(this.#id.current, e);
-		this.#onDraggingChange.current(true);
+		this.#startDragging(e);
 	};
 
 	props = $derived.by(
