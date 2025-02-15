@@ -54,7 +54,7 @@ The underlying DOM element of the pane group. You can `bind` to this prop to get
 
 </PropField>
 
-<PropField name="this" type="typeof PaneGroup">
+<PropField name="this" type="typeof Pane">
 
 Imperative API for the pane group. `bind` to this prop to get access to methods for controlling the pane group.
 
