@@ -65,15 +65,16 @@ export const load: PageServerLoad = async (event) => {
 <script lang="ts">
 	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 
-	export let layout: number[] | undefined = undefined;
+	let { data } = $props();
+
 	function onLayoutChange(sizes: number[]) {
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`;
 	}
 </script>
 
 <PaneGroup direction="horizontal" {onLayoutChange}>
-	<Pane defaultSize={layout ? layout[0] : 50} />
+	<Pane defaultSize={data.layout ? data.layout[0] : 50} />
 	<PaneResizer />
-	<Pane defaultSize={layout ? layout[1] : 50} />
+	<Pane defaultSize={data.layout ? data.layout[1] : 50} />
 </PaneGroup>
 ```
