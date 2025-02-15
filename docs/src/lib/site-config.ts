@@ -1,7 +1,7 @@
 import { defineSiteConfig } from "@svecodocs/kit";
 
 export const siteConfig = defineSiteConfig({
-	name: "Paneforge",
+	name: "PaneForge",
 	url: "https://paneforge.com",
 	ogImage: {
 		url: "https://paneforge.com/og.png",
