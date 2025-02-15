@@ -1,5 +1,13 @@
 # paneforge
 
+## 1.0.0-next.4
+
+### Patch Changes
+
+- bump Svelte peerDep version ([#66](https://github.com/svecosystem/paneforge/pull/66))
+
+- rename `tabIndex` prop to `tabindex` ([#66](https://github.com/svecosystem/paneforge/pull/66))
+
 ## 1.0.0-next.3
 
 ### Patch Changes
