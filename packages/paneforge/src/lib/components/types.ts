@@ -144,9 +144,9 @@ export type PaneResizerPropsWithoutHTML = WithChild<{
 	onDraggingChange?: PaneResizeHandleOnDragging;
 
 	/**
-	 * The tabIndex of the resize handle.
+	 * The tabindex of the resize handle.
 	 */
-	tabIndex?: number;
+	tabindex?: number;
 }>;
 
 export type PaneResizerProps = PaneResizerPropsWithoutHTML &

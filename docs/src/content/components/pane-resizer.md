@@ -4,6 +4,10 @@ description: A draggable handle between two panes that allows the user to resize
 section: Components
 ---
 
+<script>
+	import { PropField, Collapsible } from '@svecodocs/kit'
+</script>
+
 The `PaneResizer` component is used to create a draggable handle between two panes that allows the user to resize them.
 
 ## Usage
@@ -22,34 +26,19 @@ The `PaneResizer` component is used to create a draggable handle between two pan
 
 ## Props
 
-Here are the props available for the `PaneResizer` component:
+<PropField name="disabled" type="boolean" default="false">
+Whether the resize handle is disabled.
+</PropField>
 
-```ts
-export type PaneResizerProps = {
-	/**
-	 * Whether the resize handle is disabled.
-	 *
-	 * @defaultValue `false`
-	 */
-	disabled?: boolean;
+<PropField name="onDraggingChange" type="(isDragging: boolean) => void">
+A callback that is called when the resize handle's dragging state changes.
+</PropField>
 
-	/**
-	 * A callback that is called when the resize handle's dragging state changes.
-	 */
-	onDraggingChange?: (isDragging: boolean) => void;
+<PropField name="ref" type="HTMLElement | null">
 
-	/**
-	 * The tabIndex of the resize handle.
-	 */
-	tabIndex?: number;
+The underlying DOM element of the pane group. You can `bind` to this prop to get a reference to the element.
 
-	/**
-	 * The underlying DOM element of the resize handle. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null;
-} & HTMLAttributes<HTMLDivElement>;
-```
+</PropField>
 
 ## Data Attributes
 
