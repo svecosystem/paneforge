@@ -25,15 +25,15 @@ Here's the high-level structure of the example above:
 
 ```svelte
 <script lang="ts">
-	import { PaneGroup, Pane, PaneResizer, type PaneAPI } from "paneforge";
+	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 
-	let paneOne: PaneAPI;
-	let collapsed = false;
+	let paneOne: typeof Pane;
+	let collapsed = $state(false);
 </script>
 
 {#if collapsed}
 	<button
-		on:click={() => {
+		onclick={() => {
 			paneOne.expand();
 		}}
 	>
@@ -41,7 +41,7 @@ Here's the high-level structure of the example above:
 	</button>
 {:else}
 	<button
-		on:click={() => {
+		onclick={() => {
 			paneOne.collapse();
 		}}
 	>
@@ -54,7 +54,7 @@ Here's the high-level structure of the example above:
 		collapsedSize={5}
 		collapsible={true}
 		minSize={15}
-		bind:pane={paneOne}
+		bind:this={paneOne}
 		onCollapse={() => (collapsed = true)}
 		onExpand={() => (collapsed = false)}
 	/>

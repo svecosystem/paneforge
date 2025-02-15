@@ -14,7 +14,9 @@
 			</div>
 		</Pane>
 		<PaneResizer class="bg-background relative flex w-2 items-center justify-center">
-			<div class="bg-brand z-10 flex h-7 w-5 items-center justify-center rounded-sm border">
+			<div
+				class="bg-brand z-10 flex h-7 min-w-5 items-center justify-center rounded-sm border"
+			>
 				<DotsSixVertical class="size-4 text-black" weight="bold" />
 			</div>
 		</PaneResizer>

@@ -10,7 +10,7 @@
 		ref = $bindable(null),
 		disabled = false,
 		onDraggingChange = noop,
-		tabIndex = 0,
+		tabindex = 0,
 		child,
 		children,
 		...restProps
@@ -24,7 +24,7 @@
 		),
 		disabled: box.with(() => disabled),
 		onDraggingChange: box.with(() => onDraggingChange),
-		tabIndex: box.with(() => tabIndex),
+		tabIndex: box.with(() => tabindex),
 	});
 
 	const mergedProps = $derived(mergeProps(restProps, resizerState.props));

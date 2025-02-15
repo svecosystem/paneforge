@@ -4,82 +4,66 @@ description: A container for panes or nested pane groups.
 section: Components
 ---
 
+<script>
+	import { PropField, Collapsible } from '@svecodocs/kit';
+</script>
+
 The `PaneGroup` component wraps a collection of panes or nested `PaneGroup`s and is used to initialize and manage the layout of the panes.
 
 ## Props
 
-Here are the props available for the `PaneGroup` component:
+<PropField name="autoSaveId" type="string | null" default="null">
+The id to use when storing the layout of the panes in local storage. If provided, the layout will be saved to local storage when it changes. If not provided, the layout will not be saved.
+</PropField>
 
-```ts
-export type PaneGroupProps = {
-	/**
-	 * The id to save the layout of the panes to in local storage.
-	 */
-	autoSaveId?: string | null;
+<PropField name="direction" type="'horizontal' | 'vertical'" required>
 
-	/**
-	 * The direction of the panes.
-	 * @required
-	 */
-	direction: "horizontal" | "vertical";
+The direction of the panes in the group. If set to `'horizontal'`, the panes will be arranged side by side. If set to `'vertical'`, the panes will be arranged one on top of the other.
 
-	/**
-	 * The id of the pane group DOM element.
-	 */
-	id?: string | null;
+</PropField>
 
-	/**
-	 * The amount of space to add to the pane group when the keyboard
-	 * resize event is triggered.
-	 */
-	keyboardResizeBy?: number | null;
+<PropField name="keyboardResizeBy" type="number | null" default="null">
+The amount of space to add to the pane group when the keyboard resize event is triggered. If not provided, the default value is used.
+</PropField>
 
-	/**
-	 * A callback called when the layout of the panes within the group changes.
-	 */
-	onLayoutChange?: (layout: number[]) => void | null;
+<PropField name="onLayoutChange" type="(layout: number[]) => void | null" default="null">
+A callback that is called when the layout of the panes in the group changes. The layout is an array of numbers representing the size of each pane in pixels.
+</PropField>
 
-	/**
-	 * The storage object to use for saving the layout of the panes in the group.
-	 *
-	 * Defaults to use `localStorage` if an `autoSaveId` is provided and no storage is provided.
-	 */
-	storage?: PaneGroupStorage;
+<PropField name="storage" type="PaneGroupStorage">
+	The storage object to use for saving the layout of the panes in the group.
+	<Collapsible title="methods">
+		<PropField name="getItem" type="(name: string) => string | null">
+			Retrieves the item from storage.
+		</PropField>
+		<PropField name="setItem" type="(name: string, value: string) => void">
+			Sets the item to storage.
+		</PropField>
+	</Collapsible>
+</PropField>
 
-	/**
-	 * The style of the pane group. This will be appended to styles applied by
-	 * the library.
-	 */
-	style?: string;
+<PropField name="ref" type="HTMLElement | null">
 
-	/**
-	 * The underlying DOM element of the pane group. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null;
+The underlying DOM element of the pane group. You can `bind` to this prop to get a reference to the element.
 
-	/**
-	 * An imperative API for the pane group. `bind` to this prop to get access
-	 * to methods for controlling the pane group.
-	 */
-	paneGroup?: PaneGroupAPI;
-} & Omit<HTMLAttributes<HTMLDivElement>, "id">;
-```
+</PropField>
 
-## Imperative API
+<PropField name="this" type="typeof PaneGroup">
 
-The `PaneGroup` component provides an imperative API for controlling the pane group which can be accessed by binding a variable to the `api` prop. Here are the methods available on the `PaneGroupAPI`:
+Imperative API for the pane group. `bind` to this prop to get access to methods for controlling the pane group.
 
-```ts
-export type PaneGroupAPI = {
-	/** Get the ID of the PaneGroup */
-	getId: () => string;
-	/** Get the layout of the PaneGroup */
-	getLayout: () => number[];
-	/** Set the layout of the PaneGroup */
-	setLayout: (layout: number[]) => void;
-};
-```
+<Collapsible title="methods">
+	<PropField name="getLayout" type="() => number[]">
+		Gets the layout of the pane group.
+	</PropField>
+	<PropField name="setLayout" type="(newLayout: number[]) => void">
+		Sets the layout of the pane group.
+	</PropField>
+	<PropField name="getId" type="() => string">
+		Gets the ID of the pane group.
+	</PropField>
+</Collapsible>
+</PropField>
 
 ## Persisted Layouts/Storage
 
