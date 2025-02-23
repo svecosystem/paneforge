@@ -1,4 +1,5 @@
-import type { DragState, PaneData } from "../types.js";
+import type { PaneState } from "$lib/paneforge.svelte.js";
+import type { DragState } from "../types.js";
 
 type CursorState =
 	| "horizontal"
@@ -71,14 +72,14 @@ export function computePaneFlexBoxStyle({
 	defaultSize,
 	dragState,
 	layout,
-	paneData,
+	panesArray,
 	paneIndex,
 	precision = 3,
 }: {
 	defaultSize: number | undefined;
 	layout: number[];
 	dragState: DragState | null;
-	paneData: PaneData[];
+	panesArray: PaneState[];
 	paneIndex: number;
 	precision?: number;
 }): Record<string, unknown> {
@@ -89,7 +90,7 @@ export function computePaneFlexBoxStyle({
 		// Initial render (before panes have registered themselves)
 		// To support server rendering, fallback to default size
 		flexGrow = defaultSize ?? "1";
-	} else if (paneData.length === 1) {
+	} else if (panesArray.length === 1) {
 		//  Single pane group should always fill full width/height
 		flexGrow = "1";
 	} else {

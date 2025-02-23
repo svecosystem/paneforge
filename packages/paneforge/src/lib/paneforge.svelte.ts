@@ -6,7 +6,7 @@ import {
 	useRefById,
 } from "svelte-toolbelt";
 import { onMount, untrack } from "svelte";
-import { Context } from "runed";
+import { Context, watch } from "runed";
 import {
 	callPaneCallbacks,
 	findPaneDataIndex,
@@ -36,7 +36,6 @@ import { assert } from "$lib/internal/utils/assert.js";
 import type {
 	Direction,
 	DragState,
-	PaneData,
 	PaneOnCollapse,
 	PaneOnExpand,
 	PaneOnResize,
@@ -50,6 +49,7 @@ import {
 	loadPaneGroupState,
 	updateStorageValues,
 } from "$lib/internal/utils/storage.js";
+import { on } from "svelte/events";
 
 type PaneGroupStateProps = WithRefProps<
 	ReadableBoxedValues<{
@@ -75,9 +75,8 @@ export const defaultStorage: PaneGroupStorage = {
 class PaneGroupState {
 	dragState = $state.raw<DragState | null>(null);
 	layout = $state.raw<number[]>([]);
-	paneDataArray = $state.raw<PaneData[]>([]);
-	paneDataArrayChanged = $state<boolean>(false);
-
+	panesArray = $state.raw<PaneState[]>([]);
+	panesArrayChanged = $state<boolean>(false);
 	paneIdToLastNotifiedSizeMap = $state<Record<string, number>>({});
 	paneSizeBeforeCollapseMap = new Map<string, number>();
 	prevDelta = $state(0);
@@ -85,60 +84,56 @@ class PaneGroupState {
 	constructor(readonly opts: PaneGroupStateProps) {
 		useRefById(opts);
 
-		$effect(() => {
-			const groupId = this.opts.id.current;
-			const layout = this.layout;
-			const paneDataArray = this.paneDataArray;
-
-			untrack(() => {
-				const unsub = updateResizeHandleAriaValues({
-					groupId,
-					layout,
-					paneDataArray,
-				});
-
-				return unsub;
+		watch([() => this.opts.id.current, () => this.layout, () => this.panesArray], () => {
+			return updateResizeHandleAriaValues({
+				groupId: this.opts.id.current,
+				layout: this.layout,
+				panesArray: this.panesArray,
 			});
 		});
 
 		$effect(() => {
 			return untrack(() => {
-				const unsub = this.#setResizeHandlerEventListeners();
-				return unsub;
+				return this.#setResizeHandlerEventListeners();
 			});
 		});
 
-		$effect(() => {
-			const autoSaveId = this.opts.autoSaveId.current;
-			const layout = this.layout;
-			const storage = this.opts.storage.current;
-			if (!autoSaveId) return;
-
-			untrack(() => {
+		watch(
+			[
+				() => this.opts.autoSaveId.current,
+				() => this.layout,
+				() => this.opts.storage.current,
+			],
+			() => {
+				if (!this.opts.autoSaveId.current) return;
 				updateStorageValues({
-					autoSaveId,
-					layout,
-					storage,
-					paneDataArray: this.paneDataArray,
+					autoSaveId: this.opts.autoSaveId.current,
+					layout: this.layout,
+					storage: this.opts.storage.current,
+					panesArray: this.panesArray,
 					paneSizeBeforeCollapse: this.paneSizeBeforeCollapseMap,
 				});
-			});
-		});
+			}
+		);
 
-		$effect(() => {
-			const paneDataArrayChanged = this.paneDataArrayChanged;
-			if (!paneDataArrayChanged) return;
-			untrack(() => {
-				this.paneDataArrayChanged = false;
-				const autoSaveId = this.opts.autoSaveId.current;
-				const storage = this.opts.storage.current;
+		watch(
+			() => this.panesArrayChanged,
+			() => {
+				if (!this.panesArrayChanged) return;
+				this.panesArrayChanged = false;
+				// const autoSaveId = this.opts.autoSaveId.current;
+				// const storage = this.opts.storage.current;
 				const prevLayout = this.layout;
-				const paneDataArray = this.paneDataArray;
+				// const paneDataArray = this.panesArray;
 
 				let unsafeLayout: number[] | null = null;
 
-				if (autoSaveId) {
-					const state = loadPaneGroupState(autoSaveId, paneDataArray, storage);
+				if (this.opts.autoSaveId.current) {
+					const state = loadPaneGroupState(
+						this.opts.autoSaveId.current,
+						this.panesArray,
+						this.opts.storage.current
+					);
 					if (state) {
 						this.paneSizeBeforeCollapseMap = new Map(
 							Object.entries(state.expandToSizes)
@@ -149,13 +144,13 @@ class PaneGroupState {
 
 				if (unsafeLayout == null) {
 					unsafeLayout = getUnsafeDefaultLayout({
-						paneDataArray,
+						panesArray: this.panesArray,
 					});
 				}
 
 				const nextLayout = validatePaneGroupLayout({
 					layout: unsafeLayout,
-					paneConstraints: paneDataArray.map((paneData) => paneData.constraints),
+					paneConstraints: this.panesArray.map((paneData) => paneData.constraints),
 				});
 
 				if (areArraysEqual(prevLayout, nextLayout)) return;
@@ -163,9 +158,9 @@ class PaneGroupState {
 				this.layout = nextLayout;
 				this.opts.onLayout.current?.(nextLayout);
 
-				callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
-			});
-		});
+				callPaneCallbacks(this.panesArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
+			}
+		);
 	}
 
 	setLayout = (newLayout: number[]) => {
@@ -182,7 +177,7 @@ class PaneGroupState {
 			const keyboardResizeBy = this.opts.keyboardResizeBy.current;
 
 			const prevLayout = this.layout;
-			const paneDataArray = this.paneDataArray;
+			const paneDataArray = this.panesArray;
 
 			const { initialLayout } = dragState ?? {};
 
@@ -241,17 +236,17 @@ class PaneGroupState {
 		};
 	};
 
-	resizePane = (paneData: PaneData, unsafePaneSize: number) => {
+	resizePane = (paneState: PaneState, unsafePaneSize: number) => {
 		const prevLayout = this.layout;
-		const paneDataArray = this.paneDataArray;
+		const panesArray = this.panesArray;
 
-		const paneConstraintsArr = paneDataArray.map((paneData) => paneData.constraints);
+		const paneConstraintsArr = panesArray.map((paneData) => paneData.constraints);
 
-		const { paneSize, pivotIndices } = paneDataHelper(paneDataArray, paneData, prevLayout);
+		const { paneSize, pivotIndices } = paneDataHelper(panesArray, paneState, prevLayout);
 
 		assert(paneSize != null);
 
-		const isLastPane = findPaneDataIndex(paneDataArray, paneData) === paneDataArray.length - 1;
+		const isLastPane = findPaneDataIndex(panesArray, paneState) === panesArray.length - 1;
 
 		const delta = isLastPane ? paneSize - unsafePaneSize : unsafePaneSize - paneSize;
 
@@ -269,7 +264,7 @@ class PaneGroupState {
 
 		this.opts.onLayout.current?.(nextLayout);
 
-		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
+		callPaneCallbacks(panesArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
 
 	startDragging = (dragHandleId: string, e: ResizeEvent) => {
@@ -295,34 +290,23 @@ class PaneGroupState {
 		this.dragState = null;
 	};
 
-	unregisterPane = (paneData: PaneData) => {
-		const paneDataArray = [...this.paneDataArray];
-		const index = findPaneDataIndex(paneDataArray, paneData);
-
-		if (index < 0) return;
-		paneDataArray.splice(index, 1);
-		this.paneDataArray = paneDataArray;
-		delete this.paneIdToLastNotifiedSizeMap[paneData.id];
-		this.paneDataArrayChanged = true;
-	};
-
-	isPaneCollapsed = (paneData: PaneData) => {
-		const paneDataArray = this.paneDataArray;
+	isPaneCollapsed = (pane: PaneState) => {
+		const paneDataArray = this.panesArray;
 		const layout = this.layout;
 		const {
 			collapsedSize = 0,
 			collapsible,
 			paneSize,
-		} = paneDataHelper(paneDataArray, paneData, layout);
+		} = paneDataHelper(paneDataArray, pane, layout);
 
 		return collapsible === true && paneSize === collapsedSize;
 	};
 
-	expandPane = (paneData: PaneData) => {
+	expandPane = (pane: PaneState) => {
 		const prevLayout = this.layout;
-		const paneDataArray = this.paneDataArray;
+		const paneDataArray = this.panesArray;
 
-		if (!paneData.constraints.collapsible) return;
+		if (!pane.constraints.collapsible) return;
 		const paneConstraintsArray = paneDataArray.map((paneData) => paneData.constraints);
 
 		const {
@@ -330,14 +314,14 @@ class PaneGroupState {
 			paneSize,
 			minSize = 0,
 			pivotIndices,
-		} = paneDataHelper(paneDataArray, paneData, prevLayout);
+		} = paneDataHelper(paneDataArray, pane, prevLayout);
 
 		if (paneSize !== collapsedSize) return;
 		// restore this pane to the size it was before it was collapsed, if possible.
-		const prevPaneSize = this.paneSizeBeforeCollapseMap.get(paneData.id);
+		const prevPaneSize = this.paneSizeBeforeCollapseMap.get(pane.opts.id.current);
 		const baseSize = prevPaneSize != null && prevPaneSize >= minSize ? prevPaneSize : minSize;
 
-		const isLastPane = findPaneDataIndex(paneDataArray, paneData) === paneDataArray.length - 1;
+		const isLastPane = findPaneDataIndex(paneDataArray, pane) === paneDataArray.length - 1;
 		const delta = isLastPane ? paneSize - baseSize : baseSize - paneSize;
 
 		const nextLayout = adjustLayoutByDelta({
@@ -357,11 +341,11 @@ class PaneGroupState {
 		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
 
-	collapsePane = (paneData: PaneData) => {
+	collapsePane = (pane: PaneState) => {
 		const prevLayout = this.layout;
-		const paneDataArray = this.paneDataArray;
+		const paneDataArray = this.panesArray;
 
-		if (!paneData.constraints.collapsible) return;
+		if (!pane.constraints.collapsible) return;
 
 		const paneConstraintsArray = paneDataArray.map((paneData) => paneData.constraints);
 
@@ -369,16 +353,16 @@ class PaneGroupState {
 			collapsedSize = 0,
 			paneSize,
 			pivotIndices,
-		} = paneDataHelper(paneDataArray, paneData, prevLayout);
+		} = paneDataHelper(paneDataArray, pane, prevLayout);
 
 		assert(paneSize != null);
 
 		if (paneSize === collapsedSize) return;
 
 		// Store the size before collapse, which is returned when `expand()` is called
-		this.paneSizeBeforeCollapseMap.set(paneData.id, paneSize);
+		this.paneSizeBeforeCollapseMap.set(pane.opts.id.current, paneSize);
 
-		const isLastPane = findPaneDataIndex(paneDataArray, paneData) === paneDataArray.length - 1;
+		const isLastPane = findPaneDataIndex(paneDataArray, pane) === paneDataArray.length - 1;
 		const delta = isLastPane ? paneSize - collapsedSize : collapsedSize - paneSize;
 
 		const nextLayout = adjustLayoutByDelta({
@@ -397,40 +381,39 @@ class PaneGroupState {
 		callPaneCallbacks(paneDataArray, nextLayout, this.paneIdToLastNotifiedSizeMap);
 	};
 
-	getPaneSize = (paneData: PaneData) => {
-		const { paneSize } = paneDataHelper(this.paneDataArray, paneData, this.layout);
-		return paneSize;
+	getPaneSize = (pane: PaneState) => {
+		return paneDataHelper(this.panesArray, pane, this.layout).paneSize;
 	};
 
-	getPaneStyle = (paneData: PaneData, defaultSize: number | undefined) => {
-		const paneDataArray = this.paneDataArray;
+	getPaneStyle = (pane: PaneState, defaultSize: number | undefined) => {
+		const paneDataArray = this.panesArray;
 		const layout = this.layout;
 		const dragState = this.dragState;
 
-		const paneIndex = findPaneDataIndex(paneDataArray, paneData);
+		const paneIndex = findPaneDataIndex(paneDataArray, pane);
 		return computePaneFlexBoxStyle({
 			defaultSize,
 			dragState,
 			layout,
-			paneData: paneDataArray,
+			panesArray: paneDataArray,
 			paneIndex,
 		});
 	};
 
-	isPaneExpanded = (paneData: PaneData) => {
+	isPaneExpanded = (pane: PaneState) => {
 		const {
 			collapsedSize = 0,
 			collapsible,
 			paneSize,
-		} = paneDataHelper(this.paneDataArray, paneData, this.layout);
+		} = paneDataHelper(this.panesArray, pane, this.layout);
 		return !collapsible || paneSize > collapsedSize;
 	};
 
-	registerPane = (paneData: PaneData) => {
-		const newPaneDataArray = [...this.paneDataArray, paneData];
+	registerPane = (pane: PaneState) => {
+		const newPaneDataArray = [...this.panesArray, pane];
 		newPaneDataArray.sort((paneA, paneB) => {
-			const orderA = paneA.order;
-			const orderB = paneB.order;
+			const orderA = paneA.opts.order.current;
+			const orderB = paneB.opts.order.current;
 
 			if (orderA == null && orderB == null) {
 				return 0;
@@ -442,14 +425,25 @@ class PaneGroupState {
 				return orderA - orderB;
 			}
 		});
-		this.paneDataArray = newPaneDataArray;
-		this.paneDataArrayChanged = true;
+		this.panesArray = newPaneDataArray;
+		this.panesArrayChanged = true;
+
+		return () => {
+			const paneDataArray = [...this.panesArray];
+			const index = findPaneDataIndex(this.panesArray, pane);
+
+			if (index < 0) return;
+			paneDataArray.splice(index, 1);
+			this.panesArray = paneDataArray;
+			delete this.paneIdToLastNotifiedSizeMap[pane.opts.id.current];
+			this.panesArrayChanged = true;
+		};
 	};
 
 	#setResizeHandlerEventListeners = () => {
 		const groupId = this.opts.id.current;
 		const handles = getResizeHandleElementsForGroup(groupId);
-		const paneDataArray = this.paneDataArray;
+		const paneDataArray = this.panesArray;
 
 		const unsubHandlers = handles.map((handle) => {
 			const handleId = handle.getAttribute("data-pane-resizer-id");
@@ -463,8 +457,10 @@ class PaneGroupState {
 				if (e.defaultPrevented || e.key !== "Enter") return;
 
 				e.preventDefault();
-				const paneDataArray = this.paneDataArray;
-				const index = paneDataArray.findIndex((paneData) => paneData.id === idBefore);
+				const paneDataArray = this.panesArray;
+				const index = paneDataArray.findIndex(
+					(paneData) => paneData.opts.id.current === idBefore
+				);
 
 				if (index < 0) return;
 
@@ -576,16 +572,14 @@ class PaneResizerState {
 				this.opts.onDraggingChange.current(false);
 			};
 
-			const unsub = executeCallbacks(
-				addEventListener(document.body, "contextmenu", stopDraggingAndBlur),
-				addEventListener(document.body, "mousemove", onMove),
-				addEventListener(document.body, "touchmove", onMove, { passive: false }),
-				addEventListener(document.body, "mouseleave", onMouseLeave),
-				addEventListener(window, "mouseup", stopDraggingAndBlur),
-				addEventListener(window, "touchend", stopDraggingAndBlur)
+			return executeCallbacks(
+				on(document.body, "contextmenu", stopDraggingAndBlur),
+				on(document.body, "mousemove", onMove),
+				on(document.body, "touchmove", onMove, { passive: false }),
+				on(document.body, "mouseleave", onMouseLeave),
+				on(window, "mouseup", stopDraggingAndBlur),
+				on(window, "touchend", stopDraggingAndBlur)
 			);
-
-			return unsub;
 		});
 	}
 
@@ -722,34 +716,30 @@ type PaneStateProps = WithRefProps<
 	}>
 >;
 
-class PaneState {
-	#paneData = $derived.by(() => ({
-		callbacks: {
-			onCollapse: this.opts.onCollapse.current,
-			onExpand: this.opts.onExpand.current,
-			onResize: this.opts.onResize.current,
-		},
-		constraints: {
-			collapsedSize: this.opts.collapsedSize.current,
-			collapsible: this.opts.collapsible.current,
-			defaultSize: this.opts.defaultSize.current,
-			maxSize: this.opts.maxSize.current,
-			minSize: this.opts.minSize.current,
-		},
-		id: this.opts.id.current,
-		idIsFromProps: false,
-		order: this.opts.order.current,
+export class PaneState {
+	callbacks = $derived.by(() => ({
+		onCollapse: this.opts.onCollapse.current,
+		onExpand: this.opts.onExpand.current,
+		onResize: this.opts.onResize.current,
+	}));
+
+	constraints = $derived.by(() => ({
+		collapsedSize: this.opts.collapsedSize.current,
+		collapsible: this.opts.collapsible.current,
+		defaultSize: this.opts.defaultSize.current,
+		maxSize: this.opts.maxSize.current,
+		minSize: this.opts.minSize.current,
 	}));
 
 	pane = {
 		collapse: () => {
-			this.group.collapsePane(this.#paneData);
+			this.group.collapsePane(this);
 		},
-		expand: () => this.group.expandPane(this.#paneData),
-		getSize: () => this.group.getPaneSize(this.#paneData),
-		isCollapsed: () => this.group.isPaneCollapsed(this.#paneData),
-		isExpanded: () => this.group.isPaneExpanded(this.#paneData),
-		resize: (size: number) => this.group.resizePane(this.#paneData, size),
+		expand: () => this.group.expandPane(this),
+		getSize: () => this.group.getPaneSize(this),
+		isCollapsed: () => this.group.isPaneCollapsed(this),
+		isExpanded: () => this.group.isPaneExpanded(this),
+		resize: (size: number) => this.group.resizePane(this, size),
 		getId: () => this.opts.id.current,
 	};
 
@@ -760,21 +750,17 @@ class PaneState {
 		useRefById(opts);
 
 		onMount(() => {
-			this.group.registerPane(this.#paneData);
-
-			return () => {
-				this.group.unregisterPane(this.#paneData);
-			};
+			return this.group.registerPane(this);
 		});
 	}
 
-	#isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this.#paneData));
+	#isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this));
 
 	props = $derived.by(
 		() =>
 			({
 				id: this.opts.id.current,
-				style: this.group.getPaneStyle(this.#paneData, this.opts.defaultSize.current),
+				style: this.group.getPaneStyle(this, this.opts.defaultSize.current),
 				"data-pane": "",
 				"data-pane-id": this.opts.id.current,
 				"data-pane-group-id": this.group.opts.id.current,
