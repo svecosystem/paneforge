@@ -752,6 +752,13 @@ export class PaneState {
 		onMount(() => {
 			return this.group.registerPane(this);
 		});
+
+		watch(
+			() => $state.snapshot(this.constraints),
+			() => {
+				this.group.panesArrayChanged = true;
+			}
+		);
 	}
 
 	#isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this));
