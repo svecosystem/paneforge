@@ -33,7 +33,7 @@
 
 	export const getLayout = () => paneGroupState.layout;
 	export const setLayout = paneGroupState.setLayout;
-	export const getId = () => paneGroupState.id.current;
+	export const getId = () => paneGroupState.opts.id.current;
 
 	const mergedProps = $derived(mergeProps(restProps, paneGroupState.props));
 </script>

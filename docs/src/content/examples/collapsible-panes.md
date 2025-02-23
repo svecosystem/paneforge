@@ -32,21 +32,9 @@ Here's the high-level structure of the example above:
 </script>
 
 {#if collapsed}
-	<button
-		onclick={() => {
-			paneOne.expand();
-		}}
-	>
-		Expand Pane One
-	</button>
+	<button onclick={paneOne.expand}> Expand Pane One </button>
 {:else}
-	<button
-		onclick={() => {
-			paneOne.collapse();
-		}}
-	>
-		Collapse Pane One
-	</button>
+	<button onclick={paneOne.collapse}> Collapse Pane One </button>
 {/if}
 <PaneGroup direction="horizontal">
 	<Pane
