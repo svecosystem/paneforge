@@ -5,7 +5,7 @@ import {
 	executeCallbacks,
 	useRefById,
 } from "svelte-toolbelt";
-import { onMount, untrack } from "svelte";
+import { onMount, untrack, tick } from "svelte";
 import { createContext } from "$lib/internal/utils/createContext.js";
 import {
 	callPaneCallbacks,
@@ -794,28 +794,31 @@ class PaneState {
 
 	#handleTransition = (state: PaneTransitionState) => {
 		this.#paneTransitionState = state;
-		if (this.#ref.current) {
-			const element = this.#ref.current;
+		tick().then(() => {
+			if (this.#ref.current) {
+				const element = this.#ref.current;
+				const computedStyle = getComputedStyle(element);
 
-			const handleTransitionEnd = (event: TransitionEvent) => {
-				// Only handle width/flex transitions
-				if (event.propertyName === "flex-grow") {
+				const hasTransition = computedStyle.transitionDuration !== "0s";
+
+				if (!hasTransition) {
 					this.#paneTransitionState = "";
-					element.removeEventListener("transitionend", handleTransitionEnd);
+					return;
 				}
-			};
+				const handleTransitionEnd = (event: TransitionEvent) => {
+					// Only handle width/flex transitions
+					if (event.propertyName === "flex-grow") {
+						this.#paneTransitionState = "";
+						element.removeEventListener("transitionend", handleTransitionEnd);
+					}
+				};
 
-			// Always add the listener - if there's no transition, it won't fire
-			element.addEventListener("transitionend", handleTransitionEnd);
-
-			// Set a timeout to clean up if no transition occurs
-			setTimeout(() => {
-				element.removeEventListener("transitionend", handleTransitionEnd);
+				// Always add the listener - if there's no transition, it won't fire
+				element.addEventListener("transitionend", handleTransitionEnd);
+			} else {
 				this.#paneTransitionState = "";
-			}, 1000); // Fallback timeout after 1 second
-		} else {
-			this.#paneTransitionState = "";
-		}
+			}
+		});
 	};
 
 	pane = {
