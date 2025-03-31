@@ -41,6 +41,7 @@ import type {
 	PaneOnExpand,
 	PaneOnResize,
 	PaneResizeHandleOnDragging,
+	PaneTransitionState,
 	ResizeEvent,
 	ResizeHandler,
 } from "$lib/internal/types.js";
@@ -771,6 +772,7 @@ class PaneState {
 	#onExpand: PaneStateProps["onExpand"];
 	#onResize: PaneStateProps["onResize"];
 	#group: PaneGroupState;
+	#paneTransitionState: PaneTransitionState = $state("");
 
 	#paneData = $derived.by(() => ({
 		callbacks: {
@@ -790,11 +792,29 @@ class PaneState {
 		order: this.#order.current,
 	}));
 
+	#handleTransition = (state: PaneTransitionState) => {
+		this.#paneTransitionState = state;
+		if (this.#ref.current) {
+			const element = this.#ref.current;
+			const handleTransitionEnd = () => {
+				this.#paneTransitionState = "";
+				element.removeEventListener("transitionend", handleTransitionEnd);
+			};
+			element.addEventListener("transitionend", handleTransitionEnd);
+		} else {
+			this.#paneTransitionState = "";
+		}
+	};
+
 	pane = {
 		collapse: () => {
+			this.#handleTransition("collapsing");
 			this.#group.collapsePane(this.#paneData);
 		},
-		expand: () => this.#group.expandPane(this.#paneData),
+		expand: () => {
+			this.#handleTransition("expanding");
+			this.#group.expandPane(this.#paneData);
+		},
 		getSize: () => this.#group.getPaneSize(this.#paneData),
 		isCollapsed: () => this.#group.isPaneCollapsed(this.#paneData),
 		isExpanded: () => this.#group.isPaneExpanded(this.#paneData),
@@ -831,6 +851,13 @@ class PaneState {
 	}
 
 	#isCollapsed = $derived.by(() => this.#group.isPaneCollapsed(this.#paneData));
+	#paneState = $derived.by(() =>
+		this.#paneTransitionState !== ""
+			? this.#paneTransitionState
+			: this.#isCollapsed
+				? "collapsed"
+				: "expanded"
+	);
 
 	props = $derived.by(() => ({
 		id: this.#id.current,
@@ -840,6 +867,7 @@ class PaneState {
 		"data-pane-group-id": this.#group.id.current,
 		"data-collapsed": this.#isCollapsed ? "" : undefined,
 		"data-expanded": this.#isCollapsed ? undefined : "",
+		"data-pane-state": this.#paneState,
 	}));
 }
 

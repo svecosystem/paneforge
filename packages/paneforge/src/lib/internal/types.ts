@@ -18,6 +18,8 @@ export type PaneConstraints = {
 	minSize?: number | undefined;
 };
 
+export type PaneTransitionState = "" | "collapsing" | "expanding";
+
 export type PaneData = {
 	callbacks: PaneCallbacks;
 	constraints: PaneConstraints;
