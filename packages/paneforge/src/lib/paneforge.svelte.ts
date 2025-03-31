@@ -796,11 +796,23 @@ class PaneState {
 		this.#paneTransitionState = state;
 		if (this.#ref.current) {
 			const element = this.#ref.current;
-			const handleTransitionEnd = () => {
-				this.#paneTransitionState = "";
-				element.removeEventListener("transitionend", handleTransitionEnd);
+
+			const handleTransitionEnd = (event: TransitionEvent) => {
+				// Only handle width/flex transitions
+				if (event.propertyName === "flex-grow") {
+					this.#paneTransitionState = "";
+					element.removeEventListener("transitionend", handleTransitionEnd);
+				}
 			};
+
+			// Always add the listener - if there's no transition, it won't fire
 			element.addEventListener("transitionend", handleTransitionEnd);
+
+			// Set a timeout to clean up if no transition occurs
+			setTimeout(() => {
+				element.removeEventListener("transitionend", handleTransitionEnd);
+				this.#paneTransitionState = "";
+			}, 1000); // Fallback timeout after 1 second
 		} else {
 			this.#paneTransitionState = "";
 		}

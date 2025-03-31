@@ -2,4 +2,4 @@
 "paneforge": patch
 ---
 
-Animation expanding/collapsing - CSS
+enhancement: animation expanding/collapsing - CSS
