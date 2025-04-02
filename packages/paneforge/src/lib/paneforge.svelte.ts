@@ -4,6 +4,7 @@ import {
 	addEventListener,
 	executeCallbacks,
 	useRefById,
+	afterTick,
 } from "svelte-toolbelt";
 import { onMount, untrack } from "svelte";
 import { Context, watch } from "runed";
@@ -40,6 +41,7 @@ import type {
 	PaneOnExpand,
 	PaneOnResize,
 	PaneResizeHandleOnDragging,
+	PaneTransitionState,
 	ResizeEvent,
 	ResizeHandler,
 } from "$lib/internal/types.js";
@@ -717,6 +719,7 @@ type PaneStateProps = WithRefProps<
 >;
 
 export class PaneState {
+	#paneTransitionState: PaneTransitionState = $state("");
 	callbacks = $derived.by(() => ({
 		onCollapse: this.opts.onCollapse.current,
 		onExpand: this.opts.onExpand.current,
@@ -731,11 +734,44 @@ export class PaneState {
 		minSize: this.opts.minSize.current,
 	}));
 
+	#handleTransition = (state: PaneTransitionState) => {
+		this.#paneTransitionState = state;
+		afterTick(() => {
+			if (this.opts.ref.current) {
+				const element = this.opts.ref.current;
+				const computedStyle = getComputedStyle(element);
+
+				const hasTransition = computedStyle.transitionDuration !== "0s";
+
+				if (!hasTransition) {
+					this.#paneTransitionState = "";
+					return;
+				}
+				const handleTransitionEnd = (event: TransitionEvent) => {
+					// Only handle width/flex transitions
+					if (event.propertyName === "flex-grow") {
+						this.#paneTransitionState = "";
+						element.removeEventListener("transitionend", handleTransitionEnd);
+					}
+				};
+
+				// Always add the listener - if there's no transition, it won't fire
+				element.addEventListener("transitionend", handleTransitionEnd);
+			} else {
+				this.#paneTransitionState = "";
+			}
+		});
+	};
+
 	pane = {
 		collapse: () => {
+			this.#handleTransition("collapsing");
 			this.group.collapsePane(this);
 		},
-		expand: () => this.group.expandPane(this),
+		expand: () => {
+			this.#handleTransition("expanding");
+			this.group.expandPane(this);
+		},
 		getSize: () => this.group.getPaneSize(this),
 		isCollapsed: () => this.group.isPaneCollapsed(this),
 		isExpanded: () => this.group.isPaneExpanded(this),
@@ -763,6 +799,14 @@ export class PaneState {
 
 	#isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this));
 
+	#paneState = $derived.by(() =>
+		this.#paneTransitionState !== ""
+			? this.#paneTransitionState
+			: this.#isCollapsed
+				? "collapsed"
+				: "expanded"
+	);
+
 	props = $derived.by(
 		() =>
 			({
@@ -773,6 +817,7 @@ export class PaneState {
 				"data-pane-group-id": this.group.opts.id.current,
 				"data-collapsed": this.#isCollapsed ? "" : undefined,
 				"data-expanded": this.#isCollapsed ? undefined : "",
+				"data-pane-state": this.#paneState,
 			}) as const
 	);
 }
