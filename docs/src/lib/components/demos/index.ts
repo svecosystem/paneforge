@@ -6,3 +6,4 @@ export { default as CollapsibleDemo } from "./collapsible-demo.svelte";
 export { default as ConditionalDemo } from "./conditional-demo.svelte";
 export { default as CookieDemo } from "./cookie-demo.svelte";
 export { default as StorageDemo } from "./storage-demo.svelte";
+export { default as ReactiveSizeDemo } from "./reactive-size-demo.svelte";

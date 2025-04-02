@@ -1,4 +1,5 @@
-import type { Direction, DragState, PaneConstraints, PaneData, ResizeEvent } from "./types.js";
+import type { PaneState } from "$lib/paneforge.svelte.js";
+import type { Direction, DragState, PaneConstraints, ResizeEvent } from "./types.js";
 import { calculateAriaValues } from "./utils/aria.js";
 import { assert } from "./utils/assert.js";
 import { areNumbersAlmostEqual } from "./utils/compare.js";
@@ -10,27 +11,26 @@ export function noop() {}
 export function updateResizeHandleAriaValues({
 	groupId,
 	layout,
-	paneDataArray,
+	panesArray,
 }: {
 	groupId: string;
 	layout: number[];
-	paneDataArray: PaneData[];
+	panesArray: PaneState[];
 }) {
 	const resizeHandleElements = getResizeHandleElementsForGroup(groupId);
 
-	for (let index = 0; index < paneDataArray.length - 1; index++) {
+	for (let index = 0; index < panesArray.length - 1; index++) {
 		const { valueMax, valueMin, valueNow } = calculateAriaValues({
 			layout,
-			panesArray: paneDataArray,
+			panesArray: panesArray,
 			pivotIndices: [index, index + 1],
 		});
 
 		const resizeHandleEl = resizeHandleElements[index];
 
 		if (isHTMLElement(resizeHandleEl)) {
-			const paneData = paneDataArray[index];
-
-			resizeHandleEl.setAttribute("aria-controls", paneData.id);
+			const paneData = panesArray[index];
+			resizeHandleEl.setAttribute("aria-controls", paneData.opts.id.current);
 			resizeHandleEl.setAttribute("aria-valuemax", `${Math.round(valueMax)}`);
 			resizeHandleEl.setAttribute("aria-valuemin", `${Math.round(valueMin)}`);
 			resizeHandleEl.setAttribute(
@@ -73,13 +73,13 @@ export function getPivotIndices(
 	return index != null ? [index, index + 1] : [-1, -1];
 }
 
-export function paneDataHelper(paneDataArray: PaneData[], paneData: PaneData, layout: number[]) {
-	const paneConstraintsArray = paneDataArray.map((paneData) => paneData.constraints);
+export function paneDataHelper(panesArray: PaneState[], pane: PaneState, layout: number[]) {
+	const paneConstraintsArray = panesArray.map((paneData) => paneData.constraints);
 
-	const paneIndex = findPaneDataIndex(paneDataArray, paneData);
+	const paneIndex = findPaneDataIndex(panesArray, pane);
 	const paneConstraints = paneConstraintsArray[paneIndex];
 
-	const isLastPane = paneIndex === paneDataArray.length - 1;
+	const isLastPane = paneIndex === panesArray.length - 1;
 	const pivotIndices = isLastPane ? [paneIndex - 1, paneIndex] : [paneIndex, paneIndex + 1];
 
 	const paneSize = layout[paneIndex];
@@ -91,30 +91,31 @@ export function paneDataHelper(paneDataArray: PaneData[], paneData: PaneData, la
 	};
 }
 
-export function findPaneDataIndex(paneDataArray: readonly PaneData[], paneData: PaneData) {
-	return paneDataArray.findIndex((prevPaneData) => prevPaneData.id === paneData.id);
+export function findPaneDataIndex(panesArray: readonly PaneState[], pane: PaneState) {
+	return panesArray.findIndex(
+		(prevPaneData) => prevPaneData.opts.id.current === pane.opts.id.current
+	);
 }
 
 // Layout should be pre-converted into percentages
 export function callPaneCallbacks(
-	paneArray: PaneData[],
+	panesArray: PaneState[],
 	layout: number[],
 	paneIdToLastNotifiedSizeMap: Record<string, number>
 ) {
 	for (let index = 0; index < layout.length; index++) {
 		const size = layout[index];
-		const paneData = paneArray[index];
+		const paneData = panesArray[index];
 		assert(paneData);
 
-		const { callbacks, constraints, id: paneId } = paneData;
-		const { collapsedSize = 0, collapsible } = constraints;
+		const { collapsedSize = 0, collapsible } = paneData.constraints;
 
-		const lastNotifiedSize = paneIdToLastNotifiedSizeMap[paneId];
+		const lastNotifiedSize = paneIdToLastNotifiedSizeMap[paneData.opts.id.current];
 		// invert the logic from below
 		if (!(lastNotifiedSize == null || size !== lastNotifiedSize)) continue;
-		paneIdToLastNotifiedSizeMap[paneId] = size;
+		paneIdToLastNotifiedSizeMap[paneData.opts.id.current] = size;
 
-		const { onCollapse, onExpand, onResize } = callbacks;
+		const { onCollapse, onExpand, onResize } = paneData.callbacks;
 
 		onResize?.(size, lastNotifiedSize);
 
@@ -138,16 +139,16 @@ export function callPaneCallbacks(
 	}
 }
 
-export function getUnsafeDefaultLayout({ paneDataArray }: { paneDataArray: PaneData[] }): number[] {
-	const layout = Array<number>(paneDataArray.length);
+export function getUnsafeDefaultLayout({ panesArray }: { panesArray: PaneState[] }): number[] {
+	const layout = Array<number>(panesArray.length);
 
-	const paneConstraintsArray = paneDataArray.map((paneData) => paneData.constraints);
+	const paneConstraintsArray = panesArray.map((paneData) => paneData.constraints);
 
 	let numPanesWithSizes = 0;
 	let remainingSize = 100;
 
 	// Distribute default sizes first
-	for (let index = 0; index < paneDataArray.length; index++) {
+	for (let index = 0; index < panesArray.length; index++) {
 		const paneConstraints = paneConstraintsArray[index];
 		assert(paneConstraints);
 		const { defaultSize } = paneConstraints;
@@ -160,7 +161,7 @@ export function getUnsafeDefaultLayout({ paneDataArray }: { paneDataArray: PaneD
 	}
 
 	// Remaining size should be distributed evenly between panes without default sizes
-	for (let index = 0; index < paneDataArray.length; index++) {
+	for (let index = 0; index < panesArray.length; index++) {
 		const paneConstraints = paneConstraintsArray[index];
 		assert(paneConstraints);
 		const { defaultSize } = paneConstraints;
@@ -169,7 +170,7 @@ export function getUnsafeDefaultLayout({ paneDataArray }: { paneDataArray: PaneD
 			continue;
 		}
 
-		const numRemainingPanes = paneDataArray.length - numPanesWithSizes;
+		const numRemainingPanes = panesArray.length - numPanesWithSizes;
 		const size = remainingSize / numRemainingPanes;
 
 		numPanesWithSizes++;
@@ -373,14 +374,14 @@ export function getResizeEventCursorPosition(dir: Direction, e: ResizeEvent): nu
 export function getResizeHandlePaneIds(
 	groupId: string,
 	handleId: string,
-	panesArray: PaneData[]
+	panesArray: PaneState[]
 ): [idBefore: string | null, idAfter: string | null] {
 	const handle = getResizeHandleElement(handleId);
 	const handles = getResizeHandleElementsForGroup(groupId);
 	const index = handle ? handles.indexOf(handle) : -1;
 
-	const idBefore: string | null = panesArray[index]?.id ?? null;
-	const idAfter: string | null = panesArray[index + 1]?.id ?? null;
+	const idBefore: string | null = panesArray[index]?.opts.id.current ?? null;
+	const idAfter: string | null = panesArray[index + 1]?.opts.id.current ?? null;
 
 	return [idBefore, idAfter];
 }

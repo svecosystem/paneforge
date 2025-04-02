@@ -1,4 +1,4 @@
-import type { PaneData } from "../types.js";
+import type { PaneState } from "$lib/paneforge.svelte.js";
 
 /**
  * A utility function that calculates the `aria-valuemax`, `aria-valuemin`,
@@ -10,7 +10,7 @@ export function calculateAriaValues({
 	pivotIndices,
 }: {
 	layout: number[];
-	panesArray: PaneData[];
+	panesArray: PaneState[];
 	pivotIndices: number[];
 }) {
 	let currentMinSize = 0;
@@ -22,7 +22,7 @@ export function calculateAriaValues({
 
 	// A pane's effective min/max sizes also need to account for other pane's sizes.
 	for (let i = 0; i < panesArray.length; i++) {
-		const { constraints } = panesArray[i];
+		const constraints = panesArray[i].constraints;
 		const { maxSize = 100, minSize = 0 } = constraints;
 
 		if (i === firstIndex) {
