@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.0-next.5
+
+### Patch Changes
+
+- feat: reactive minSize prop ([#68](https://github.com/svecosystem/paneforge/pull/68))
+
 ## 1.0.0-next.4
 
 ### Patch Changes
