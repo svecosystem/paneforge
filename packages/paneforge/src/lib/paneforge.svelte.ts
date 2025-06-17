@@ -3,8 +3,8 @@ import {
 	type WithRefProps,
 	addEventListener,
 	executeCallbacks,
-	useRefById,
 	afterTick,
+	attachRef,
 } from "svelte-toolbelt";
 import { onMount, untrack } from "svelte";
 import { Context, watch } from "runed";
@@ -84,8 +84,6 @@ class PaneGroupState {
 	prevDelta = $state(0);
 
 	constructor(readonly opts: PaneGroupStateProps) {
-		useRefById(opts);
-
 		watch([() => this.opts.id.current, () => this.layout, () => this.panesArray], () => {
 			return updateResizeHandleAriaValues({
 				groupId: this.opts.id.current,
@@ -519,6 +517,7 @@ class PaneGroupState {
 					overflow: "hidden",
 					width: "100%",
 				},
+				...attachRef(this.opts.ref),
 			}) as const
 	);
 }
@@ -542,8 +541,6 @@ class PaneResizerState {
 		readonly opts: PaneResizerStateProps,
 		readonly group: PaneGroupState
 	) {
-		useRefById(opts);
-
 		$effect(() => {
 			if (this.opts.disabled.current) {
 				this.resizeHandler = null;
@@ -700,6 +697,7 @@ class PaneResizerState {
 				ontouchcancel: this.#ontouchcancel,
 				ontouchend: this.#ontouchend,
 				ontouchstart: this.#ontouchstart,
+				...attachRef(this.opts.ref)
 			}) as const
 	);
 }
@@ -783,8 +781,6 @@ export class PaneState {
 		readonly opts: PaneStateProps,
 		readonly group: PaneGroupState
 	) {
-		useRefById(opts);
-
 		onMount(() => {
 			return this.group.registerPane(this);
 		});
@@ -818,6 +814,7 @@ export class PaneState {
 				"data-collapsed": this.#isCollapsed ? "" : undefined,
 				"data-expanded": this.#isCollapsed ? undefined : "",
 				"data-pane-state": this.#paneState,
+				...attachRef(this.opts.ref),
 			}) as const
 	);
 }
