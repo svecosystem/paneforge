@@ -22,7 +22,7 @@
 		"mdsx": "^0.0.6",
 		"paneforge": "workspace:^",
 		"phosphor-svelte": "^3.0.0",
-		"svelte": "^5.20.1",
+		"svelte": "^5.34.3",
 		"svelte-check": "^4.1.4",
 		"tailwindcss": "4.0.0-beta.6",
 		"typescript": "^5.7.2",
