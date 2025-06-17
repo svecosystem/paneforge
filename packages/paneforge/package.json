@@ -58,6 +58,6 @@
 	"type": "module",
 	"dependencies": {
 		"runed": "^0.23.4",
-		"svelte-toolbelt": "^0.7.1"
+		"svelte-toolbelt": "^0.9.1"
 	}
 }

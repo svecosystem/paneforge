@@ -117,8 +117,8 @@ importers:
         specifier: ^0.23.4
         version: 0.23.4(svelte@5.34.3)
       svelte-toolbelt:
-        specifier: ^0.7.1
-        version: 0.7.1(svelte@5.34.3)
+        specifier: ^0.9.1
+        version: 0.9.1(svelte@5.34.3)
     devDependencies:
       '@sveltejs/kit':
         specifier: ^2.17.2
@@ -2952,6 +2952,11 @@ packages:
     peerDependencies:
       svelte: ^5.7.0
 
+  runed@0.28.0:
+    resolution: {integrity: sha512-k2xx7RuO9hWcdd9f+8JoBeqWtYrm5CALfgpkg2YDB80ds/QE4w0qqu34A7fqiAwiBBSBQOid7TLxwxVC27ymWQ==}
+    peerDependencies:
+      svelte: ^5.7.0
+
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
@@ -3112,11 +3117,11 @@ packages:
     peerDependencies:
       svelte: ^5.0.0-next.126
 
-  svelte-toolbelt@0.7.1:
-    resolution: {integrity: sha512-HcBOcR17Vx9bjaOceUvxkY3nGmbBmCBBbuWLLEWO6jtmWH8f/QoWmbyUfQZrpDINH39en1b8mptfPQT9VKQ1xQ==}
+  svelte-toolbelt@0.9.1:
+    resolution: {integrity: sha512-wBX6MtYw/kpht80j5zLpxJyR9soLizXPIAIWEVd9llAi17SR44ZdG291bldjB7r/K5duC0opDFcuhk2cA1hb8g==}
     engines: {node: '>=18', pnpm: '>=8.7.0'}
     peerDependencies:
-      svelte: ^5.0.0
+      svelte: ^5.30.2
 
   svelte2tsx@0.7.34:
     resolution: {integrity: sha512-WTMhpNhFf8/h3SMtR5dkdSy2qfveomkhYei/QW9gSPccb0/b82tjHvLop6vT303ZkGswU/da1s6XvrLgthQPCw==}
@@ -6619,6 +6624,11 @@ snapshots:
       esm-env: 1.2.2
       svelte: 5.34.3
 
+  runed@0.28.0(svelte@5.34.3):
+    dependencies:
+      esm-env: 1.2.2
+      svelte: 5.34.3
+
   sade@1.8.1:
     dependencies:
       mri: 1.2.0
@@ -6793,10 +6803,10 @@ snapshots:
       style-to-object: 1.0.8
       svelte: 5.34.3
 
-  svelte-toolbelt@0.7.1(svelte@5.34.3):
+  svelte-toolbelt@0.9.1(svelte@5.34.3):
     dependencies:
       clsx: 2.1.1
-      runed: 0.23.4(svelte@5.34.3)
+      runed: 0.28.0(svelte@5.34.3)
       style-to-object: 1.0.8
       svelte: 5.34.3
 
