@@ -1,19 +1,19 @@
 import { LOCAL_STORAGE_DEBOUNCE_INTERVAL } from "../constants.js";
 import type { PaneState } from "$lib/paneforge.svelte.js";
 
-export type PaneConfigState = {
+export interface PaneConfigState {
 	expandToSizes: { [paneId: string]: number };
 	layout: number[];
-};
+}
 
-export type SerializedPaneGroupState = {
+export interface SerializedPaneGroupState {
 	[paneIds: string]: PaneConfigState;
-};
+}
 
-export type PaneGroupStorage = {
+export interface PaneGroupStorage {
 	getItem: (name: string) => string | null;
 	setItem: (name: string, value: string) => void;
-};
+}
 
 /**
  * Initializes the storage object with the appropriate getItem

@@ -3,7 +3,7 @@
 	import type { PaneProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
-	import { usePane } from "$lib/paneforge.svelte.js";
+	import { PaneState } from "$lib/paneforge.svelte.js";
 
 	let {
 		id = useId(),
@@ -22,7 +22,7 @@
 		...restProps
 	}: PaneProps = $props();
 
-	const paneState = usePane({
+	const paneState = PaneState.create({
 		id: box.with(() => id),
 		ref: box.with(
 			() => ref,

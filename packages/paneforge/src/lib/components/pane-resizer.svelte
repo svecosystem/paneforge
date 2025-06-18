@@ -3,7 +3,7 @@
 	import type { PaneResizerProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
 	import { useId } from "$lib/internal/utils/useId.js";
-	import { usePaneResizer } from "$lib/paneforge.svelte.js";
+	import { PaneResizerState } from "$lib/paneforge.svelte.js";
 
 	let {
 		id = useId(),
@@ -16,7 +16,7 @@
 		...restProps
 	}: PaneResizerProps = $props();
 
-	const resizerState = usePaneResizer({
+	const resizerState = PaneResizerState.create({
 		id: box.with(() => id),
 		ref: box.with(
 			() => ref,

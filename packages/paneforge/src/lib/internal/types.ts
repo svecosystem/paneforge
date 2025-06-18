@@ -1,3 +1,5 @@
+import type { attachRef } from "svelte-toolbelt";
+
 export type Direction = "horizontal" | "vertical";
 
 export type PaneOnCollapse = () => void;
@@ -39,3 +41,5 @@ export type ResizeEvent = KeyboardEvent | MouseEvent | TouchEvent;
 export type ResizeHandler = (event: ResizeEvent) => void;
 
 export type PaneResizeHandleOnDragging = (isDragging: boolean) => void;
+
+export type RefAttachment<T extends HTMLElement = HTMLElement> = ReturnType<typeof attachRef<T>>;

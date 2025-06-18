@@ -42,6 +42,7 @@ import type {
 	PaneOnResize,
 	PaneResizeHandleOnDragging,
 	PaneTransitionState,
+	RefAttachment,
 	ResizeEvent,
 	ResizeHandler,
 } from "$lib/internal/types.js";
@@ -52,16 +53,12 @@ import {
 	updateStorageValues,
 } from "$lib/internal/utils/storage.js";
 import { on } from "svelte/events";
-
-type PaneGroupStateProps = WithRefProps<
-	ReadableBoxedValues<{
-		autoSaveId: string | null;
-		direction: Direction;
-		keyboardResizeBy: number | null;
-		onLayout: (layout: number[]) => void | null;
-		storage: PaneGroupStorage;
-	}>
->;
+import type {
+	FocusEventHandler,
+	KeyboardEventHandler,
+	MouseEventHandler,
+	TouchEventHandler,
+} from "svelte/elements";
 
 export const defaultStorage: PaneGroupStorage = {
 	getItem: (name: string) => {
@@ -74,16 +71,37 @@ export const defaultStorage: PaneGroupStorage = {
 	},
 };
 
-class PaneGroupState {
+const PaneGroupContext = new Context<PaneGroupState>("PaneGroup");
+
+interface PaneGroupStateOpts
+	extends WithRefProps,
+		ReadableBoxedValues<{
+			autoSaveId: string | null;
+			direction: Direction;
+			keyboardResizeBy: number | null;
+			onLayout: (layout: number[]) => void | null;
+			storage: PaneGroupStorage;
+		}> {}
+
+export class PaneGroupState {
+	static create(opts: PaneGroupStateOpts) {
+		return PaneGroupContext.set(new PaneGroupState(opts));
+	}
+
+	readonly opts: PaneGroupStateOpts;
+	readonly attachment: RefAttachment;
 	dragState = $state.raw<DragState | null>(null);
 	layout = $state.raw<number[]>([]);
 	panesArray = $state.raw<PaneState[]>([]);
 	panesArrayChanged = $state<boolean>(false);
 	paneIdToLastNotifiedSizeMap = $state<Record<string, number>>({});
 	paneSizeBeforeCollapseMap = new Map<string, number>();
-	prevDelta = $state(0);
+	prevDelta = 0;
 
-	constructor(readonly opts: PaneGroupStateProps) {
+	constructor(opts: PaneGroupStateOpts) {
+		this.opts = opts;
+		this.attachment = attachRef(this.opts.ref);
+
 		watch([() => this.opts.id.current, () => this.layout, () => this.panesArray], () => {
 			return updateResizeHandleAriaValues({
 				groupId: this.opts.id.current,
@@ -503,7 +521,7 @@ class PaneGroupState {
 		};
 	};
 
-	props = $derived.by(
+	readonly props = $derived.by(
 		() =>
 			({
 				id: this.opts.id.current,
@@ -517,35 +535,45 @@ class PaneGroupState {
 					overflow: "hidden",
 					width: "100%",
 				},
-				...attachRef(this.opts.ref),
+				...this.attachment,
 			}) as const
 	);
 }
 
-type PaneResizerStateProps = WithRefProps<
-	ReadableBoxedValues<{
-		onDraggingChange: PaneResizeHandleOnDragging;
-		disabled: boolean;
-		tabIndex: number;
-	}>
->;
+interface PaneResizerStateOpts
+	extends WithRefProps,
+		ReadableBoxedValues<{
+			onDraggingChange: PaneResizeHandleOnDragging;
+			disabled: boolean;
+			tabIndex: number;
+		}> {}
 
 const resizeKeys = ["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "End", "Home"];
 
-class PaneResizerState {
-	#isDragging = $derived.by(() => this.group.dragState?.dragHandleId === this.opts.id.current);
+export class PaneResizerState {
+	static create(opts: PaneResizerStateOpts) {
+		return new PaneResizerState(opts, PaneGroupContext.get());
+	}
+	readonly opts: PaneResizerStateOpts;
+	readonly #group: PaneGroupState;
+	readonly attachment: RefAttachment;
+
+	readonly #isDragging = $derived.by(
+		() => this.#group.dragState?.dragHandleId === this.opts.id.current
+	);
 	#isFocused = $state(false);
 	resizeHandler: ResizeHandler | null = null;
 
-	constructor(
-		readonly opts: PaneResizerStateProps,
-		readonly group: PaneGroupState
-	) {
+	constructor(opts: PaneResizerStateOpts, group: PaneGroupState) {
+		this.opts = opts;
+		this.#group = group;
+		this.attachment = attachRef(this.opts.ref);
+
 		$effect(() => {
 			if (this.opts.disabled.current) {
 				this.resizeHandler = null;
 			} else {
-				this.resizeHandler = this.group.registerResizeHandle(this.opts.id.current);
+				this.resizeHandler = this.#group.registerResizeHandle(this.opts.id.current);
 			}
 		});
 
@@ -567,7 +595,7 @@ class PaneResizerState {
 
 			const stopDraggingAndBlur = () => {
 				node.blur();
-				this.group.stopDragging();
+				this.#group.stopDragging();
 				this.opts.onDraggingChange.current(false);
 			};
 
@@ -586,7 +614,7 @@ class PaneResizerState {
 		e.preventDefault();
 
 		if (this.opts.disabled.current) return;
-		this.group.startDragging(this.opts.id.current, e);
+		this.#group.startDragging(this.opts.id.current, e);
 		this.opts.onDraggingChange.current(true);
 	};
 
@@ -594,11 +622,11 @@ class PaneResizerState {
 		const node = this.opts.ref.current;
 		if (!node) return;
 		node.blur();
-		this.group.stopDragging();
+		this.#group.stopDragging();
 		this.opts.onDraggingChange.current(false);
 	};
 
-	#onkeydown = (e: KeyboardEvent) => {
+	#onkeydown: KeyboardEventHandler<HTMLElement> = (e) => {
 		if (this.opts.disabled.current || !this.resizeHandler || e.defaultPrevented) return;
 
 		if (resizeKeys.includes(e.key)) {
@@ -611,8 +639,11 @@ class PaneResizerState {
 
 		e.preventDefault();
 
-		const handles = getResizeHandleElementsForGroup(this.group.opts.id.current);
-		const index = getResizeHandleElementIndex(this.group.opts.id.current, this.opts.id.current);
+		const handles = getResizeHandleElementsForGroup(this.#group.opts.id.current);
+		const index = getResizeHandleElementIndex(
+			this.#group.opts.id.current,
+			this.opts.id.current
+		);
 
 		if (index === null) return;
 
@@ -638,41 +669,41 @@ class PaneResizerState {
 		nextHandle.focus();
 	};
 
-	#onblur = () => {
+	#onblur: FocusEventHandler<HTMLElement> = () => {
 		this.#isFocused = false;
 	};
 
-	#onfocus = () => {
+	#onfocus: FocusEventHandler<HTMLElement> = () => {
 		this.#isFocused = true;
 	};
 
-	#onmousedown = (e: MouseEvent) => {
+	#onmousedown: MouseEventHandler<HTMLElement> = (e) => {
 		this.#startDragging(e);
 	};
 
-	#onmouseup = () => {
+	#onmouseup: MouseEventHandler<HTMLElement> = () => {
 		this.#stopDraggingAndBlur();
 	};
 
-	#ontouchcancel = () => {
+	#ontouchcancel: TouchEventHandler<HTMLElement> = () => {
 		this.#stopDraggingAndBlur();
 	};
 
-	#ontouchend = () => {
+	#ontouchend: TouchEventHandler<HTMLElement> = () => {
 		this.#stopDraggingAndBlur();
 	};
 
-	#ontouchstart = (e: TouchEvent) => {
+	#ontouchstart: TouchEventHandler<HTMLElement> = (e: TouchEvent) => {
 		this.#startDragging(e);
 	};
 
-	props = $derived.by(
+	readonly props = $derived.by(
 		() =>
 			({
 				id: this.opts.id.current,
 				role: "separator",
-				"data-direction": this.group.opts.direction.current,
-				"data-pane-group-id": this.group.opts.id.current,
+				"data-direction": this.#group.opts.direction.current,
+				"data-pane-group-id": this.#group.opts.id.current,
 				"data-active": this.#isDragging
 					? "pointer"
 					: this.#isFocused
@@ -683,7 +714,7 @@ class PaneResizerState {
 				"data-pane-resizer": "",
 				tabIndex: this.opts.tabIndex.current,
 				style: {
-					cursor: getCursorStyle(this.group.opts.direction.current),
+					cursor: getCursorStyle(this.#group.opts.direction.current),
 					touchAction: "none",
 					userSelect: "none",
 					"-webkit-user-select": "none",
@@ -697,34 +728,42 @@ class PaneResizerState {
 				ontouchcancel: this.#ontouchcancel,
 				ontouchend: this.#ontouchend,
 				ontouchstart: this.#ontouchstart,
-				...attachRef(this.opts.ref)
+				...this.attachment,
 			}) as const
 	);
 }
 
-type PaneStateProps = WithRefProps<
-	ReadableBoxedValues<{
-		collapsedSize: number | undefined;
-		collapsible: boolean | undefined;
-		defaultSize: number | undefined;
-		maxSize: number | undefined;
-		minSize: number | undefined;
-		order: number | undefined;
-		onCollapse: PaneOnCollapse;
-		onExpand: PaneOnExpand;
-		onResize: PaneOnResize;
-	}>
->;
+interface PaneStateOpts
+	extends WithRefProps,
+		ReadableBoxedValues<{
+			collapsedSize: number | undefined;
+			collapsible: boolean | undefined;
+			defaultSize: number | undefined;
+			maxSize: number | undefined;
+			minSize: number | undefined;
+			order: number | undefined;
+			onCollapse: PaneOnCollapse;
+			onExpand: PaneOnExpand;
+			onResize: PaneOnResize;
+		}> {}
 
 export class PaneState {
+	static create(opts: PaneStateOpts) {
+		return new PaneState(opts, PaneGroupContext.get());
+	}
+
+	readonly opts: PaneStateOpts;
+	readonly group: PaneGroupState;
+	readonly attachment: RefAttachment;
+
 	#paneTransitionState: PaneTransitionState = $state("");
-	callbacks = $derived.by(() => ({
+	readonly callbacks = $derived.by(() => ({
 		onCollapse: this.opts.onCollapse.current,
 		onExpand: this.opts.onExpand.current,
 		onResize: this.opts.onResize.current,
 	}));
 
-	constraints = $derived.by(() => ({
+	readonly constraints = $derived.by(() => ({
 		collapsedSize: this.opts.collapsedSize.current,
 		collapsible: this.opts.collapsible.current,
 		defaultSize: this.opts.defaultSize.current,
@@ -761,7 +800,7 @@ export class PaneState {
 		});
 	};
 
-	pane = {
+	readonly pane = {
 		collapse: () => {
 			this.#handleTransition("collapsing");
 			this.group.collapsePane(this);
@@ -777,10 +816,11 @@ export class PaneState {
 		getId: () => this.opts.id.current,
 	};
 
-	constructor(
-		readonly opts: PaneStateProps,
-		readonly group: PaneGroupState
-	) {
+	constructor(opts: PaneStateOpts, group: PaneGroupState) {
+		this.opts = opts;
+		this.group = group;
+		this.attachment = attachRef(this.opts.ref);
+
 		onMount(() => {
 			return this.group.registerPane(this);
 		});
@@ -793,9 +833,8 @@ export class PaneState {
 		);
 	}
 
-	#isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this));
-
-	#paneState = $derived.by(() =>
+	readonly #isCollapsed = $derived.by(() => this.group.isPaneCollapsed(this));
+	readonly #paneState = $derived.by(() =>
 		this.#paneTransitionState !== ""
 			? this.#paneTransitionState
 			: this.#isCollapsed
@@ -803,7 +842,7 @@ export class PaneState {
 				: "expanded"
 	);
 
-	props = $derived.by(
+	readonly props = $derived.by(
 		() =>
 			({
 				id: this.opts.id.current,
@@ -814,21 +853,7 @@ export class PaneState {
 				"data-collapsed": this.#isCollapsed ? "" : undefined,
 				"data-expanded": this.#isCollapsed ? undefined : "",
 				"data-pane-state": this.#paneState,
-				...attachRef(this.opts.ref),
+				...this.attachment,
 			}) as const
 	);
-}
-
-const PaneGroupContext = new Context<PaneGroupState>("PaneGroup");
-
-export function usePaneGroup(props: PaneGroupStateProps) {
-	return PaneGroupContext.set(new PaneGroupState(props));
-}
-
-export function usePaneResizer(props: PaneResizerStateProps) {
-	return new PaneResizerState(props, PaneGroupContext.get());
-}
-
-export function usePane(props: PaneStateProps) {
-	return new PaneState(props, PaneGroupContext.get());
 }
