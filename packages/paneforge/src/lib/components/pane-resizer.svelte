@@ -2,11 +2,12 @@
 	import { box, mergeProps } from "svelte-toolbelt";
 	import type { PaneResizerProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
-	import { useId } from "$lib/internal/utils/useId.js";
 	import { PaneResizerState } from "$lib/paneforge.svelte.js";
 
+	const uid = $props.id();
+
 	let {
-		id = useId(),
+		id = uid,
 		ref = $bindable(null),
 		disabled = false,
 		onDraggingChange = noop,
