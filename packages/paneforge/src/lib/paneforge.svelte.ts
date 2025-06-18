@@ -110,7 +110,7 @@ export class PaneGroupState {
 				groupId: this.opts.id.current,
 				layout: this.layout,
 				panesArray: this.panesArray,
-				doc: this.domContext.getDocument(),
+				domContext: this.domContext,
 			});
 		});
 
@@ -207,7 +207,7 @@ export class PaneGroupState {
 			const pivotIndices = getPivotIndices({
 				groupId,
 				dragHandleId,
-				doc,
+				domContext: this.domContext,
 			});
 
 			let delta = getDeltaPercentage({
@@ -216,7 +216,7 @@ export class PaneGroupState {
 				dir: direction,
 				initialDragState: dragState,
 				keyboardResizeBy,
-				doc,
+				domContext: this.domContext,
 			});
 			if (delta === 0) return;
 
@@ -308,7 +308,7 @@ export class PaneGroupState {
 		const direction = this.opts.direction.current;
 		const layout = this.layout;
 
-		const handleElement = getResizeHandleElement(dragHandleId, this.domContext.getDocument());
+		const handleElement = getResizeHandleElement(dragHandleId, this.domContext);
 
 		assert(handleElement);
 
@@ -479,8 +479,7 @@ export class PaneGroupState {
 
 	#setResizeHandlerEventListeners = () => {
 		const groupId = this.opts.id.current;
-		const doc = this.domContext.getDocument();
-		const handles = getResizeHandleElementsForGroup(groupId, doc);
+		const handles = getResizeHandleElementsForGroup(groupId, this.domContext);
 		const paneDataArray = this.panesArray;
 
 		const unsubHandlers = handles.map((handle) => {
@@ -491,7 +490,7 @@ export class PaneGroupState {
 				groupId,
 				handleId,
 				panesArray: paneDataArray,
-				doc,
+				domContext: this.domContext,
 			});
 
 			if (idBefore == null || idAfter == null) return noop;
@@ -526,7 +525,7 @@ export class PaneGroupState {
 					pivotIndices: getPivotIndices({
 						groupId,
 						dragHandleId: handleId,
-						doc,
+						domContext: this.domContext,
 					}),
 					trigger: "keyboard",
 				});
@@ -671,13 +670,15 @@ export class PaneResizerState {
 		if (e.key !== "F6") return;
 
 		e.preventDefault();
-		const doc = this.domContext.getDocument();
 
-		const handles = getResizeHandleElementsForGroup(this.#group.opts.id.current, doc);
+		const handles = getResizeHandleElementsForGroup(
+			this.#group.opts.id.current,
+			this.domContext
+		);
 		const index = getResizeHandleElementIndex({
 			groupId: this.#group.opts.id.current,
 			id: this.opts.id.current,
-			doc,
+			domContext: this.domContext,
 		});
 
 		if (index === null) return;

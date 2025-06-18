@@ -1,4 +1,5 @@
 import type { PaneState } from "$lib/paneforge.svelte.js";
+import type { DOMContext } from "svelte-toolbelt";
 import type { Direction, DragState, PaneConstraints, ResizeEvent } from "./types.js";
 import { calculateAriaValues } from "./utils/aria.js";
 import { assert } from "./utils/assert.js";
@@ -12,16 +13,16 @@ interface UpdateResizeHandleAriaValuesOpts {
 	groupId: string;
 	layout: number[];
 	panesArray: PaneState[];
-	doc: Document;
+	domContext: DOMContext;
 }
 
 export function updateResizeHandleAriaValues({
 	groupId,
 	layout,
 	panesArray,
-	doc,
+	domContext,
 }: UpdateResizeHandleAriaValuesOpts) {
-	const resizeHandleElements = getResizeHandleElementsForGroup(groupId, doc);
+	const resizeHandleElements = getResizeHandleElementsForGroup(groupId, domContext);
 
 	for (let index = 0; index < panesArray.length - 1; index++) {
 		const { valueMax, valueMin, valueNow } = calculateAriaValues({
@@ -54,26 +55,31 @@ export function updateResizeHandleAriaValues({
 	};
 }
 
-export function getResizeHandleElementsForGroup(groupId: string, doc: Document): HTMLElement[] {
+export function getResizeHandleElementsForGroup(
+	groupId: string,
+	domContext: DOMContext
+): HTMLElement[] {
 	if (!isBrowser) return [];
 	return Array.from(
-		doc.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
+		domContext.querySelectorAll(
+			`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`
+		) as NodeListOf<HTMLElement>
 	);
 }
 
 interface GetResizeHandleElementIndexOpts {
 	groupId: string;
 	id: string;
-	doc: Document;
+	domContext: DOMContext;
 }
 
 export function getResizeHandleElementIndex({
 	groupId,
 	id,
-	doc,
+	domContext,
 }: GetResizeHandleElementIndexOpts): number | null {
 	if (!isBrowser) return null;
-	const handles = getResizeHandleElementsForGroup(groupId, doc);
+	const handles = getResizeHandleElementsForGroup(groupId, domContext);
 	const index = handles.findIndex((handle) => handle.getAttribute("data-pane-resizer-id") === id);
 	return index ?? null;
 }
@@ -81,15 +87,19 @@ export function getResizeHandleElementIndex({
 type GetPivotIndicesOpts = {
 	groupId: string;
 	dragHandleId: string;
-	doc: Document;
+	domContext: DOMContext;
 };
 
 export function getPivotIndices({
 	groupId,
 	dragHandleId,
-	doc,
+	domContext,
 }: GetPivotIndicesOpts): [indexBefore: number, indexAfter: number] {
-	const index = getResizeHandleElementIndex({ groupId, id: dragHandleId, doc });
+	const index = getResizeHandleElementIndex({
+		groupId,
+		id: dragHandleId,
+		domContext: domContext,
+	});
 
 	return index != null ? [index, index + 1] : [-1, -1];
 }
@@ -280,16 +290,18 @@ export function validatePaneGroupLayout({
 	return nextLayout;
 }
 
-export function getPaneGroupElement(id: string, doc: Document): HTMLElement | null {
+export function getPaneGroupElement(id: string, domContext: DOMContext): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = doc.querySelector<HTMLElement>(`[data-pane-group][data-pane-group-id="${id}"]`);
+	const element = domContext.querySelector(
+		`[data-pane-group][data-pane-group-id="${id}"]`
+	) as HTMLElement;
 	if (element) return element;
 	return null;
 }
 
-export function getResizeHandleElement(id: string, doc: Document): HTMLElement | null {
+export function getResizeHandleElement(id: string, domContext: DOMContext): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = doc.querySelector<HTMLElement>(`[data-pane-resizer-id="${id}"]`);
+	const element = domContext.querySelector(`[data-pane-resizer-id="${id}"]`) as HTMLElement;
 	if (element) return element;
 	return null;
 }
@@ -299,7 +311,7 @@ interface GetDragOffsetPercentageOpts {
 	dragHandleId: string;
 	dir: Direction;
 	initialDragState: DragState;
-	doc: Document;
+	domContext: DOMContext;
 }
 
 export function getDragOffsetPercentage({
@@ -307,11 +319,11 @@ export function getDragOffsetPercentage({
 	dragHandleId,
 	dir,
 	initialDragState,
-	doc,
+	domContext,
 }: GetDragOffsetPercentageOpts): number {
 	const isHorizontal = dir === "horizontal";
 
-	const handleElement = getResizeHandleElement(dragHandleId, doc);
+	const handleElement = getResizeHandleElement(dragHandleId, domContext);
 	assert(handleElement);
 
 	const groupId = handleElement.getAttribute("data-pane-group-id");
@@ -321,7 +333,7 @@ export function getDragOffsetPercentage({
 
 	const cursorPosition = getResizeEventCursorPosition(dir, event);
 
-	const groupElement = getPaneGroupElement(groupId, doc);
+	const groupElement = getPaneGroupElement(groupId, domContext);
 	assert(groupElement);
 
 	const groupRect = groupElement.getBoundingClientRect();
@@ -339,7 +351,7 @@ interface GetDeltaPercentageOpts {
 	dir: Direction;
 	initialDragState: DragState | null;
 	keyboardResizeBy: number | null;
-	doc: Document;
+	domContext: DOMContext;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX
@@ -349,7 +361,7 @@ export function getDeltaPercentage({
 	dir,
 	initialDragState,
 	keyboardResizeBy,
-	doc,
+	domContext,
 }: GetDeltaPercentageOpts): number {
 	if (isKeyDown(event)) {
 		const isHorizontal = dir === "horizontal";
@@ -389,7 +401,13 @@ export function getDeltaPercentage({
 	} else {
 		if (initialDragState == null) return 0;
 
-		return getDragOffsetPercentage({ event, dragHandleId, dir, initialDragState, doc });
+		return getDragOffsetPercentage({
+			event,
+			dragHandleId,
+			dir,
+			initialDragState,
+			domContext: domContext,
+		});
 	}
 }
 
@@ -411,17 +429,17 @@ interface GetResizeHandlePaneIdsOpts {
 	groupId: string;
 	handleId: string;
 	panesArray: PaneState[];
-	doc: Document;
+	domContext: DOMContext;
 }
 
 export function getResizeHandlePaneIds({
 	groupId,
 	handleId,
 	panesArray,
-	doc,
+	domContext,
 }: GetResizeHandlePaneIdsOpts): [idBefore: string | null, idAfter: string | null] {
-	const handle = getResizeHandleElement(handleId, doc);
-	const handles = getResizeHandleElementsForGroup(groupId, doc);
+	const handle = getResizeHandleElement(handleId, domContext);
+	const handles = getResizeHandleElementsForGroup(groupId, domContext);
 	const index = handle ? handles.indexOf(handle) : -1;
 
 	const idBefore: string | null = panesArray[index]?.opts.id.current ?? null;
