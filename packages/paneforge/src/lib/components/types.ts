@@ -1,4 +1,5 @@
-import type { PaneGroupOnLayout } from "$lib/internal/paneforge.js";
+import type { Snippet } from "svelte";
+import type { HTMLAttributes } from "svelte/elements";
 import type {
 	Direction,
 	PaneOnCollapse,
@@ -7,109 +8,100 @@ import type {
 	PaneResizeHandleOnDragging,
 } from "$lib/internal/types.js";
 import type { PaneGroupStorage } from "$lib/internal/utils/storage.js";
-import type { HTMLAttributes } from "svelte/elements";
 
-export type PaneProps = {
+type Primitive<T> = Omit<T, "id" | "children"> & { id?: string | undefined };
+
+export type Without<T extends object, U extends object> = Omit<T, keyof U>;
+
+export type WithChild<
+	/**
+	 * The props that the component accepts.
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+	Props extends Record<PropertyKey, unknown> = {},
+	/**
+	 * The props that are passed to the `child` and `children` snippets. The `ElementProps` are
+	 * merged with these props for the `child` snippet.
+	 */
+	SnippetProps extends Record<PropertyKey, unknown> = { _default: never },
+	/**
+	 * The underlying DOM element being rendered. You can bind to this prop to
+	 * programmatically interact with the element.
+	 */
+	Ref = HTMLElement,
+> = Omit<Props, "child" | "children"> & {
+	child?: SnippetProps extends { _default: never }
+		? Snippet<[{ props: Record<string, unknown> }]>
+		: Snippet<[SnippetProps & { props: Record<string, unknown> }]>;
+	children?: SnippetProps extends { _default: never } ? Snippet : Snippet<[SnippetProps]>;
+	style?: string | null | undefined;
+	ref?: Ref | null | undefined;
+};
+
+export type PaneForgePrimitiveDivAttributes = Primitive<HTMLAttributes<HTMLDivElement>>;
+
+export type PanePropsWithoutHTML = WithChild<{
 	/**
 	 * The size of the pane when it is in a collapsed state.
 	 */
-	collapsedSize?: number | undefined;
+	collapsedSize?: number;
 
 	/**
 	 * Whether the pane can be collapsed.
 	 *
 	 * @defaultValue `false`
 	 */
-	collapsible?: boolean | undefined;
+	collapsible?: boolean;
 
 	/**
 	 * The default size of the pane in percentage.
 	 */
-	defaultSize?: number | undefined;
-
-	/**
-	 * The id of the pane element.
-	 */
-	id?: string | null | undefined;
+	defaultSize?: number;
 
 	/**
 	 * The maximum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `100`
 	 */
-	maxSize?: number | undefined;
+	maxSize?: number;
 
 	/**
 	 * The minimum size of the pane in percentage of the group's size.
 	 *
 	 * @defaultValue `0`
 	 */
-	minSize?: number | undefined;
+	minSize?: number;
 
 	/**
 	 * The order of the pane in the group.
 	 * Useful for maintaining order when conditionally rendering panes.
 	 */
-	order?: number | undefined;
+	order?: number;
 
 	/**
 	 * A callback that is called when the pane is collapsed.
 	 */
-	onCollapse?: PaneOnCollapse | undefined;
+	onCollapse?: PaneOnCollapse;
 
 	/**
 	 * A callback that is called when the pane is expanded.
 	 */
-	onExpand?: PaneOnExpand | undefined;
+	onExpand?: PaneOnExpand;
 
 	/**
 	 * A callback that is called when the pane is resized.
 	 */
-	onResize?: PaneOnResize | undefined;
+	onResize?: PaneOnResize;
+}>;
 
-	/**
-	 * The underlying DOM element of the pane. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null | undefined;
+export type PaneProps = PanePropsWithoutHTML &
+	Without<PaneForgePrimitiveDivAttributes, PanePropsWithoutHTML>;
 
-	/**
-	 * An imperative API for the pane. `bind` to this prop to get access
-	 * to methods for controlling the pane.
-	 */
-	pane?: PaneAPI | undefined;
-} & Omit<HTMLAttributes<HTMLDivElement>, "id">;
-
-export type PaneResizerProps = {
-	/**
-	 * Whether the resize handle is disabled.
-	 *
-	 * @defaultValue `false`
-	 */
-	disabled?: boolean | undefined;
-
-	/**
-	 * A callback that is called when the resize handle is being dragged.
-	 */
-	onDraggingChange?: PaneResizeHandleOnDragging | undefined;
-
-	/**
-	 * The tabIndex of the resize handle.
-	 */
-	tabIndex?: number | undefined;
-
-	/**
-	 * The underlying DOM element of the resize handle. You can `bind` to this
-	 * prop to get a reference to the element.
-	 */
-	el?: HTMLElement | null | undefined;
-} & HTMLAttributes<HTMLDivElement>;
-
-export type PaneGroupProps = {
+export type PaneGroupPropsWithoutHTML = WithChild<{
 	/**
 	 * The id to save the layout of the panes to in local storage.
 	 */
-	autoSaveId?: string | null | undefined;
+	autoSaveId?: string | null;
 
 	/**
 	 * The direction of the panes.
@@ -119,47 +111,49 @@ export type PaneGroupProps = {
 	direction: Direction;
 
 	/**
-	 * The id of the pane group DOM element.
-	 */
-	id?: string | null | undefined;
-
-	/**
 	 * The amount of space to add to the pane group when the keyboard
 	 * resize event is triggered.
 	 */
-	keyboardResizeBy?: number | null | undefined;
+	keyboardResizeBy?: number | null;
 
 	/**
 	 * A callback called when the layout of the panes within the group changes.
 	 */
-	onLayoutChange?: PaneGroupOnLayout | null | undefined;
+	onLayoutChange?: (layout: number[]) => void | null;
 
 	/**
 	 * The storage object to use for saving the layout of the panes in the group.
 	 */
-	storage?: PaneGroupStorage | undefined;
+	storage?: PaneGroupStorage;
+}>;
+
+export type PaneGroupProps = PaneGroupPropsWithoutHTML &
+	Without<PaneForgePrimitiveDivAttributes, PaneGroupPropsWithoutHTML>;
+
+export type PaneResizerPropsWithoutHTML = WithChild<{
+	/**
+	 * Whether the resize handle is disabled.
+	 *
+	 * @defaultValue `false`
+	 */
+	disabled?: boolean;
 
 	/**
-	 * The style of the pane group. This will be appended to styles applied by
-	 * the library.
+	 * A callback that is called when the resize handle is being dragged.
 	 */
-	style?: string | undefined;
+	onDraggingChange?: PaneResizeHandleOnDragging;
 
 	/**
-	 * The underlying DOM element of the pane group. You can `bind` to this
-	 * prop to get a reference to the element.
+	 * The tabindex of the resize handle.
 	 */
-	el?: HTMLElement | null | undefined;
+	tabindex?: number;
+}>;
 
-	/**
-	 * An imperative API for the pane group. `bind` to this prop to get access
-	 * to methods for controlling the pane group.
-	 */
-	paneGroup?: PaneGroupAPI | undefined;
-} & Omit<HTMLAttributes<HTMLDivElement>, "id">;
+export type PaneResizerProps = PaneResizerPropsWithoutHTML &
+	Without<PaneForgePrimitiveDivAttributes, PaneResizerPropsWithoutHTML>;
 
 export type PaneAPI = {
-	/* Collapse the panee to its minimum size */
+	/* Collapse the pane to its minimum size */
 	collapse: () => void;
 	/* Expand the pane to its previous size */
 	expand: () => void;

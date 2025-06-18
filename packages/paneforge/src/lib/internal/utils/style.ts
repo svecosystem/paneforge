@@ -1,21 +1,5 @@
-import type { DragState, PaneData } from "../types.js";
-
-/**
- * A utility function that converts a style object to a string,
- * which can be used as the value of the `style` attribute for
- * an element.
- *
- * @param style - The style object to convert
- * @returns The style object as a string
- */
-export function styleToString(style: StyleObject): string {
-	return Object.keys(style).reduce((str, key) => {
-		if (style[key] === undefined) return str;
-		return str + `${key}:${style[key]};`;
-	}, "");
-}
-
-export type StyleObject = Record<string, number | string | undefined>;
+import type { PaneState } from "$lib/paneforge.svelte.js";
+import type { DragState } from "../types.js";
 
 type CursorState =
 	| "horizontal"
@@ -66,7 +50,7 @@ export function resetGlobalCursorStyle() {
 /**
  * Sets the global cursor style to the given state.
  */
-export function setGlobalCursorStyle(state: CursorState) {
+export function setGlobalCursorStyle(state: CursorState, doc: Document) {
 	if (currentState === state) return;
 
 	currentState = state;
@@ -74,8 +58,8 @@ export function setGlobalCursorStyle(state: CursorState) {
 	const style = getCursorStyle(state);
 
 	if (element === null) {
-		element = document.createElement("style");
-		document.head.appendChild(element);
+		element = doc.createElement("style");
+		doc.head.appendChild(element);
 	}
 
 	element.innerHTML = `*{cursor: ${style}!important;}`;
@@ -88,17 +72,17 @@ export function computePaneFlexBoxStyle({
 	defaultSize,
 	dragState,
 	layout,
-	paneData,
+	panesArray,
 	paneIndex,
 	precision = 3,
 }: {
 	defaultSize: number | undefined;
 	layout: number[];
 	dragState: DragState | null;
-	paneData: PaneData[];
+	panesArray: PaneState[];
 	paneIndex: number;
 	precision?: number;
-}): string {
+}): Record<string, unknown> {
 	const size = layout[paneIndex];
 
 	let flexGrow;
@@ -106,21 +90,21 @@ export function computePaneFlexBoxStyle({
 		// Initial render (before panes have registered themselves)
 		// To support server rendering, fallback to default size
 		flexGrow = defaultSize ?? "1";
-	} else if (paneData.length === 1) {
+	} else if (panesArray.length === 1) {
 		//  Single pane group should always fill full width/height
 		flexGrow = "1";
 	} else {
 		flexGrow = size.toPrecision(precision);
 	}
 
-	return styleToString({
-		"flex-basis": 0,
-		"flex-grow": flexGrow,
-		"flex-shrink": 1,
+	return {
+		flexBasis: 0,
+		flexGrow,
+		flexShrink: 1,
 		// Without this, pane sizes may be unintentionally overridden by their content
 		overflow: "hidden",
 		// Disable pointer events inside of a pane during resize
 		// This avoid edge cases like nested iframes
-		"pointer-events": dragState !== null ? "none" : undefined,
-	});
+		pointerEvents: dragState !== null ? "none" : undefined,
+	};
 }

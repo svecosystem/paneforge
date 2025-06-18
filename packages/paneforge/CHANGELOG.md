@@ -1,5 +1,51 @@
 # paneforge
 
+## 1.0.0-next.6
+
+### Patch Changes
+
+- feat: Shadow DOM support ([#75](https://github.com/svecosystem/paneforge/pull/75))
+
+## 1.0.0-next.5
+
+### Patch Changes
+
+- feat: reactive minSize prop ([#68](https://github.com/svecosystem/paneforge/pull/68))
+
+## 1.0.0-next.4
+
+### Patch Changes
+
+- bump Svelte peerDep version ([#66](https://github.com/svecosystem/paneforge/pull/66))
+
+- rename `tabIndex` prop to `tabindex` ([#66](https://github.com/svecosystem/paneforge/pull/66))
+
+## 1.0.0-next.3
+
+### Patch Changes
+
+- fix: callbacks for last pane ([#63](https://github.com/svecosystem/paneforge/pull/63))
+
+- fix: issue on reenabling resizer after trying to drag it while disabled ([#64](https://github.com/svecosystem/paneforge/pull/64))
+
+## 1.0.0-next.2
+
+### Patch Changes
+
+- fix: issue where conditional panes would increase size on show/hide ([#58](https://github.com/svecosystem/paneforge/pull/58))
+
+## 1.0.0-next.1
+
+### Patch Changes
+
+- fix: issue with useId causing duplicate IDs ([#49](https://github.com/svecosystem/paneforge/pull/49))
+
+## 1.0.0-next.0
+
+### Major Changes
+
+- Svelte 5 ([#46](https://github.com/svecosystem/paneforge/pull/46))
+
 ## 0.0.6
 
 ### Patch Changes

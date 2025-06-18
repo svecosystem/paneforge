@@ -1,0 +1,20 @@
+{
+  "mode": "exit",
+  "tag": "next",
+  "initialVersions": {
+    "paneforge": "0.0.6",
+    "docs": "0.0.0"
+  },
+  "changesets": [
+    "chilled-monkeys-wink",
+    "early-monkeys-learn",
+    "eight-readers-sort",
+    "gentle-jobs-explode",
+    "large-zoos-obey",
+    "rude-vans-eat",
+    "silent-rivers-sneeze",
+    "silly-keys-own",
+    "tall-guests-study",
+    "tame-dancers-wait"
+  ]
+}

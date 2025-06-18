@@ -1,53 +1,47 @@
 <script lang="ts">
-	import { setCtx } from "./ctx.js";
-	import { type PaneGroupStorage } from "$lib/internal/utils/index.js";
-	import type { PaneGroupOnLayout } from "./pane-group.js";
-	import { defaultStorage } from "$lib/internal/paneforge.js";
+	import { box, mergeProps } from "svelte-toolbelt";
 	import type { PaneGroupProps } from "./types.js";
+	import { noop } from "$lib/internal/helpers.js";
+	import { useId } from "$lib/internal/utils/useId.js";
+	import { defaultStorage, PaneGroupState } from "$lib/paneforge.svelte.js";
 
-	type $$Props = PaneGroupProps;
-
-	export let autoSaveId: string | null = null;
-	export let direction: $$Props["direction"];
-	export let id: $$Props["id"] = null;
-	export let keyboardResizeBy: number | null = null;
-	export let onLayoutChange: PaneGroupOnLayout | null = null;
-	export let storage: PaneGroupStorage = defaultStorage as PaneGroupStorage;
-	export let el: $$Props["el"] = undefined;
-	export let paneGroup: $$Props["paneGroup"] = undefined;
-
-	let styleFromProps: $$Props["style"] = undefined;
-	export { styleFromProps as style };
-
-	const {
-		states: { paneGroupStyle, paneGroupSelectors, groupId },
-		methods: { setLayout, getLayout },
-		updateOption,
-	} = setCtx({
-		autoSaveId,
+	let {
+		autoSaveId = null,
 		direction,
-		id,
-		keyboardResizeBy,
-		onLayout: onLayoutChange,
-		storage,
+		id = useId(),
+		keyboardResizeBy = null,
+		onLayoutChange = noop,
+		storage = defaultStorage,
+		ref = $bindable(null),
+		child,
+		children,
+		...restProps
+	}: PaneGroupProps = $props();
+
+	const paneGroupState = PaneGroupState.create({
+		id: box.with(() => id ?? useId()),
+		ref: box.with(
+			() => ref,
+			(v) => (ref = v)
+		),
+		autoSaveId: box.with(() => autoSaveId),
+		direction: box.with(() => direction),
+		keyboardResizeBy: box.with(() => keyboardResizeBy),
+		onLayout: box.with(() => onLayoutChange),
+		storage: box.with(() => storage),
 	});
 
-	$: updateOption("autoSaveId", autoSaveId);
-	$: updateOption("direction", direction);
-	$: updateOption("id", id);
-	$: updateOption("keyboardResizeBy", keyboardResizeBy);
-	$: updateOption("onLayout", onLayoutChange);
-	$: updateOption("storage", storage);
+	export const getLayout = () => paneGroupState.layout;
+	export const setLayout = paneGroupState.setLayout;
+	export const getId = () => paneGroupState.opts.id.current;
 
-	paneGroup = {
-		getLayout,
-		setLayout,
-		getId: () => $groupId,
-	};
-
-	$: style = $paneGroupStyle + (styleFromProps ?? "");
+	const mergedProps = $derived(mergeProps(restProps, paneGroupState.props));
 </script>
 
-<div bind:this={el} id={$groupId} {...$paneGroupSelectors} {style} {...$$restProps}>
-	<slot />
-</div>
+{#if child}
+	{@render child({ props: mergedProps })}
+{:else}
+	<div {...mergedProps}>
+		{@render children?.()}
+	</div>
+{/if}
