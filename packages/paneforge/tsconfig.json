@@ -11,6 +11,6 @@
 		"strict": true,
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
-		"exactOptionalPropertyTypes": true
+		"erasableSyntaxOnly": true
 	}
 }

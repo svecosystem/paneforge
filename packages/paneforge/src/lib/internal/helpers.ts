@@ -1,4 +1,5 @@
 import type { PaneState } from "$lib/paneforge.svelte.js";
+import type { DOMContext } from "svelte-toolbelt";
 import type { Direction, DragState, PaneConstraints, ResizeEvent } from "./types.js";
 import { calculateAriaValues } from "./utils/aria.js";
 import { assert } from "./utils/assert.js";
@@ -8,16 +9,20 @@ import { resizePane } from "./utils/resize.js";
 
 export function noop() {}
 
+interface UpdateResizeHandleAriaValuesOpts {
+	groupId: string;
+	layout: number[];
+	panesArray: PaneState[];
+	domContext: DOMContext;
+}
+
 export function updateResizeHandleAriaValues({
 	groupId,
 	layout,
 	panesArray,
-}: {
-	groupId: string;
-	layout: number[];
-	panesArray: PaneState[];
-}) {
-	const resizeHandleElements = getResizeHandleElementsForGroup(groupId);
+	domContext,
+}: UpdateResizeHandleAriaValuesOpts) {
+	const resizeHandleElements = getResizeHandleElementsForGroup(groupId, domContext);
 
 	for (let index = 0; index < panesArray.length - 1; index++) {
 		const { valueMax, valueMin, valueNow } = calculateAriaValues({
@@ -41,34 +46,60 @@ export function updateResizeHandleAriaValues({
 	}
 
 	return () => {
-		resizeHandleElements.forEach((resizeHandleElement) => {
-			resizeHandleElement.removeAttribute("aria-controls");
-			resizeHandleElement.removeAttribute("aria-valuemax");
-			resizeHandleElement.removeAttribute("aria-valuemin");
-			resizeHandleElement.removeAttribute("aria-valuenow");
-		});
+		for (const el of resizeHandleElements) {
+			el.removeAttribute("aria-controls");
+			el.removeAttribute("aria-valuemax");
+			el.removeAttribute("aria-valuemin");
+			el.removeAttribute("aria-valuenow");
+		}
 	};
 }
 
-export function getResizeHandleElementsForGroup(groupId: string): HTMLElement[] {
+export function getResizeHandleElementsForGroup(
+	groupId: string,
+	domContext: DOMContext
+): HTMLElement[] {
 	if (!isBrowser) return [];
 	return Array.from(
-		document.querySelectorAll(`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`)
+		domContext.querySelectorAll(
+			`[data-pane-resizer-id][data-pane-group-id="${groupId}"]`
+		) as NodeListOf<HTMLElement>
 	);
 }
 
-export function getResizeHandleElementIndex(groupId: string, id: string): number | null {
+interface GetResizeHandleElementIndexOpts {
+	groupId: string;
+	id: string;
+	domContext: DOMContext;
+}
+
+export function getResizeHandleElementIndex({
+	groupId,
+	id,
+	domContext,
+}: GetResizeHandleElementIndexOpts): number | null {
 	if (!isBrowser) return null;
-	const handles = getResizeHandleElementsForGroup(groupId);
+	const handles = getResizeHandleElementsForGroup(groupId, domContext);
 	const index = handles.findIndex((handle) => handle.getAttribute("data-pane-resizer-id") === id);
 	return index ?? null;
 }
 
-export function getPivotIndices(
-	groupId: string,
-	dragHandleId: string
-): [indexBefore: number, indexAfter: number] {
-	const index = getResizeHandleElementIndex(groupId, dragHandleId);
+type GetPivotIndicesOpts = {
+	groupId: string;
+	dragHandleId: string;
+	domContext: DOMContext;
+};
+
+export function getPivotIndices({
+	groupId,
+	dragHandleId,
+	domContext,
+}: GetPivotIndicesOpts): [indexBefore: number, indexAfter: number] {
+	const index = getResizeHandleElementIndex({
+		groupId,
+		id: dragHandleId,
+		domContext: domContext,
+	});
 
 	return index != null ? [index, index + 1] : [-1, -1];
 }
@@ -259,33 +290,40 @@ export function validatePaneGroupLayout({
 	return nextLayout;
 }
 
-export function getPaneGroupElement(id: string): HTMLElement | null {
+export function getPaneGroupElement(id: string, domContext: DOMContext): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = document.querySelector(`[data-pane-group][data-pane-group-id="${id}"]`);
-	if (element) {
-		return element as HTMLElement;
-	}
+	const element = domContext.querySelector(
+		`[data-pane-group][data-pane-group-id="${id}"]`
+	) as HTMLElement;
+	if (element) return element;
 	return null;
 }
 
-export function getResizeHandleElement(id: string): HTMLElement | null {
+export function getResizeHandleElement(id: string, domContext: DOMContext): HTMLElement | null {
 	if (!isBrowser) return null;
-	const element = document.querySelector(`[data-pane-resizer-id="${id}"]`);
-	if (element) {
-		return element as HTMLElement;
-	}
+	const element = domContext.querySelector(`[data-pane-resizer-id="${id}"]`) as HTMLElement;
+	if (element) return element;
 	return null;
 }
 
-export function getDragOffsetPercentage(
-	e: ResizeEvent,
-	dragHandleId: string,
-	dir: Direction,
-	initialDragState: DragState
-): number {
+interface GetDragOffsetPercentageOpts {
+	event: ResizeEvent;
+	dragHandleId: string;
+	dir: Direction;
+	initialDragState: DragState;
+	domContext: DOMContext;
+}
+
+export function getDragOffsetPercentage({
+	event,
+	dragHandleId,
+	dir,
+	initialDragState,
+	domContext,
+}: GetDragOffsetPercentageOpts): number {
 	const isHorizontal = dir === "horizontal";
 
-	const handleElement = getResizeHandleElement(dragHandleId);
+	const handleElement = getResizeHandleElement(dragHandleId, domContext);
 	assert(handleElement);
 
 	const groupId = handleElement.getAttribute("data-pane-group-id");
@@ -293,9 +331,9 @@ export function getDragOffsetPercentage(
 
 	const { initialCursorPosition } = initialDragState;
 
-	const cursorPosition = getResizeEventCursorPosition(dir, e);
+	const cursorPosition = getResizeEventCursorPosition(dir, event);
 
-	const groupElement = getPaneGroupElement(groupId);
+	const groupElement = getPaneGroupElement(groupId, domContext);
 	assert(groupElement);
 
 	const groupRect = groupElement.getBoundingClientRect();
@@ -307,19 +345,29 @@ export function getDragOffsetPercentage(
 	return offsetPercentage;
 }
 
+interface GetDeltaPercentageOpts {
+	event: ResizeEvent;
+	dragHandleId: string;
+	dir: Direction;
+	initialDragState: DragState | null;
+	keyboardResizeBy: number | null;
+	domContext: DOMContext;
+}
+
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/movementX
-export function getDeltaPercentage(
-	e: ResizeEvent,
-	dragHandleId: string,
-	dir: Direction,
-	initialDragState: DragState | null,
-	keyboardResizeBy: number | null
-): number {
-	if (isKeyDown(e)) {
+export function getDeltaPercentage({
+	event,
+	dragHandleId,
+	dir,
+	initialDragState,
+	keyboardResizeBy,
+	domContext,
+}: GetDeltaPercentageOpts): number {
+	if (isKeyDown(event)) {
 		const isHorizontal = dir === "horizontal";
 
 		let delta = 0;
-		if (e.shiftKey) {
+		if (event.shiftKey) {
 			delta = 100;
 		} else if (keyboardResizeBy != null) {
 			delta = keyboardResizeBy;
@@ -328,7 +376,7 @@ export function getDeltaPercentage(
 		}
 
 		let movement = 0;
-		switch (e.key) {
+		switch (event.key) {
 			case "ArrowDown":
 				movement = isHorizontal ? 0 : delta;
 				break;
@@ -353,7 +401,13 @@ export function getDeltaPercentage(
 	} else {
 		if (initialDragState == null) return 0;
 
-		return getDragOffsetPercentage(e, dragHandleId, dir, initialDragState);
+		return getDragOffsetPercentage({
+			event,
+			dragHandleId,
+			dir,
+			initialDragState,
+			domContext: domContext,
+		});
 	}
 }
 
@@ -371,13 +425,21 @@ export function getResizeEventCursorPosition(dir: Direction, e: ResizeEvent): nu
 	}
 }
 
-export function getResizeHandlePaneIds(
-	groupId: string,
-	handleId: string,
-	panesArray: PaneState[]
-): [idBefore: string | null, idAfter: string | null] {
-	const handle = getResizeHandleElement(handleId);
-	const handles = getResizeHandleElementsForGroup(groupId);
+interface GetResizeHandlePaneIdsOpts {
+	groupId: string;
+	handleId: string;
+	panesArray: PaneState[];
+	domContext: DOMContext;
+}
+
+export function getResizeHandlePaneIds({
+	groupId,
+	handleId,
+	panesArray,
+	domContext,
+}: GetResizeHandlePaneIdsOpts): [idBefore: string | null, idAfter: string | null] {
+	const handle = getResizeHandleElement(handleId, domContext);
+	const handles = getResizeHandleElementsForGroup(groupId, domContext);
 	const index = handle ? handles.indexOf(handle) : -1;
 
 	const idBefore: string | null = panesArray[index]?.opts.id.current ?? null;

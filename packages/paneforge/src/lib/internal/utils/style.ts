@@ -50,7 +50,7 @@ export function resetGlobalCursorStyle() {
 /**
  * Sets the global cursor style to the given state.
  */
-export function setGlobalCursorStyle(state: CursorState) {
+export function setGlobalCursorStyle(state: CursorState, doc: Document) {
 	if (currentState === state) return;
 
 	currentState = state;
@@ -58,8 +58,8 @@ export function setGlobalCursorStyle(state: CursorState) {
 	const style = getCursorStyle(state);
 
 	if (element === null) {
-		element = document.createElement("style");
-		document.head.appendChild(element);
+		element = doc.createElement("style");
+		doc.head.appendChild(element);
 	}
 
 	element.innerHTML = `*{cursor: ${style}!important;}`;

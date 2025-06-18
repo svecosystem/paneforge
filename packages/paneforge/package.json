@@ -32,7 +32,7 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"svelte": "^5.20.0"
+		"svelte": "^5.29.0"
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "^2.17.2",
@@ -46,10 +46,10 @@
 		"jsdom": "^24.0.0",
 		"publint": "^0.1.9",
 		"resize-observer-polyfill": "^1.5.1",
-		"svelte": "^5.20.2",
-		"svelte-check": "^4.1.4",
+		"svelte": "^5.34.3",
+		"svelte-check": "^4.2.1",
 		"tslib": "^2.4.1",
-		"typescript": "^5.0.0",
+		"typescript": "^5.8.3",
 		"vite": "^5.0.3",
 		"vitest": "^1.5.1"
 	},
@@ -58,6 +58,6 @@
 	"type": "module",
 	"dependencies": {
 		"runed": "^0.23.4",
-		"svelte-toolbelt": "^0.7.1"
+		"svelte-toolbelt": "^0.9.2"
 	}
 }
