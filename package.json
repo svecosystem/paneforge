@@ -26,9 +26,6 @@
 		"@eslint/js": "^9.29.0",
 		"@svitejs/changesets-changelog-github-compact": "^1.2.0",
 		"@types/node": "^22.10.1",
-		"@typescript-eslint/eslint-plugin": "^8.10.0",
-		"@typescript-eslint/scope-manager": "^8.10.0",
-		"@typescript-eslint/utils": "^8.10.0",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-svelte": "^3.9.2",
@@ -39,7 +36,7 @@
 		"svelte": "^5.34.3",
 		"svelte-eslint-parser": "^0.43.0",
 		"tseslint": "^0.0.2",
-		"typescript": "^5.6.3",
+		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.10.0",
 		"wrangler": "^3.91.0"
 	}
