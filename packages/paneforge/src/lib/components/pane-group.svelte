@@ -2,13 +2,14 @@
 	import { box, mergeProps } from "svelte-toolbelt";
 	import type { PaneGroupProps } from "./types.js";
 	import { noop } from "$lib/internal/helpers.js";
-	import { useId } from "$lib/internal/utils/useId.js";
 	import { defaultStorage, PaneGroupState } from "$lib/paneforge.svelte.js";
+
+	const uid = $props.id();
 
 	let {
 		autoSaveId = null,
 		direction,
-		id = useId(),
+		id = uid,
 		keyboardResizeBy = null,
 		onLayoutChange = noop,
 		storage = defaultStorage,
@@ -19,7 +20,7 @@
 	}: PaneGroupProps = $props();
 
 	const paneGroupState = PaneGroupState.create({
-		id: box.with(() => id ?? useId()),
+		id: box.with(() => id ?? uid),
 		ref: box.with(
 			() => ref,
 			(v) => (ref = v)
