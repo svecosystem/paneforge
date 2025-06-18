@@ -5,6 +5,7 @@ import {
 	executeCallbacks,
 	afterTick,
 	attachRef,
+	DOMContext,
 } from "svelte-toolbelt";
 import { onMount, untrack } from "svelte";
 import { Context, watch } from "runed";
@@ -90,6 +91,7 @@ export class PaneGroupState {
 
 	readonly opts: PaneGroupStateOpts;
 	readonly attachment: RefAttachment;
+	readonly domContext: DOMContext;
 	dragState = $state.raw<DragState | null>(null);
 	layout = $state.raw<number[]>([]);
 	panesArray = $state.raw<PaneState[]>([]);
@@ -101,12 +103,14 @@ export class PaneGroupState {
 	constructor(opts: PaneGroupStateOpts) {
 		this.opts = opts;
 		this.attachment = attachRef(this.opts.ref);
+		this.domContext = new DOMContext(this.opts.ref);
 
 		watch([() => this.opts.id.current, () => this.layout, () => this.panesArray], () => {
 			return updateResizeHandleAriaValues({
 				groupId: this.opts.id.current,
 				layout: this.layout,
 				panesArray: this.panesArray,
+				doc: this.domContext.getDocument(),
 			});
 		});
 
@@ -186,8 +190,8 @@ export class PaneGroupState {
 	};
 
 	registerResizeHandle = (dragHandleId: string) => {
-		return (e: ResizeEvent) => {
-			e.preventDefault();
+		return (event: ResizeEvent) => {
+			event.preventDefault();
 
 			const direction = this.opts.direction.current;
 			const dragState = this.dragState;
@@ -198,15 +202,27 @@ export class PaneGroupState {
 			const paneDataArray = this.panesArray;
 
 			const { initialLayout } = dragState ?? {};
+			const doc = this.domContext.getDocument();
 
-			const pivotIndices = getPivotIndices(groupId, dragHandleId);
+			const pivotIndices = getPivotIndices({
+				groupId,
+				dragHandleId,
+				doc,
+			});
 
-			let delta = getDeltaPercentage(e, dragHandleId, direction, dragState, keyboardResizeBy);
+			let delta = getDeltaPercentage({
+				event: event,
+				dragHandleId,
+				dir: direction,
+				initialDragState: dragState,
+				keyboardResizeBy,
+				doc,
+			});
 			if (delta === 0) return;
 
 			// support RTL
 			const isHorizontal = direction === "horizontal";
-			if (document.dir === "rtl" && isHorizontal) {
+			if (doc.dir === "rtl" && isHorizontal) {
 				delta = -delta;
 			}
 
@@ -217,13 +233,13 @@ export class PaneGroupState {
 				layout: initialLayout ?? prevLayout,
 				paneConstraints,
 				pivotIndices,
-				trigger: isKeyDown(e) ? "keyboard" : "mouse-or-touch",
+				trigger: isKeyDown(event) ? "keyboard" : "mouse-or-touch",
 			});
 			const layoutChanged = !areArraysEqual(prevLayout, nextLayout);
 
 			// Only update the cursor for layout changes triggered by touch/mouse events (not keyboard)
 			// Update the cursor even if the layout hasn't changed (we may need to show an invalid cursor state)
-			if (isMouseEvent(e) || isTouchEvent(e)) {
+			if (isMouseEvent(event) || isTouchEvent(event)) {
 				// Watch for multiple subsequent deltas; this might occur for tiny cursor movements.
 				// In this case, Pane sizes might not change–
 				// but updating cursor in this scenario would cause a flicker.
@@ -237,12 +253,15 @@ export class PaneGroupState {
 						// This mimics VS Code behavior.
 
 						if (isHorizontal) {
-							setGlobalCursorStyle(delta < 0 ? "horizontal-min" : "horizontal-max");
+							setGlobalCursorStyle(
+								delta < 0 ? "horizontal-min" : "horizontal-max",
+								doc
+							);
 						} else {
-							setGlobalCursorStyle(delta < 0 ? "vertical-min" : "vertical-max");
+							setGlobalCursorStyle(delta < 0 ? "vertical-min" : "vertical-max", doc);
 						}
 					} else {
-						setGlobalCursorStyle(isHorizontal ? "horizontal" : "vertical");
+						setGlobalCursorStyle(isHorizontal ? "horizontal" : "vertical", doc);
 					}
 				}
 			}
@@ -289,7 +308,7 @@ export class PaneGroupState {
 		const direction = this.opts.direction.current;
 		const layout = this.layout;
 
-		const handleElement = getResizeHandleElement(dragHandleId);
+		const handleElement = getResizeHandleElement(dragHandleId, this.domContext.getDocument());
 
 		assert(handleElement);
 
@@ -460,14 +479,20 @@ export class PaneGroupState {
 
 	#setResizeHandlerEventListeners = () => {
 		const groupId = this.opts.id.current;
-		const handles = getResizeHandleElementsForGroup(groupId);
+		const doc = this.domContext.getDocument();
+		const handles = getResizeHandleElementsForGroup(groupId, doc);
 		const paneDataArray = this.panesArray;
 
 		const unsubHandlers = handles.map((handle) => {
 			const handleId = handle.getAttribute("data-pane-resizer-id");
 			if (!handleId) return noop;
 
-			const [idBefore, idAfter] = getResizeHandlePaneIds(groupId, handleId, paneDataArray);
+			const [idBefore, idAfter] = getResizeHandlePaneIds({
+				groupId,
+				handleId,
+				panesArray: paneDataArray,
+				doc,
+			});
 
 			if (idBefore == null || idAfter == null) return noop;
 
@@ -498,7 +523,11 @@ export class PaneGroupState {
 						: collapsedSize - size,
 					layout,
 					paneConstraints: paneDataArray.map((paneData) => paneData.constraints),
-					pivotIndices: getPivotIndices(groupId, handleId),
+					pivotIndices: getPivotIndices({
+						groupId,
+						dragHandleId: handleId,
+						doc,
+					}),
 					trigger: "keyboard",
 				});
 
@@ -557,6 +586,7 @@ export class PaneResizerState {
 	readonly opts: PaneResizerStateOpts;
 	readonly #group: PaneGroupState;
 	readonly attachment: RefAttachment;
+	readonly domContext: DOMContext;
 
 	readonly #isDragging = $derived.by(
 		() => this.#group.dragState?.dragHandleId === this.opts.id.current
@@ -568,6 +598,7 @@ export class PaneResizerState {
 		this.opts = opts;
 		this.#group = group;
 		this.attachment = attachRef(this.opts.ref);
+		this.domContext = new DOMContext(this.opts.ref);
 
 		$effect(() => {
 			if (this.opts.disabled.current) {
@@ -598,14 +629,16 @@ export class PaneResizerState {
 				this.#group.stopDragging();
 				this.opts.onDraggingChange.current(false);
 			};
+			const domBody = this.domContext.getDocument().body;
+			const domWindow = this.domContext.getWindow();
 
 			return executeCallbacks(
-				on(document.body, "contextmenu", stopDraggingAndBlur),
-				on(document.body, "mousemove", onMove),
-				on(document.body, "touchmove", onMove, { passive: false }),
-				on(document.body, "mouseleave", onMouseLeave),
-				on(window, "mouseup", stopDraggingAndBlur),
-				on(window, "touchend", stopDraggingAndBlur)
+				on(domBody, "contextmenu", stopDraggingAndBlur),
+				on(domBody, "mousemove", onMove),
+				on(domBody, "touchmove", onMove, { passive: false }),
+				on(domBody, "mouseleave", onMouseLeave),
+				on(domWindow, "mouseup", stopDraggingAndBlur),
+				on(domWindow, "touchend", stopDraggingAndBlur)
 			);
 		});
 	}
@@ -638,12 +671,14 @@ export class PaneResizerState {
 		if (e.key !== "F6") return;
 
 		e.preventDefault();
+		const doc = this.domContext.getDocument();
 
-		const handles = getResizeHandleElementsForGroup(this.#group.opts.id.current);
-		const index = getResizeHandleElementIndex(
-			this.#group.opts.id.current,
-			this.opts.id.current
-		);
+		const handles = getResizeHandleElementsForGroup(this.#group.opts.id.current, doc);
+		const index = getResizeHandleElementIndex({
+			groupId: this.#group.opts.id.current,
+			id: this.opts.id.current,
+			doc,
+		});
 
 		if (index === null) return;
 
@@ -755,6 +790,7 @@ export class PaneState {
 	readonly opts: PaneStateOpts;
 	readonly group: PaneGroupState;
 	readonly attachment: RefAttachment;
+	readonly domContext: DOMContext;
 
 	#paneTransitionState: PaneTransitionState = $state("");
 	readonly callbacks = $derived.by(() => ({
@@ -820,6 +856,7 @@ export class PaneState {
 		this.opts = opts;
 		this.group = group;
 		this.attachment = attachRef(this.opts.ref);
+		this.domContext = new DOMContext(this.opts.ref);
 
 		onMount(() => {
 			return this.group.registerPane(this);
