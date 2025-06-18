@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.0-next.6
+
+### Patch Changes
+
+- feat: Shadow DOM support ([#75](https://github.com/svecosystem/paneforge/pull/75))
+
 ## 1.0.0-next.5
 
 ### Patch Changes
