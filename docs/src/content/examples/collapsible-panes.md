@@ -27,7 +27,7 @@ Here's the high-level structure of the example above:
 <script lang="ts">
 	import { PaneGroup, Pane, PaneResizer } from "paneforge";
 
-	let paneOne: typeof Pane;
+	let paneOne: ReturnType<typeof Pane>;
 	let collapsed = $state(false);
 </script>
 
