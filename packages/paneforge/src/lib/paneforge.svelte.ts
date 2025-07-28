@@ -336,7 +336,7 @@ export class PaneGroupState {
 			paneSize,
 		} = paneDataHelper(paneDataArray, pane, layout);
 
-		return collapsible === true && paneSize === collapsedSize;
+		return collapsible === true && areNumbersAlmostEqual(paneSize, collapsedSize);
 	};
 
 	expandPane = (pane: PaneState) => {
