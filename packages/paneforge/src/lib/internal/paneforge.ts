@@ -433,7 +433,7 @@ export function createPaneForge(props: CreatePaneForgeProps) {
 			paneSize,
 		} = paneDataHelper($paneDataArray, paneData, $layout);
 
-		return collapsible === true && paneSize === collapsedSize;
+		return collapsible === true && areNumbersAlmostEqual(paneSize, collapsedSize);
 	}
 
 	function expandPane(paneData: PaneData) {
