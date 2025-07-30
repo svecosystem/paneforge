@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.1
+
+### Patch Changes
+
+- fix: issue where isPaneCollapsed wrongfully returned false due to rounding issues ([#84](https://github.com/svecosystem/paneforge/pull/84))
+
 ## 1.0.0
 
 ### Major Changes
