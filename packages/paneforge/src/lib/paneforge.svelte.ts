@@ -336,6 +336,9 @@ export class PaneGroupState {
 			paneSize,
 		} = paneDataHelper(paneDataArray, pane, layout);
 
+		// On init the value may be undefined, so we need to check for that
+		if (typeof paneSize !== "number" || typeof collapsedSize !== "number") return false;
+
 		return collapsible === true && areNumbersAlmostEqual(paneSize, collapsedSize);
 	};
 
