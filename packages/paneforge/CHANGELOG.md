@@ -1,5 +1,11 @@
 # paneforge
 
+## 1.0.2
+
+### Patch Changes
+
+- fix: Fixes issue on values being undefined on initial is collapsed check ([#87](https://github.com/svecosystem/paneforge/pull/87))
+
 ## 1.0.1
 
 ### Patch Changes
